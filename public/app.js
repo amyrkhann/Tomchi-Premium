@@ -64,7 +64,12 @@ setTimeout(() => {
     }
 
 }
-
+<div id="result" style="
+margin-top:15px;
+font-weight:bold;
+text-align:center;
+color:#6b5200;
+"></div>
 // ---------------- ФИЛИАЛЫ ----------------
 
 function showBranches(){
