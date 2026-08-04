@@ -45,13 +45,17 @@ async function checkAddress(){
             })
         });
 
-        const data=await res.json();
+const data = await res.json();
 
-        if(!data.found){
-            return;
-        }
+document.getElementById("result").innerHTML = data.message;
 
-        showBranches();
+if (!data.found) {
+    return;
+}
+
+setTimeout(() => {
+    showBranches();
+}, 1500);
 
     }catch(e){
 
