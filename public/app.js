@@ -47,8 +47,6 @@ async function checkAddress(){
 
         const data=await res.json();
 
-        alert(data.message);
-
         if(!data.found){
             return;
         }
