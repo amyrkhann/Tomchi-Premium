@@ -94,9 +94,11 @@
 
 <script src="app.js"></script>
 <script>
-function setLanguage(lang){
-    localStorage.setItem("language",lang);
-    document.getElementById("language-screen").style.display="none";
+function setLanguage(lang) {
+    localStorage.setItem("language", lang);
+
+    document.getElementById("language-screen").classList.remove("active");
+    document.getElementById("address-screen").classList.add("active");
 }
 </script>
 </body>
