@@ -1,241 +1,190 @@
-let currentLanguage = "ru";
-let currentBranch = "";
-let currentAddress = "";
+let language = "ru";
+let selectedBranch = "";
 let cart = [];
 
-function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(screen => {
-        screen.classList.remove("active");
-    });
-
-    document.getElementById(id).classList.add("active");
-}
-
+// ---------- Язык ----------
 function setLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem("language", lang);
+  language = lang;
 
-    showScreen("address-screen");
+  document.getElementById("language-screen").classList.remove("active");
+  document.getElementById("address-screen").classList.add("active");
+
+  if (lang === "kz") {
+    document.querySelector("#address-screen h2").innerText = "Жеткізу мекенжайын енгізіңіз";
+    document.getElementById("address").placeholder = "Мысалы: Абай 47";
+  } else {
+    document.querySelector("#address-screen h2").innerText = "Введите адрес доставки";
+    document.getElementById("address").placeholder = "Например: Абая 47";
+  }
 }
 
+// ---------- Проверка адреса ----------
 async function checkAddress() {
 
-    const address = document.getElementById("address").value.trim();
+  const address = document.getElementById("address").value.trim();
 
-    if (!address) {
-        alert("Введите адрес доставки");
-        return;
-    }
+  if (!address) {
+    alert(language === "kz"
+      ? "Мекенжайды енгізіңіз!"
+      : "Введите адрес!");
+    return;
+  }
 
-    currentAddress = address;
+  try {
 
-    try {
-
-        const response = await fetch("/api/check-zone", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                address: address,
-                amount: 5000
-            })
-        });
-
-        const result = await response.json();
-
-        if (!result.found) {
-            alert(result.message);
-            return;
-        }
-
-        if (result.inZone) {
-
-            if (result.deliveryPrice === 0) {
-
-                alert("✅ Адрес входит в зону.\nДоставка будет бесплатной при заказе от 5000 ₸.");
-
-            } else {
-
-                alert("✅ Адрес входит в зону.\nСтоимость доставки 500 ₸.");
-
-            }
-
-        } else {
-
-            alert(
-                "📍 Ваш адрес находится вне зоны доставки.\n\nПосле приготовления заказа вы сможете вызвать курьера через Яндекс Go или inDrive."
-            );
-
-        }
-
-        loadBranches();
-
-        showScreen("branch-screen");
-
-    } catch (error) {
-
-        alert("Ошибка соединения с сервером.");
-
-    }
-
-}
-
-function loadBranches() {
-
-    const branches = [
-        "Абылай Хана 24",
-        "Абылай Хана 34",
-        "Жибек жолы 106",
-        "Яссауи 66",
-        "Абая 47"
-    ];
-
-    const container = document.getElementById("branches");
-
-    container.innerHTML = "";
-    branches.forEach(branch => {
-
-        const card = document.createElement("div");
-
-        card.className = "branch-card";
-
-        card.innerHTML = "📍 " + branch;
-
-        card.onclick = () => {
-
-            currentBranch = branch;
-
-            document.getElementById("branch-title").innerText = branch;
-
-            loadMenu();
-
-            showScreen("menu-screen");
-
-        };
-
-        container.appendChild(card);
-
+    const res = await fetch("/api/check-zone", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        address,
+        amount: 5000
+      })
     });
 
-}
+    const data = await res.json();
 
-function loadMenu() {
-
-    const foods = [
-
-        { name: "Плов", price: 2500 },
-
-        { name: "Манты", price: 2200 },
-
-        { name: "Лагман", price: 2400 },
-
-        { name: "Шашлык", price: 1800 },
-
-        { name: "Самса", price: 700 }
-
-    ];
-
-    const menu = document.getElementById("menu-list");
-
-    menu.innerHTML = "";
-
-    foods.forEach(food => {
-
-        const card = document.createElement("div");
-
-        card.className = "food-card";
-
-        card.innerHTML = `
-            <h3>${food.name}</h3>
-            <p>${food.price} ₸</p>
-            <button class="btn" onclick="addToCart('${food.name}', ${food.price})">
-                Добавить
-            </button>
-        `;
-
-        menu.appendChild(card);
-
-    });
-
-}
-
-function addToCart(name, price) {
-
-    cart.push({
-        name,
-        price
-    });
-
-    document.getElementById("cart-count").innerText = cart.length;
-
-}
-
-function backToBranches() {
-
-    showScreen("branch-screen");
-
-}
-function openCart() {
-
-    if (cart.length === 0) {
-        alert("Корзина пуста.");
-        return;
+    if (!data.found) {
+      alert(data.message);
+      return;
     }
 
-    let total = 0;
+    alert(data.message);
 
-    let text = "🍽️ TOMCHI PREMIUM\n\n";
+    showBranches();
 
-    text += "📍 Филиал: " + currentBranch + "\n";
-    text += "🏠 Адрес: " + currentAddress + "\n\n";
-
-    text += "Заказ:\n";
-
-    cart.forEach(item => {
-
-        total += item.price;
-
-        text += "• " + item.name + " — " + item.price + " ₸\n";
-
-    });
-
-    text += "\n";
-
-    if (total >= 5000) {
-
-        text += "🚚 Доставка: Бесплатно\n";
-
-    } else {
-
-        text += "🚚 Доставка: 500 ₸\n";
-
-        total += 500;
-
-    }
-
-    text += "\n💰 Итого: " + total + " ₸";
-
-    const phone = "77000000000"; // ← потом заменим на номер Tomchi
-
-    window.open(
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(text),
-        "_blank"
-    );
+  } catch (e) {
+    alert("Ошибка подключения");
+  }
 
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+// ---------- Филиалы ----------
+function showBranches() {
 
-    const lang = localStorage.getItem("language");
+  document.getElementById("address-screen").classList.remove("active");
+  document.getElementById("branch-screen").classList.add("active");
 
-    if (lang) {
+  const branches = [
+    "Абылай Хана 24",
+    "Абылай Хана 34",
+    "Жибек Жолы 106",
+    "Абая 47",
+    "Яссауи 66А"
+  ];
 
-        currentLanguage = lang;
+  const container = document.getElementById("branches");
+  container.innerHTML = "";
 
+  branches.forEach(branch => {
+
+    const div = document.createElement("div");
+
+    div.className = "branch-card";
+    div.innerHTML = branch;
+
+    div.onclick = () => openMenu(branch);
+
+    container.appendChild(div);
+
+  });
+
+}
+
+// ---------- Меню ----------
+function openMenu(branch){
+
+  selectedBranch = branch;
+
+  document.getElementById("branch-screen").classList.remove("active");
+  document.getElementById("menu-screen").classList.add("active");
+
+  document.getElementById("branch-title").innerHTML = branch;
+
+  const menu = document.getElementById("menu-list");
+
+  menu.innerHTML = "";
+
+  const foods = [
+
+    {
+      name:"Плов",
+      price:2500
+    },
+
+    {
+      name:"Манты",
+      price:2200
+    },
+
+    {
+      name:"Лагман",
+      price:2400
     }
 
-});
+  ];
+
+  foods.forEach(food=>{
+
+    menu.innerHTML += `
+      <div class="branch-card">
+        <h3>${food.name}</h3>
+        <p>${food.price} ₸</p>
+        <button class="btn" onclick="addToCart('${food.name}',${food.price})">
+          Добавить
+        </button>
+      </div>
+    `;
+
+  });
+
+}
+
+// ---------- Корзина ----------
+function addToCart(name,price){
+
+  cart.push({
+    name,
+    price
+  });
+
+  document.getElementById("cart-count").innerHTML = cart.length;
+
+}
+
+// ---------- WhatsApp ----------
+function openCart(){
+
+  if(cart.length===0){
+
+    alert("Корзина пуста");
+
+    return;
+
+  }
+
+  let text="Здравствуйте!%0A%0A";
+
+  text+="Филиал: "+selectedBranch+"%0A%0A";
+
+  cart.forEach(item=>{
+
+    text+=item.name+" — "+item.price+" ₸%0A";
+
+  });
+
+  window.open(
+    "https://wa.me/77000000000?text="+text,
+    "_blank"
+  );
+
+}
+
+// ---------- Назад ----------
+function backToBranches(){
+
+  document.getElementById("menu-screen").classList.remove("active");
+  document.getElementById("branch-screen").classList.add("active");
+
+}
