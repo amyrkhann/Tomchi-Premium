@@ -63,19 +63,21 @@ function checkAddress() {
 
         card.innerHTML = branch;
 
-        card.onclick = function () {
+card.onclick = function () {
 
-            currentBranch = branch;
+    alert("Нажали: " + branch);
 
-            document.getElementById("branch-title").innerHTML = branch;
+    currentBranch = branch;
 
-            document.getElementById("branch-screen").classList.remove("active");
+    document.getElementById("branch-title").innerHTML = branch;
 
-            document.getElementById("menu-screen").classList.add("active");
+    document.getElementById("branch-screen").classList.remove("active");
 
-            loadMenu(branch);
+    document.getElementById("menu-screen").classList.add("active");
 
-        };
+    loadMenu(branch);
+
+};
 
         container.appendChild(card);
 
