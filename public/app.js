@@ -20,12 +20,21 @@ function checkAddress() {
     const container = document.getElementById("branches");
     container.innerHTML = "";
 
-    branches.forEach(branch => {
-        const card = document.createElement("div");
-        card.className = "branch-card";
-        card.innerHTML = branch;
-        container.appendChild(card);
-    });
+branches.forEach(branch => {
+    const card = document.createElement("div");
+    card.className = "branch-card";
+    card.innerHTML = branch;
+
+    card.onclick = function () {
+        alert("Вы выбрали: " + branch);
+
+        document.getElementById("branch-screen").classList.remove("active");
+        document.getElementById("menu-screen").classList.add("active");
+        document.getElementById("branch-title").innerText = branch;
+    };
+
+    container.appendChild(card);
+});
 }
 
 function setLanguage(lang){
