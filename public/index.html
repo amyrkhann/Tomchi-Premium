@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tomchi Premium</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div id="app">
+
+<section id="language-screen" class="screen active">
+
+<h1>TOMCHI PREMIUM</h1>
+
+<p>Тілді таңдаңыз / Выберите язык</p>
+
+<button class="btn" onclick="setLanguage('kz')">
+🇰🇿 Қазақша
+</button>
+
+<button class="btn" onclick="setLanguage('ru')">
+🇷🇺 Русский
+</button>
+
+</section>
+
+<section id="address-screen" class="screen">
+
+<h2>Введите адрес доставки</h2>
+
+<input
+id="address"
+type="text"
+placeholder="Например: Абая 47">
+
+<button class="btn" onclick="checkAddress()">
+Проверить адрес
+</button>
+
+</section>
+
+<section id="branch-screen" class="screen">
+
+<h2>Выберите филиал</h2>
+
+<div id="branches"></div>
+
+</section>
+
+<section id="menu-screen" class="screen">
+
+<button class="btn" onclick="backToBranches()">
+← Назад
+</button>
+
+<h2 id="branch-title"></h2>
+
+<div id="menu-list"></div>
+
+</section>
+
+<div id="cart">
+
+<button onclick="openCart()">
+🛒 Корзина
+<span id="cart-count">0</span>
+</button>
+
+</div>
+
+<a id="whatsapp"
+href="#"
+target="_blank">
+WhatsApp
+</a>
