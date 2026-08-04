@@ -62,22 +62,6 @@ async function checkAddress() {
 
 }
 
-    const data = await res.json();
-
-    if (!data.found) {
-      alert(data.message);
-      return;
-    }
-
-    alert(data.message);
-
-    showBranches();
-
-  } catch (e) {
-    alert("Ошибка подключения");
-  }
-
-}
 
 // ---------- Филиалы ----------
 function showBranches() {
