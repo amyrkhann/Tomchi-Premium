@@ -1,117 +1,139 @@
-/* ===== TOMCHI PREMIUM ===== */
-
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 body{
-    background:#f8f3e8;
-    font-family:Georgia, serif;
-    color:#3a2a14;
+font-family:Arial,sans-serif;
+background:#f7f2e8;
+color:#333;
 }
 
 #app{
-    max-width:430px;
-    margin:auto;
-    padding:20px;
+max-width:430px;
+margin:auto;
+padding:20px;
 }
 
 .screen{
-    display:none;
+display:none;
 }
 
 .screen.active{
-    display:block;
+display:block;
 }
 
-h1{
-    text-align:center;
-    font-size:42px;
-    color:#7b5a16;
-    margin-top:30px;
-    margin-bottom:15px;
-}
-
-h2{
-    text-align:center;
-    color:#7b5a16;
-    margin:25px 0 15px;
+h1,h2{
+text-align:center;
+margin:20px 0;
+color:#7b5a16;
 }
 
 p{
-    text-align:center;
-    margin-bottom:20px;
-}
-
-.btn{
-    width:100%;
-    padding:15px;
-    margin-top:12px;
-    border:none;
-    border-radius:14px;
-    background:#c89d2b;
-    color:white;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.btn:hover{
-    background:#b28718;
+text-align:center;
+margin-bottom:20px;
 }
 
 input{
-    width:100%;
-    padding:15px;
-    border:2px solid #d7c18d;
-    border-radius:12px;
-    font-size:17px;
-    margin-bottom:15px;
-    background:white;
+width:100%;
+padding:15px;
+font-size:17px;
+border:1px solid #ccc;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.btn{
+width:100%;
+padding:15px;
+background:#b8860b;
+color:white;
+border:none;
+border-radius:10px;
+font-size:17px;
+margin-top:10px;
+cursor:pointer;
+}
+
+.btn:hover{
+background:#946d09;
 }
 
 #branches{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-top:20px;
 }
 
 .branch-card{
-    background:white;
-    border:2px solid #d6b36c;
-    border-radius:15px;
-    padding:18px;
-    font-size:19px;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:0 6px 14px rgba(0,0,0,.08);
+background:white;
+padding:16px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+cursor:pointer;
+font-weight:bold;
 }
 
 .branch-card:hover{
-    background:#fff7df;
+background:#fff5dc;
+}
+
+#menu-list{
+margin-top:20px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.food-card{
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.food-card h3{
+margin-bottom:10px;
+}
+
+.food-card button{
+margin-top:10px;
+width:100%;
+padding:10px;
+background:#b8860b;
+color:white;
+border:none;
+border-radius:8px;
 }
 
 #cart{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:15px;
-    display:flex;
-    justify-content:center;
+position:fixed;
+bottom:20px;
+left:0;
+right:0;
+display:flex;
+justify-content:center;
 }
 
 #cart button{
-    background:#7b5a16;
-    color:white;
-    border:none;
-    border-radius:50px;
-    padding:15px 30px;
-    font-size:18px;
+padding:15px 25px;
+background:#222;
+color:white;
+border:none;
+border-radius:40px;
+font-size:18px;
+}
+
+#cart-count{
+background:red;
+color:white;
+padding:2px 8px;
+border-radius:20px;
+margin-left:6px;
 }
 
 #whatsapp{
-    display:none;
+display:none;
 }
