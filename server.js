@@ -3,8 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
 
-const ROOT = __dirname;
-const DATA = path.join(ROOT, "data.json");
+const ROOT = path.join(__dirname, "public");
+const DATA = path.join(__dirname, "data.json");
 
 const PORT = process.env.PORT || 3000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "CHANGE_ME";
