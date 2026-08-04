@@ -2,192 +2,182 @@ let language = "ru";
 let selectedBranch = "";
 let cart = [];
 
-// ---------- Язык ----------
-function setLanguage(lang) {
-  language = lang;
+// ---------------- ЯЗЫК ----------------
 
-  document.getElementById("language-screen").classList.remove("active");
-  document.getElementById("address-screen").classList.add("active");
+function setLanguage(lang){
 
-  if (lang === "kz") {
-    document.querySelector("#address-screen h2").innerText = "Жеткізу мекенжайын енгізіңіз";
-    document.getElementById("address").placeholder = "Мысалы: Абай 47";
-  } else {
-    document.querySelector("#address-screen h2").innerText = "Введите адрес доставки";
-    document.getElementById("address").placeholder = "Например: Абая 47";
-  }
+    language = lang;
+
+    document.getElementById("language-screen").classList.remove("active");
+    document.getElementById("address-screen").classList.add("active");
+
+    if(lang==="kz"){
+        document.querySelector("#address-screen h2").innerText="Жеткізу мекенжайын енгізіңіз";
+        document.getElementById("address").placeholder="Мысалы: Абай 47";
+    }else{
+        document.querySelector("#address-screen h2").innerText="Введите адрес доставки";
+        document.getElementById("address").placeholder="Например: Абая 47";
+    }
+
 }
 
-// ---------- Проверка адреса ----------
-async function checkAddress() {
+// ---------------- ПРОВЕРКА АДРЕСА ----------------
 
-  const address = document.getElementById("address").value.trim();
+async function checkAddress(){
 
-  if (!address) {
-    alert("Введите адрес!");
-    return;
-  }
+    const address=document.getElementById("address").value.trim();
 
-  try {
+    if(!address){
+        alert(language==="kz" ? "Мекенжайды енгізіңіз" : "Введите адрес");
+        return;
+    }
 
-    const res = await fetch("/api/check-zone", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        address,
-        amount: 5000
-      })
+    try{
+
+        const res=await fetch("/api/check-zone",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                address:address,
+                amount:5000
+            })
+        });
+
+        const data=await res.json();
+
+        alert(data.message);
+
+        if(!data.found){
+            return;
+        }
+
+        showBranches();
+
+    }catch(e){
+
+        alert("Ошибка подключения");
+
+    }
+
+}
+
+// ---------------- ФИЛИАЛЫ ----------------
+
+function showBranches(){
+
+    document.getElementById("address-screen").classList.remove("active");
+    document.getElementById("branch-screen").classList.add("active");
+
+    const branches=[
+        "Абылай Хана 24",
+        "Tomchi Premium",
+        "Арбат",
+        "Абая 47",
+        "Яссауи"
+    ];
+
+    const container=document.getElementById("branches");
+
+    container.innerHTML="";
+
+    branches.forEach(branch=>{
+
+        const div=document.createElement("div");
+
+        div.className="branch-card";
+
+        div.innerHTML=branch;
+
+        div.onclick=function(){
+
+            openMenu(branch);
+
+        };
+
+        container.appendChild(div);
+
     });
 
-    const data = await res.json();
-
-    console.log(data);
-
-    if (!res.ok) {
-      alert(JSON.stringify(data));
-      return;
-    }
-
-    alert(data.message || "Ответ получен");
-
-    showBranches();
-
-  } catch (e) {
-
-    alert(e.message);
-
-  }
-
 }
 
+// ---------------- МЕНЮ ----------------
 
-// ---------- Филиалы ----------
-function showBranches() {
-
-  document.getElementById("address-screen").classList.remove("active");
-  document.getElementById("branch-screen").classList.add("active");
-
-  const branches = [
-    "Абылай Хана 24",
-    "Абылай Хана 34",
-    "Жибек Жолы 106",
-    "Абая 47",
-    "Яссауи 66А"
-  ];
-
-  const container = document.getElementById("branches");
-  container.innerHTML = "";
-
-  branches.forEach(branch => {
-
-    const div = document.createElement("div");
-
-    div.className = "branch-card";
-    div.innerHTML = branch;
-
-    div.onclick = () => openMenu(branch);
-
-    container.appendChild(div);
-
-  });
-
-}
-
-// ---------- Меню ----------
 function openMenu(branch){
 
-  selectedBranch = branch;
+    selectedBranch=branch;
 
-  document.getElementById("branch-screen").classList.remove("active");
-  document.getElementById("menu-screen").classList.add("active");
+    document.getElementById("branch-screen").classList.remove("active");
+    document.getElementById("menu-screen").classList.add("active");
 
-  document.getElementById("branch-title").innerHTML = branch;
+    document.getElementById("branch-title").innerText=branch;
 
-  const menu = document.getElementById("menu-list");
+    const menu=document.getElementById("menu-list");
 
-  menu.innerHTML = "";
+    menu.innerHTML=`
+        <div class="branch-card">
+            <h3>Плов</h3>
+            <p>2500 ₸</p>
+            <button class="btn" onclick="addToCart('Плов',2500)">Добавить</button>
+        </div>
 
-  const foods = [
+        <div class="branch-card">
+            <h3>Манты</h3>
+            <p>2200 ₸</p>
+            <button class="btn" onclick="addToCart('Манты',2200)">Добавить</button>
+        </div>
 
-    {
-      name:"Плов",
-      price:2500
-    },
-
-    {
-      name:"Манты",
-      price:2200
-    },
-
-    {
-      name:"Лагман",
-      price:2400
-    }
-
-  ];
-
-  foods.forEach(food=>{
-
-    menu.innerHTML += `
-      <div class="branch-card">
-        <h3>${food.name}</h3>
-        <p>${food.price} ₸</p>
-        <button class="btn" onclick="addToCart('${food.name}',${food.price})">
-          Добавить
-        </button>
-      </div>
+        <div class="branch-card">
+            <h3>Лагман</h3>
+            <p>2400 ₸</p>
+            <button class="btn" onclick="addToCart('Лагман',2400)">Добавить</button>
+        </div>
     `;
 
-  });
-
 }
 
-// ---------- Корзина ----------
+// ---------------- КОРЗИНА ----------------
+
 function addToCart(name,price){
 
-  cart.push({
-    name,
-    price
-  });
+    cart.push({
+        name,
+        price
+    });
 
-  document.getElementById("cart-count").innerHTML = cart.length;
+    document.getElementById("cart-count").innerText=cart.length;
 
 }
 
-// ---------- WhatsApp ----------
+// ---------------- WHATSAPP ----------------
+
 function openCart(){
 
-  if(cart.length===0){
+    if(cart.length===0){
+        alert("Корзина пуста");
+        return;
+    }
 
-    alert("Корзина пуста");
+    let text="Здравствуйте!%0A";
+    text+="Филиал: "+selectedBranch+"%0A%0A";
 
-    return;
+    cart.forEach(item=>{
+        text+=item.name+" - "+item.price+" ₸%0A";
+    });
 
-  }
-
-  let text="Здравствуйте!%0A%0A";
-
-  text+="Филиал: "+selectedBranch+"%0A%0A";
-
-  cart.forEach(item=>{
-
-    text+=item.name+" — "+item.price+" ₸%0A";
-
-  });
-
-  window.open(
-    "https://wa.me/77000000000?text="+text,
-    "_blank"
-  );
+    window.open(
+        "https://wa.me/77000000000?text="+text,
+        "_blank"
+    );
 
 }
 
-// ---------- Назад ----------
+// ---------------- НАЗАД ----------------
+
 function backToBranches(){
 
-  document.getElementById("menu-screen").classList.remove("active");
-  document.getElementById("branch-screen").classList.add("active");
+    document.getElementById("menu-screen").classList.remove("active");
+    document.getElementById("branch-screen").classList.add("active");
 
 }
