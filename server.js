@@ -499,15 +499,13 @@ const server =
             });
           }
 
-          const amount =
-            Number(body.amount || 0);
+          const amount = Number(body.amount || 0);
 
-           {
-            return json(res, 400, {
-              error:
-                "Введите сумму заказа."
-            });
-          }
+if (amount <= 0) {
+  return json(res, 400, {
+    error: "Введите сумму заказа."
+  });
+}
 
           const zone =
             await checkZone(
