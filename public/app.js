@@ -19,29 +19,7 @@ function setLanguage(lang) {
 }
 
 // ---------- Проверка адреса ----------
-async function checkAddress() {
 
-  const address = document.getElementById("address").value.trim();
-
-  if (!address) {
-    alert(language === "kz"
-      ? "Мекенжайды енгізіңіз!"
-      : "Введите адрес!");
-    return;
-  }
-
-  try {
-
-    const res = await fetch("/api/check-zone", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        address,
-        amount: 5000
-      })
-    });
 
     const data = await res.json();
 
