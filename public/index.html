@@ -103,6 +103,11 @@
 </div>
 
 <script src="app.js"></script>
-
+<script>
+function setLanguage(lang){
+    localStorage.setItem("language",lang);
+    document.getElementById("language-screen").style.display="none";
+}
+</script>
 </body>
 </html>
