@@ -199,7 +199,19 @@ function openCart(){
 // ---------------- НАЗАД ----------------
 
 function backToBranches(){
+function continueOrder(){
 
+    document.getElementById("deliveryModal").classList.remove("show");
+
+    showBranches();
+
+}
+
+function closeModal(){
+
+    document.getElementById("deliveryModal").classList.remove("show");
+
+}
     document.getElementById("menu-screen").classList.remove("active");
     document.getElementById("branch-screen").classList.add("active");
 
