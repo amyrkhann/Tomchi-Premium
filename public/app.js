@@ -161,14 +161,16 @@ function openMenu(branch){
 
 // ---------------- КОРЗИНА ----------------
 
-function addToCart(name,price){
+function addToCart(name, price){
 
     cart.push({
         name,
         price
     });
 
-    document.getElementById("cart-count").innerText=cart.length;
+    document.getElementById("cart-count").innerText = cart.length;
+
+    renderCart();
 
 }
 
