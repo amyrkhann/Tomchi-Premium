@@ -194,3 +194,8 @@ display:none;
     text-align:center;
     color:#7b5a16;
 }
+.food-card{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
