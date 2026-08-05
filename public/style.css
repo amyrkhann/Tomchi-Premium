@@ -183,3 +183,14 @@ display:none;
 .cancel:hover{
     background:#666;
 }
+#cartItems{
+    margin-top:20px;
+}
+
+#cartTotal{
+    margin-top:15px;
+    font-size:22px;
+    font-weight:bold;
+    text-align:center;
+    color:#7b5a16;
+}
