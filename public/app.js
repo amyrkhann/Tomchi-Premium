@@ -46,16 +46,37 @@ async function checkAddress(){
         });
 
 const data = await res.json();
+if (data.inZone) {
 
-document.getElementById("result").innerHTML = data.message;
+    document.getElementById("modalTitle").innerText =
+        "✅ Адрес входит в зону доставки";
 
-if (!data.found) {
-    return;
+    document.getElementById("modalText").innerText =
+`Ваш адрес входит в нашу зону доставки.
+
+• Заказ от 5 000 ₸ — доставка БЕСПЛАТНО.
+
+• Заказ до 5 000 ₸ — стоимость доставки 500 ₸.
+
+Продолжить оформление заказа?`;
+
+} else {
+
+    document.getElementById("modalTitle").innerText =
+        "⚠️ Адрес вне зоны бесплатной доставки";
+
+    document.getElementById("modalText").innerText =
+`Ваш адрес не входит в бесплатную зону доставки.
+
+После оформления заказа потребуется вызвать курьера через Яндекс Go или inDrive.
+
+Стоимость доставки сообщит менеджер.
+
+Продолжить оформление заказа?`;
+
 }
 
-setTimeout(() => {
-    showBranches();
-}, 1500);
+document.getElementById("deliveryModal").classList.add("show");
 
     }catch(e){
 
