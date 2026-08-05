@@ -221,3 +221,29 @@ function closeModal(){
     document.getElementById("deliveryModal").classList.remove("show");
 
 }
+function renderCart(){
+
+    const items = document.getElementById("cartItems");
+    const total = document.getElementById("totalPrice");
+
+    items.innerHTML = "";
+
+    let sum = 0;
+
+    cart.forEach(item => {
+
+        sum += item.price;
+
+        items.innerHTML += `
+            <div class="branch-card">
+                <b>${item.name}</b>
+                <br>
+                ${item.price} ₸
+            </div>
+        `;
+
+    });
+
+    total.innerText = sum;
+
+}
