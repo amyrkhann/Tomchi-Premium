@@ -199,6 +199,14 @@ function openCart(){
 // ---------------- НАЗАД ----------------
 
 function backToBranches(){
+
+    document.getElementById("menu-screen").classList.remove("active");
+    document.getElementById("branch-screen").classList.add("active");
+
+}
+
+// ---------------- МОДАЛЬНОЕ ОКНО ----------------
+
 function continueOrder(){
 
     document.getElementById("deliveryModal").classList.remove("show");
@@ -210,9 +218,5 @@ function continueOrder(){
 function closeModal(){
 
     document.getElementById("deliveryModal").classList.remove("show");
-
-}
-    document.getElementById("menu-screen").classList.remove("active");
-    document.getElementById("branch-screen").classList.add("active");
 
 }
