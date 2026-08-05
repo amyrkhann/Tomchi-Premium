@@ -119,11 +119,13 @@ justify-content:center;
 
 #cart button{
 padding:15px 25px;
-background:#222;
+background:#b8860b;
 color:white;
 border:none;
 border-radius:40px;
 font-size:18px;
+box-shadow:0 8px 20px rgba(184,134,11,.35);
+transition:.2s;
 }
 
 #cart-count{
