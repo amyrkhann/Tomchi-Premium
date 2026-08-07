@@ -94,10 +94,10 @@ function showBranches(){
 
     const branches=[
         "Абылай Хана 24",
-        "Tomchi Premium",
-        "Арбат",
+        "Абылай Хана 34",
+        "Жібек Жолы 106",
         "Абая 47",
-        "Яссауи"
+        "Яссауи 66"
     ];
 
     const container=document.getElementById("branches");
