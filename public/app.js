@@ -137,25 +137,69 @@ function openMenu(branch){
 
     const menu=document.getElementById("menu-list");
 
-    menu.innerHTML=`
-        <div class="branch-card">
-            <h3>Плов</h3>
-            <p>2500 ₸</p>
-            <button class="btn" onclick="addToCart('Плов',2500)">Добавить</button>
-        </div>
+menu.innerHTML=`
 
-        <div class="branch-card">
-            <h3>Манты</h3>
-            <p>2200 ₸</p>
-            <button class="btn" onclick="addToCart('Манты',2200)">Добавить</button>
-        </div>
+    <h2>МЕНЮ</h2>
 
-        <div class="branch-card">
-            <h3>Лагман</h3>
-            <p>2400 ₸</p>
-            <button class="btn" onclick="addToCart('Лагман',2400)">Добавить</button>
-        </div>
-    `;
+    <div class="food-card">
+        <h3>Плов</h3>
+        <p>2500 ₸</p>
+        <button onclick="addToCart('Плов',2500)">
+            Добавить
+        </button>
+    </div>
+
+    <div class="food-card">
+        <h3>Манты</h3>
+        <p>2200 ₸</p>
+        <button onclick="addToCart('Манты',2200)">
+            Добавить
+        </button>
+    </div>
+
+    <div class="food-card">
+        <h3>Лагман</h3>
+        <p>2400 ₸</p>
+        <button onclick="addToCart('Лагман',2400)">
+            Добавить
+        </button>
+    </div>
+
+    <h2>ДОПОЛНИТЕЛЬНО</h2>
+
+    <div class="food-card">
+        <h3>Посуда для шорпы</h3>
+        <p>150 ₸</p>
+        <button onclick="addToCart('Посуда для шорпы',150)">
+            Добавить
+        </button>
+    </div>
+
+    <div class="food-card">
+        <h3>Казанчик</h3>
+        <p>500 ₸</p>
+        <button onclick="addToCart('Казанчик',500)">
+            Добавить
+        </button>
+    </div>
+
+    <div class="food-card">
+        <h3>Посуда одноразовая</h3>
+        <p>100 ₸</p>
+        <button onclick="addToCart('Посуда одноразовая',100)">
+            Добавить
+        </button>
+    </div>
+
+    <div class="food-card">
+        <h3>Контейнер алю</h3>
+        <p>200 ₸</p>
+        <button onclick="addToCart('Контейнер алю',200)">
+            Добавить
+        </button>
+    </div>
+
+`;
 
 }
 
