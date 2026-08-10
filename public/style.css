@@ -205,3 +205,84 @@ display:none;
     flex-direction:column;
     gap:10px;
 }
+/* ===== КОМПАКТНАЯ ПРОВЕРКА ЗАКАЗА ===== */
+
+#order-list{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    margin-top:10px;
+}
+
+#order-list .food-card{
+    display:grid;
+    grid-template-columns: 1fr auto auto;
+    align-items:center;
+    gap:8px;
+
+    padding:10px 8px;
+    border-radius:0;
+    box-shadow:none;
+    border-bottom:1px solid #ddd;
+    background:#fff;
+}
+
+#order-list .food-card h3{
+    font-size:15px;
+    margin:0;
+    text-align:left;
+    font-weight:600;
+}
+
+#order-list .food-card p{
+    margin:0;
+    font-size:14px;
+    white-space:nowrap;
+    text-align:right;
+}
+
+#order-list .quantity{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    order:2;
+}
+
+#order-list .quantity button{
+    width:28px;
+    height:28px;
+    padding:0;
+    margin:0;
+    border:none;
+    border-radius:6px;
+    background:#b8860b;
+    color:white;
+    font-size:18px;
+    line-height:28px;
+}
+
+#order-list .quantity span{
+    min-width:18px;
+    text-align:center;
+    font-size:14px;
+}
+
+#order-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:12px 5px;
+    margin-top:5px;
+
+    font-size:18px;
+    font-weight:bold;
+    color:#7b5a16;
+    border-top:2px solid #b8860b;
+}
+
+#order-screen > .btn{
+    margin-top:10px;
+    padding:12px;
+    font-size:16px;
+}
