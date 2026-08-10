@@ -372,6 +372,9 @@ function openOrderCheck(){
     document.getElementById("menu-screen").classList.remove("active");
     document.getElementById("order-screen").classList.add("active");
 
+    renderOrder();
+}
+
     function renderOrder(){
 
     const orderList = document.getElementById("order-list");
