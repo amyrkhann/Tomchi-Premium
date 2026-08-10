@@ -350,10 +350,6 @@ function addToCart(name, price){
         price
     });
 
-    document.getElementById("cart-count").innerText = cart.length;
-
-    renderCart();
-
 }
 // ---------------- ПРОВЕРКА ЗАКАЗА ----------------
 
