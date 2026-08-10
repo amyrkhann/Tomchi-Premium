@@ -53,7 +53,29 @@ placeholder="Например: Абая 47">
 </section>
 
 <section id="menu-screen" class="screen">
+<section id="order-screen" class="screen">
 
+    <button class="btn" onclick="backToMenu()">
+        ← Вернуться в меню
+    </button>
+
+    <h2>Проверка заказа</h2>
+
+    <div id="order-list"></div>
+
+    <div id="order-total">
+        Итого: <span id="order-total-price">0</span> ₸
+    </div>
+
+    <button class="btn" onclick="backToMenu()">
+        ➕ Добавить ещё
+    </button>
+
+    <button class="btn" onclick="sendOrder()">
+        Оформить заказ
+    </button>
+
+</section>
 <button class="btn" onclick="backToBranches()">
 ← Назад
 </button>
