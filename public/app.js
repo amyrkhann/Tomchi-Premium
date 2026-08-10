@@ -361,6 +361,7 @@ function addToCart(name, price){
 
 }
 // ---------------- ПРОВЕРКА ЗАКАЗА ----------------
+// ---------------- ПРОВЕРКА ЗАКАЗА ----------------
 
 function openOrderCheck(){
 
@@ -372,7 +373,11 @@ function openOrderCheck(){
     document.getElementById("menu-screen").classList.remove("active");
     document.getElementById("order-screen").classList.add("active");
 
-    function renderOrder(){
+    renderOrder();
+}
+
+
+function renderOrder(){
 
     const orderList = document.getElementById("order-list");
     const totalPrice = document.getElementById("order-total-price");
@@ -394,13 +399,13 @@ function openOrderCheck(){
 
                 <div class="quantity">
 
-                    <button onclick="decreaseItem(${index})">
+                    <button type="button" onclick="decreaseItem(${index})">
                         −
                     </button>
 
                     <span>${item.quantity}</span>
 
-                    <button onclick="increaseItem(${index})">
+                    <button type="button" onclick="increaseItem(${index})">
                         +
                     </button>
 
@@ -413,6 +418,7 @@ function openOrderCheck(){
 
     totalPrice.innerText = total;
 }
+
 
 function increaseItem(index){
 
