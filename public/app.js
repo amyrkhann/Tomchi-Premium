@@ -361,7 +361,6 @@ function addToCart(name, price){
 
 }
 // ---------------- ПРОВЕРКА ЗАКАЗА ----------------
-// ---------------- ПРОВЕРКА ЗАКАЗА ----------------
 
 function openOrderCheck(){
 
@@ -373,11 +372,7 @@ function openOrderCheck(){
     document.getElementById("menu-screen").classList.remove("active");
     document.getElementById("order-screen").classList.add("active");
 
-    renderOrder();
-}
-
-
-function renderOrder(){
+    function renderOrder(){
 
     const orderList = document.getElementById("order-list");
     const totalPrice = document.getElementById("order-total-price");
@@ -391,11 +386,12 @@ function renderOrder(){
         total += item.price * item.quantity;
 
         orderList.innerHTML += `
-            <div class="food-card">
+            <div class="food-card order-item">
 
-                <h3>${item.name}</h3>
-
-                <p>${item.price} ₸</p>
+                <div class="order-info">
+                    <h3>${item.name}</h3>
+                    <p>${item.price} ₸</p>
+                </div>
 
                 <div class="quantity">
 
