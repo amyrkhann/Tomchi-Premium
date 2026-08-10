@@ -338,7 +338,6 @@ function openMenu(branch){
         `;
     }
 
-    renderCart();
 }
 
 // ---------------- КОРЗИНА ----------------
