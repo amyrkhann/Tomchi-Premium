@@ -355,7 +355,107 @@ function addToCart(name, price){
     renderCart();
 
 }
+// ---------------- ПРОВЕРКА ЗАКАЗА ----------------
 
+function openOrderCheck(){
+
+    if(cart.length === 0){
+        alert("Корзина пуста");
+        return;
+    }
+
+    document.getElementById("menu-screen").classList.remove("active");
+    document.getElementById("order-screen").classList.add("active");
+
+    renderOrder();
+}
+
+
+function renderOrder(){
+
+    const orderList = document.getElementById("order-list");
+    const totalPrice = document.getElementById("order-total-price");
+
+    orderList.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+
+        total += item.price;
+
+        orderList.innerHTML += `
+            <div class="food-card">
+
+                <h3>${item.name}</h3>
+
+                <p>${item.price} ₸</p>
+
+                <div class="quantity">
+
+                    <button onclick="decreaseItem(${index})">
+                        −
+                    </button>
+
+                    <span>1</span>
+
+                    <button onclick="increaseItem(${index})">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    });
+
+    totalPrice.innerText = total;
+}
+
+
+function increaseItem(index){
+
+    cart.push({
+        name: cart[index].name,
+        price: cart[index].price
+    });
+
+    renderOrder();
+
+}
+
+
+function decreaseItem(index){
+
+    const itemName = cart[index].name;
+
+    const sameIndex = cart.findIndex(
+        item => item.name === itemName
+    );
+
+    if(sameIndex !== -1){
+        cart.splice(sameIndex, 1);
+    }
+
+    if(cart.length === 0){
+        document.getElementById("order-screen").classList.remove("active");
+        document.getElementById("menu-screen").classList.add("active");
+    }
+
+    document.getElementById("cart-count").innerText = cart.length;
+
+    renderOrder();
+
+}
+
+
+function backToMenu(){
+
+    document.getElementById("order-screen").classList.remove("active");
+    document.getElementById("menu-screen").classList.add("active");
+
+}
 // ---------------- WHATSAPP ----------------
 
 function openCart(){
