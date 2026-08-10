@@ -341,13 +341,23 @@ function openMenu(branch){
 }
 
 // ---------------- КОРЗИНА ----------------
-
 function addToCart(name, price){
 
-    cart.push({
-        name,
-        price
-    });
+    const existingItem = cart.find(item => item.name === name);
+
+    if(existingItem){
+
+        existingItem.quantity += 1;
+
+    }else{
+
+        cart.push({
+            name: name,
+            price: price,
+            quantity: 1
+        });
+
+    }
 
 }
 // ---------------- ПРОВЕРКА ЗАКАЗА ----------------
@@ -362,11 +372,7 @@ function openOrderCheck(){
     document.getElementById("menu-screen").classList.remove("active");
     document.getElementById("order-screen").classList.add("active");
 
-    renderOrder();
-}
-
-
-function renderOrder(){
+    function renderOrder(){
 
     const orderList = document.getElementById("order-list");
     const totalPrice = document.getElementById("order-total-price");
@@ -377,7 +383,7 @@ function renderOrder(){
 
     cart.forEach((item, index) => {
 
-        total += item.price;
+        total += item.price * item.quantity;
 
         orderList.innerHTML += `
             <div class="food-card">
@@ -392,7 +398,7 @@ function renderOrder(){
                         −
                     </button>
 
-                    <span>1</span>
+                    <span>${item.quantity}</span>
 
                     <button onclick="increaseItem(${index})">
                         +
@@ -408,13 +414,9 @@ function renderOrder(){
     totalPrice.innerText = total;
 }
 
-
 function increaseItem(index){
 
-    cart.push({
-        name: cart[index].name,
-        price: cart[index].price
-    });
+    cart[index].quantity += 1;
 
     renderOrder();
 
@@ -423,22 +425,23 @@ function increaseItem(index){
 
 function decreaseItem(index){
 
-    const itemName = cart[index].name;
+    if(cart[index].quantity > 1){
 
-    const sameIndex = cart.findIndex(
-        item => item.name === itemName
-    );
+        cart[index].quantity -= 1;
 
-    if(sameIndex !== -1){
-        cart.splice(sameIndex, 1);
+    }else{
+
+        cart.splice(index, 1);
+
     }
 
     if(cart.length === 0){
+
         document.getElementById("order-screen").classList.remove("active");
         document.getElementById("menu-screen").classList.add("active");
-    }
 
-    
+        return;
+    }
 
     renderOrder();
 
