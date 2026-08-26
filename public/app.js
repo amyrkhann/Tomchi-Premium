@@ -619,7 +619,7 @@ function sendOrder(){
     text += "%0AИтого: " + total + " ₸";
 
     window.open(
-        "https://wa.me/77000000000?text=" + text,
+        "https://wa.me/77479370909?text=" + text,
         "_blank"
     );
 
