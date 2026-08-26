@@ -481,7 +481,84 @@ function openCart(){
     );
 
 }
+// ---------------- ОФОРМЛЕНИЕ ЗАКАЗА ----------------
 
+function sendOrder(){
+
+    const form = document.getElementById("customer-form");
+
+    // Первый клик — показываем форму
+    if(form.style.display === "none" || form.style.display === ""){
+
+        form.style.display = "block";
+
+        form.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        return;
+    }
+
+    const name = document.getElementById("customer-name").value.trim();
+    const phone = document.getElementById("customer-phone").value.trim();
+    const comment = document.getElementById("customer-comment").value.trim();
+
+    if(!name){
+
+        alert("Введите ваше имя");
+        return;
+
+    }
+
+    if(!phone){
+
+        alert("Введите номер телефона");
+        return;
+
+    }
+
+    let total = 0;
+
+    let text = "Здравствуйте! Хочу оформить заказ.%0A%0A";
+
+    text += "🏪 Филиал: " + selectedBranch + "%0A";
+    text += "👤 Имя: " + name + "%0A";
+    text += "📞 Телефон: " + phone + "%0A";
+    text += "📍 Адрес: " + document.getElementById("address").value + "%0A%0A";
+
+    text += "🛒 ЗАКАЗ:%0A";
+
+    cart.forEach(item => {
+
+        const itemTotal = item.price * item.quantity;
+
+        total += itemTotal;
+
+        text +=
+            item.name +
+            " × " +
+            item.quantity +
+            " — " +
+            itemTotal +
+            " ₸%0A";
+
+    });
+
+    text += "%0A💰 Итого: " + total + " ₸";
+
+    if(comment){
+
+        text += "%0A📝 Комментарий: " + comment;
+
+    }
+
+    window.open(
+        "https://wa.me/77000000000?text=" + text,
+        "_blank"
+    );
+
+}
 // ---------------- НАЗАД ----------------
 
 function backToBranches(){
