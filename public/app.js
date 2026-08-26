@@ -293,22 +293,40 @@ function openMenu(branch){
                 `;
             }
 
-            html += `
-                <div class="food-card">
-                    <h3>${name}</h3>
-                    <p>${price} ₸</p>
-                    <button onclick="addToCart('${name}', ${price})">
-                        Добавить
-                    </button>
-                </div>
-            `;
+const quantity = getCartQuantity(name);
+
+html += `
+    <div class="food-card">
+        <h3>${name}</h3>
+        <p>${price} ₸</p>
+
+        <div class="menu-quantity">
+
+            <button
+                type="button"
+                onclick="changeMenuQuantity('${name}', ${price}, -1)">
+                −
+            </button>
+
+            <span id="qty-${name.replace(/\s+/g, '-')}">
+                ${quantity}
+            </span>
+
+            <button
+                type="button"
+                onclick="changeMenuQuantity('${name}', ${price}, 1)">
+                +
+            </button>
+
+        </div>
+    </div>
+`;
         });
 
         menu.innerHTML = html;
 
     } else {
 
-        // Остальные филиалы пока оставляем как есть
         menu.innerHTML = `
             <h2>МЕНЮ</h2>
 
@@ -341,21 +359,86 @@ function openMenu(branch){
 }
 
 // ---------------- КОРЗИНА ----------------
-function addToCart(name, price){
+function getCartQuantity(name){
+
+    const item = cart.find(item => item.name === name);
+
+    return item ? item.quantity : 0;
+
+}
+
+
+function changeMenuQuantity(name, price, change){
 
     const existingItem = cart.find(item => item.name === name);
 
     if(existingItem){
 
-        existingItem.quantity += 1;
+        existingItem.quantity += change;
 
-    }else{
+        if(existingItem.quantity <= 0){
+
+            const index = cart.indexOf(existingItem);
+
+            cart.splice(index, 1);
+
+        }
+
+    }else if(change > 0){
 
         cart.push({
             name: name,
             price: price,
             quantity: 1
         });
+
+    }
+
+    updateMenuQuantity(name);
+
+    updateCartButton();
+
+}
+
+
+function updateMenuQuantity(name){
+
+    const id = "qty-" + name.replace(/\s+/g, '-');
+
+    const element = document.getElementById(id);
+
+    if(element){
+
+        element.innerText = getCartQuantity(name);
+
+    }
+
+}
+
+
+function updateCartButton(){
+
+    const button = document.querySelector("#cart button");
+
+    if(!button) return;
+
+    let totalQuantity = 0;
+
+    cart.forEach(item => {
+
+        totalQuantity += item.quantity;
+
+    });
+
+    if(totalQuantity > 0){
+
+        button.innerText =
+            "🛒 Проверить заказ (" + totalQuantity + ")";
+
+    }else{
+
+        button.innerText =
+            "🛒 Проверить заказ";
 
     }
 
