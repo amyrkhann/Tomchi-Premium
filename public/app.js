@@ -583,3 +583,44 @@ function closeModal(){
     document.getElementById("deliveryModal").classList.remove("show");
 
 }
+// ---------------- ОФОРМЛЕНИЕ ЗАКАЗА ----------------
+
+function sendOrder(){
+
+    if(cart.length === 0){
+        alert("Корзина пуста");
+        return;
+    }
+
+    let total = 0;
+
+    let text = "Здравствуйте! Хочу оформить заказ.%0A%0A";
+
+    text += "Филиал: " + selectedBranch + "%0A%0A";
+
+    text += "Заказ:%0A";
+
+    cart.forEach(item => {
+
+        const itemTotal = item.price * item.quantity;
+
+        total += itemTotal;
+
+        text +=
+            item.name +
+            " × " +
+            item.quantity +
+            " — " +
+            itemTotal +
+            " ₸%0A";
+
+    });
+
+    text += "%0AИтого: " + total + " ₸";
+
+    window.open(
+        "https://wa.me/77000000000?text=" + text,
+        "_blank"
+    );
+
+}
