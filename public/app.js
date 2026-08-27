@@ -543,6 +543,8 @@ function backToMenu(){
     document.getElementById("order-screen").classList.remove("active");
     document.getElementById("menu-screen").classList.add("active");
 
+    document.getElementById("cart").style.display = "block";
+
 }
 // ---------------- WHATSAPP ----------------
 
