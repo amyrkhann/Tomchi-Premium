@@ -1140,3 +1140,56 @@ async function kaspiPaid(){
     }
 
 }
+// ---------------- ЧЕК KASPI ----------------
+
+let receiptFile = null;
+let receiptUrl = "";
+
+function receiptSelected(){
+
+    const input =
+        document.getElementById("kaspiReceipt");
+
+    if(!input || !input.files.length){
+        return;
+    }
+
+    receiptFile = input.files[0];
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if(!allowedTypes.includes(receiptFile.type)){
+
+        alert("Можно загрузить только JPG, PNG или WEBP.");
+
+        input.value = "";
+        receiptFile = null;
+
+        return;
+    }
+
+    if(receiptFile.size > 8 * 1024 * 1024){
+
+        alert("Файл слишком большой. Максимум 8 МБ.");
+
+        input.value = "";
+        receiptFile = null;
+
+        return;
+    }
+
+    const status =
+        document.getElementById("receiptStatus");
+
+    if(status){
+
+        status.innerText =
+            "✅ Чек выбран: " + receiptFile.name;
+
+    }
+
+}
