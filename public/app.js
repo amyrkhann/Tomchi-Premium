@@ -1033,11 +1033,110 @@ function openKaspiApp(){
 }
 
 
-function kaspiPaid(){
+// ---------------- ЧЕК KASPI ----------------
 
-    document.getElementById("kaspiModal").classList.remove("show");
+function selectReceipt(){
 
-    // Переходим к оформлению заказа
-    sendOrder();
+    document.getElementById("kaspiReceipt").click();
+
+}
+
+
+function receiptSelected(){
+
+    const file =
+        document.getElementById("kaspiReceipt").files[0];
+
+    const status =
+        document.getElementById("receiptStatus");
+
+    if(!file){
+        status.innerText = "";
+        return;
+    }
+
+    if(file.size > 8 * 1024 * 1024){
+
+        alert("Чек слишком большой. Максимум 8 МБ.");
+
+        document.getElementById("kaspiReceipt").value = "";
+
+        return;
+    }
+
+    status.innerText =
+        "✅ Чек выбран: " + file.name;
+
+}
+
+
+// ---------------- Я ОПЛАТИЛ ----------------
+
+async function kaspiPaid(){
+
+    const file =
+        document.getElementById("kaspiReceipt").files[0];
+
+    if(!file){
+
+        alert(
+            "Сначала выберите фото или скриншот чека Kaspi."
+        );
+
+        return;
+    }
+
+    const status =
+        document.getElementById("receiptStatus");
+
+    status.innerText =
+        "⏳ Загружаем чек...";
+
+    const formData = new FormData();
+
+    formData.append("receipt", file);
+
+    try{
+
+        const response =
+            await fetch("/api/upload-receipt", {
+                method: "POST",
+                body: formData
+            });
+
+        const data =
+            await response.json();
+
+        if(!response.ok){
+
+            throw new Error(
+                data.error || "Ошибка загрузки чека"
+            );
+
+        }
+
+        // Сохраняем ссылку на чек
+        window.kaspiReceiptUrl = data.url;
+
+        status.innerText =
+            "✅ Чек загружен";
+
+        document.getElementById("kaspiModal")
+            .classList.remove("show");
+
+        sendOrder();
+
+    }catch(error){
+
+        console.error(error);
+
+        status.innerText = "";
+
+        alert(
+            "Не удалось загрузить чек: " +
+            error.message
+        );
+
+    }
 
 }
