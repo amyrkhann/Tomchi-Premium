@@ -774,19 +774,71 @@ function copyKaspiNumber(){
 
 // ---------------- Я ОПЛАТИЛ ----------------
 
-function showCustomerForm(){
+async function showCustomerForm(){
 
-    document.getElementById("kaspi-payment").style.display =
-        "none";
+    if(!receiptFile){
 
-    const form = document.getElementById("customer-form");
+        alert("📷 Сначала выберите чек Kaspi");
 
-    form.style.display = "block";
+        return;
+    }
 
-    form.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+    try{
+
+        const formData = new FormData();
+
+        formData.append(
+            "receipt",
+            receiptFile
+        );
+
+        const response =
+            await fetch("/api/upload-receipt", {
+                method: "POST",
+                body: formData
+            });
+
+        const data =
+            await response.json();
+
+        if(!response.ok || !data.success){
+
+            alert(
+                data.error ||
+                "Не удалось загрузить чек"
+            );
+
+            return;
+        }
+
+        receiptUrl =
+            data.receipt;
+
+        document.getElementById(
+            "kaspi-payment"
+        ).style.display = "none";
+
+        const form =
+            document.getElementById(
+                "customer-form"
+            );
+
+        form.style.display = "block";
+
+        form.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Ошибка загрузки чека. Попробуйте ещё раз."
+        );
+
+    }
 
 }
 
