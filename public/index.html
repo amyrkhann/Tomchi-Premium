@@ -87,7 +87,37 @@ placeholder="Например: Абая 47">
         Оформить заказ
     </button>
 <div id="customer-form" style="display:none;">
+<!-- KASPI ОПЛАТА -->
+<div id="kaspi-payment" style="display:none;">
 
+    <h2>💳 Оплата Kaspi</h2>
+
+    <p>Переведите сумму заказа на Kaspi:</p>
+
+    <div class="kaspi-box">
+        <h3 id="kaspi-name"></h3>
+        <p id="kaspi-phone"></p>
+        <p>
+            Сумма:
+            <strong><span id="kaspi-amount">0</span> ₸</strong>
+        </p>
+    </div>
+
+    <button
+        class="btn"
+        type="button"
+        onclick="copyKaspiNumber()">
+        📋 Скопировать номер
+    </button>
+
+    <button
+        class="btn"
+        type="button"
+        onclick="showCustomerForm()">
+        ✅ Я оплатил
+    </button>
+
+</div>
     <h2>Оформление заказа</h2>
 
     <input
