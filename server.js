@@ -874,7 +874,36 @@ paymentStatus:
             order
           );
         }
+// -----------------------------
+// ЗАГРУЗКА ЧЕКА KASPI
+// -----------------------------
 
+if (
+  u.pathname === "/api/upload-receipt" &&
+  method === "POST"
+) {
+
+  try {
+
+    const receipt =
+      await getMultipartFile(req);
+
+    return json(res, 201, {
+      success: true,
+      url: receipt.url,
+      fileName: receipt.fileName
+    });
+
+  } catch (error) {
+
+    return json(res, 400, {
+      success: false,
+      error: error.message
+    });
+
+  }
+
+}
         // -----------------------------
         // STATIC FILES
         // -----------------------------
