@@ -901,3 +901,122 @@ function sendOrder(){
     );
 
 }
+// ---------------- KASPI ОПЛАТА ----------------
+
+const kaspiNumbers = {
+
+    "Абылай Хана 24": {
+        number: "+77473063980",
+        name: "Ситора Б."
+    },
+
+    "Абылай Хана 34": {
+        number: "+77479483871",
+        name: "Javohir A."
+    },
+
+    "Жібек Жолы 106": {
+        number: "+77479252500",
+        name: "Айжан Ж."
+    },
+
+    "Абая 47": {
+        number: "+77474923856",
+        name: "Maral O."
+    },
+
+    "Яссауи 66": {
+        number: "+77475779463",
+        name: "Балзия А."
+    }
+
+};
+
+
+function getOrderTotal(){
+
+    let total = 0;
+
+    cart.forEach(item => {
+
+        total += item.price * item.quantity;
+
+    });
+
+    return total;
+
+}
+
+
+function payWithKaspi(){
+
+    if(cart.length === 0){
+
+        alert("Корзина пуста");
+        return;
+
+    }
+
+    const kaspi = kaspiNumbers[selectedBranch];
+
+    if(!kaspi){
+
+        alert("Номер Kaspi для этого филиала не найден");
+        return;
+
+    }
+
+    const total = getOrderTotal();
+
+    document.getElementById("kaspiPaymentInfo").innerHTML =
+
+        "🏪 <b>Филиал:</b> " + selectedBranch +
+
+        "<br><br>" +
+
+        "👤 <b>Получатель:</b> " + kaspi.name +
+
+        "<br>" +
+
+        "📱 <b>Номер Kaspi:</b> " + kaspi.number +
+
+        "<br><br>" +
+
+        "💰 <b>Сумма к оплате:</b> " + total + " ₸" +
+
+        "<br><br>" +
+
+        "После перевода нажмите «Я оплатил» и отправьте чек вместе с заказом.";
+
+    document.getElementById("kaspiModal").classList.add("show");
+
+}
+
+
+function closeKaspiModal(){
+
+    document.getElementById("kaspiModal").classList.remove("show");
+
+}
+
+
+function openKaspiApp(){
+
+    const kaspi = kaspiNumbers[selectedBranch];
+
+    if(!kaspi) return;
+
+    // Пытаемся открыть приложение Kaspi
+    window.location.href = "kaspi.kz://";
+
+}
+
+
+function kaspiPaid(){
+
+    document.getElementById("kaspiModal").classList.remove("show");
+
+    // Переходим к оформлению заказа
+    sendOrder();
+
+}
