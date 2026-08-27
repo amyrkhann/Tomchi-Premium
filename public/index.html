@@ -144,7 +144,34 @@ placeholder="Например: Абая 47">
 
 </div>
 </section>
+</section>
 
+<!-- KASPI ОПЛАТА -->
+<div id="kaspiModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>💳 Оплата через Kaspi</h2>
+
+        <p id="kaspiPaymentInfo"></p>
+
+        <button class="btn" type="button" onclick="openKaspiApp()">
+            📱 Открыть Kaspi
+        </button>
+
+        <button class="btn" type="button" onclick="kaspiPaid()">
+            ✅ Я оплатил
+        </button>
+
+        <button class="btn cancel" type="button" onclick="closeKaspiModal()">
+            Отмена
+        </button>
+
+    </div>
+
+</div>
+
+<div id="cart">
 <div id="cart">
 
 <button onclick="openOrderCheck()">
