@@ -88,6 +88,7 @@ document.getElementById("deliveryModal").classList.add("show");
 // ---------------- ФИЛИАЛЫ ----------------
 
 function showBranches(){
+document.getElementById("cart").style.display = "none";
 
     document.getElementById("address-screen").classList.remove("active");
     document.getElementById("branch-screen").classList.add("active");
