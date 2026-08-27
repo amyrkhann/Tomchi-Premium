@@ -1,11 +1,16 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const { URL } = require("url");
 
 const ROOT = path.join(__dirname, "public");
 const DATA = path.join(__dirname, "data.json");
+const UPLOADS = path.join(ROOT, "uploads");
 
+if (!fs.existsSync(UPLOADS)) {
+  fs.mkdirSync(UPLOADS, { recursive: true });
+}
 const PORT = process.env.PORT || 3000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "CHANGE_ME";
 const DG_KEY = process.env.DGIS_KEY || "";
@@ -119,7 +124,7 @@ const DEFAULT = {
 // =====================================================
 
 // ЗОНА 1
-// Алматы-2 / Сейфуллина / Сатпаева / Абая
+// Алматы-2 / Сейфуллина / Сатпаева / Пушкина
 
 const ZONE_1 = {
   id: "zone1",
@@ -207,7 +212,191 @@ const getBody = req =>
       }
     });
   });
+const getMultipartFile = req =>
+  new Promise((resolve, reject) => {
 
+    const contentType = req.headers["content-type"] || "";
+
+    if (!contentType.includes("multipart/form-data")) {
+      return reject(
+        Error("Неверный формат загрузки")
+      );
+    }
+
+    const match = contentType.match(/boundary=(.+)$/);
+
+    if (!match) {
+      return reject(
+        Error("Boundary не найден")
+      );
+    }
+
+    const boundary = "--" + match[1];
+
+    const chunks = [];
+    let size = 0;
+
+    req.on("data", chunk => {
+
+      size += chunk.length;
+
+      if (size > 8 * 1024 * 1024) {
+        req.destroy();
+
+        return reject(
+          Error("Файл слишком большой. Максимум 8 МБ.")
+        );
+      }
+
+      chunks.push(chunk);
+
+    });
+
+    req.on("end", () => {
+
+      try {
+
+        const buffer = Buffer.concat(chunks);
+
+        const startMarker =
+          Buffer.from(
+            boundary + "\r\n"
+          );
+
+        const start =
+          buffer.indexOf(startMarker);
+
+        if (start === -1) {
+          return reject(
+            Error("Файл не найден")
+          );
+        }
+
+        const headerStart =
+          start + startMarker.length;
+
+        const headerEnd =
+          buffer.indexOf(
+            Buffer.from("\r\n\r\n"),
+            headerStart
+          );
+
+        if (headerEnd === -1) {
+          return reject(
+            Error("Ошибка файла")
+          );
+        }
+
+        const headers =
+          buffer
+            .slice(headerStart, headerEnd)
+            .toString();
+
+        const filenameMatch =
+          headers.match(
+            /filename="([^"]*)"/i
+          );
+
+        const typeMatch =
+          headers.match(
+            /Content-Type:\s*([^\r\n]+)/i
+          );
+
+        if (!filenameMatch) {
+          return reject(
+            Error("Название файла не найдено")
+          );
+        }
+
+        const originalName =
+          filenameMatch[1];
+
+        const mime =
+          typeMatch
+            ? typeMatch[1].trim().toLowerCase()
+            : "";
+
+        const allowedTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ];
+
+        if (!allowedTypes.includes(mime)) {
+          return reject(
+            Error(
+              "Можно загрузить только JPG, PNG или WEBP."
+            )
+          );
+        }
+
+        const extension =
+          mime === "image/png"
+            ? ".png"
+            : mime === "image/webp"
+              ? ".webp"
+              : ".jpg";
+
+        const fileName =
+          crypto.randomBytes(16).toString("hex") +
+          extension;
+
+        const fileStart =
+          headerEnd + 4;
+
+        const endMarker =
+          Buffer.from(
+            "\r\n" + boundary
+          );
+
+        const fileEnd =
+          buffer.indexOf(
+            endMarker,
+            fileStart
+          );
+
+        if (fileEnd === -1) {
+          return reject(
+            Error("Конец файла не найден")
+          );
+        }
+
+        const fileBuffer =
+          buffer.slice(
+            fileStart,
+            fileEnd
+          );
+
+        const fullPath =
+          path.join(
+            UPLOADS,
+            fileName
+          );
+
+        fs.writeFileSync(
+          fullPath,
+          fileBuffer
+        );
+
+        resolve({
+          originalName,
+          mime,
+          fileName,
+          url:
+            "/uploads/" + fileName
+        });
+
+      } catch (error) {
+
+        reject(error);
+
+      }
+
+    });
+
+    req.on("error", reject);
+
+  });
 const auth = req =>
   req.headers.authorization ===
   `Bearer ${ADMIN_TOKEN}`;
@@ -407,7 +596,24 @@ const server =
       }
 
       try {
+// -----------------------------
+// UPLOAD PAYMENT RECEIPT
+// -----------------------------
 
+if (
+  u.pathname === "/api/upload-receipt" &&
+  method === "POST"
+) {
+
+  const file =
+    await getMultipartFile(req);
+
+  return json(res, 201, {
+    success: true,
+    receipt: file.url
+  });
+
+}
         // -----------------------------
         // CONFIG
         // -----------------------------
@@ -545,7 +751,13 @@ if (amount <= 0) {
 
             comment:
               String(body.comment || ""),
+receipt:
+  String(body.receipt || ""),
 
+paymentStatus:
+  body.receipt
+    ? "Оплата ожидает проверки"
+    : "Не оплачено",
             inZone:
               zone.inZone,
 
@@ -702,15 +914,28 @@ if (amount <= 0) {
               path.extname(full);
 
             const types = {
-              ".html":
-                "text/html; charset=utf-8",
 
-              ".js":
-                "text/javascript; charset=utf-8",
+  ".html":
+    "text/html; charset=utf-8",
 
-              ".css":
-                "text/css; charset=utf-8"
-            };
+  ".js":
+    "text/javascript; charset=utf-8",
+
+  ".css":
+    "text/css; charset=utf-8",
+
+  ".jpg":
+    "image/jpeg",
+
+  ".jpeg":
+    "image/jpeg",
+
+  ".png":
+    "image/png",
+
+  ".webp":
+    "image/webp"
+};
 
             res.writeHead(200, {
               "Content-Type":
