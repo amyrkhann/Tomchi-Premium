@@ -129,6 +129,7 @@ document.getElementById("cart").style.display = "none";
 function openMenu(branch){
 
     selectedBranch = branch;
+document.getElementById("cart").style.display = "block";
 
     document.getElementById("branch-screen").classList.remove("active");
     document.getElementById("menu-screen").classList.add("active");
