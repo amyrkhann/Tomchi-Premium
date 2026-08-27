@@ -446,10 +446,15 @@ function updateCartButton(){
 // ---------------- ПРОВЕРКА ЗАКАЗА ----------------
 function openOrderCheck(){
 
-    if(cart.length === 0){
-        alert("Корзина пуста");
-        return;
-    }
+if(cart.length === 0){
+
+    document.getElementById("order-screen").classList.remove("active");
+    document.getElementById("menu-screen").classList.add("active");
+
+    document.getElementById("cart").style.display = "block";
+
+    return;
+}
 
     document.getElementById("menu-screen").classList.remove("active");
     document.getElementById("order-screen").classList.add("active");
