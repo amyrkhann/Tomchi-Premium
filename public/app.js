@@ -1006,8 +1006,29 @@ function openKaspiApp(){
 
     if(!kaspi) return;
 
-    // Пытаемся открыть приложение Kaspi
-    window.location.href = "kaspi.kz://";
+    navigator.clipboard.writeText(kaspi.number)
+        .then(() => {
+
+            alert(
+                "📋 Номер Kaspi скопирован!\n\n" +
+                kaspi.number +
+                "\n\n" +
+                "Теперь откройте приложение Kaspi и выполните перевод.\n\n" +
+                "Получатель: " + kaspi.name
+            );
+
+        })
+        .catch(() => {
+
+            alert(
+                "📱 Номер Kaspi:\n\n" +
+                kaspi.number +
+                "\n\n" +
+                "Откройте Kaspi и выполните перевод.\n\n" +
+                "Получатель: " + kaspi.name
+            );
+
+        });
 
 }
 
