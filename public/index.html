@@ -110,10 +110,31 @@ placeholder="Например: Абая 47">
         📋 Скопировать номер
     </button>
 
-    <button
-        class="btn"
-        type="button"
-        onclick="showCustomerForm()">
+    <input
+    type="file"
+    id="kaspiReceipt"
+    accept="image/jpeg,image/png,image/webp"
+    style="display:none;"
+    onchange="receiptSelected()"
+>
+
+<button
+    class="btn"
+    type="button"
+    onclick="document.getElementById('kaspiReceipt').click()">
+    📷 Выбрать чек
+</button>
+
+<p id="receiptStatus"></p>
+
+<button
+    class="btn"
+    type="button"
+    onclick="showCustomerForm()">
+    ✅ Я оплатил
+</button>
+
+<p id="receiptStatus"></p>
         ✅ Я оплатил
     </button>
 
