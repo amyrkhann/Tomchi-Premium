@@ -678,8 +678,39 @@ function closeModal(){
 
 }
 // ---------------- ОФОРМЛЕНИЕ ЗАКАЗА ----------------
+// ---------------- ОПЛАТА KASPI ----------------
 
-function sendOrder(){
+const kaspiData = {
+    "Абылай Хана 24": {
+        phone: "+77473063980",
+        name: "Ситора Б."
+    },
+
+    "Абылай Хана 34": {
+        phone: "+77479483871",
+        name: "Javohir A."
+    },
+
+    "Жібек Жолы 106": {
+        phone: "+77479252500",
+        name: "Айжан Ж."
+    },
+
+    "Абая 47": {
+        phone: "+77474923856",
+        name: "Maral O."
+    },
+
+    "Яссауи 66": {
+        phone: "+77475779463",
+        name: "Балзия А."
+    }
+};
+
+
+// ---------------- ПОКАЗ KASPI ----------------
+
+function showKaspiPayment(){
 
     if(cart.length === 0){
         alert("Корзина пуста");
@@ -688,20 +719,146 @@ function sendOrder(){
 
     let total = 0;
 
-    let text = "Здравствуйте! Хочу оформить заказ.%0A%0A";
+    cart.forEach(item => {
+        total += item.price * item.quantity;
+    });
 
-    text += "Филиал: " + selectedBranch + "%0A%0A";
+    const kaspi = kaspiData[selectedBranch];
 
-    text += "Заказ:%0A";
+    if(!kaspi){
+        alert("Kaspi номер для этого филиала не найден");
+        return;
+    }
+
+    document.getElementById("kaspi-name").innerText =
+        kaspi.name;
+
+    document.getElementById("kaspi-phone").innerText =
+        kaspi.phone;
+
+    document.getElementById("kaspi-amount").innerText =
+        total.toLocaleString("ru-RU");
+
+    document.getElementById("kaspi-payment").style.display =
+        "block";
+
+    document.getElementById("kaspi-payment").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ---------------- КОПИРОВАТЬ KASPI НОМЕР ----------------
+
+function copyKaspiNumber(){
+
+    const kaspi = kaspiData[selectedBranch];
+
+    if(!kaspi){
+        alert("Kaspi номер не найден");
+        return;
+    }
+
+    navigator.clipboard.writeText(kaspi.phone)
+        .then(() => {
+            alert("Kaspi номер скопирован");
+        })
+        .catch(() => {
+            alert("Не удалось скопировать номер");
+        });
+
+}
+
+
+// ---------------- Я ОПЛАТИЛ ----------------
+
+function showCustomerForm(){
+
+    document.getElementById("kaspi-payment").style.display =
+        "none";
+
+    const form = document.getElementById("customer-form");
+
+    form.style.display = "block";
+
+    form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ---------------- ОТПРАВКА ЗАКАЗА ----------------
+
+function sendOrder(){
+
+    if(cart.length === 0){
+        alert("Корзина пуста");
+        return;
+    }
+
+    const name =
+        document.getElementById("customer-name").value.trim();
+
+    const phone =
+        document.getElementById("customer-phone").value.trim();
+
+    const comment =
+        document.getElementById("customer-comment").value.trim();
+
+    if(!name){
+        alert("Введите ваше имя");
+        return;
+    }
+
+    if(!phone){
+        alert("Введите номер телефона");
+        return;
+    }
+
+    const kaspi = kaspiData[selectedBranch];
+
+    let total = 0;
+
+    let text =
+        "Здравствуйте! Хочу оформить заказ.%0A%0A";
+
+    text +=
+        "🏪 Филиал: " +
+        encodeURIComponent(selectedBranch) +
+        "%0A";
+
+    text +=
+        "👤 Имя: " +
+        encodeURIComponent(name) +
+        "%0A";
+
+    text +=
+        "📞 Телефон: " +
+        encodeURIComponent(phone) +
+        "%0A";
+
+    text +=
+        "📍 Адрес: " +
+        encodeURIComponent(
+            document.getElementById("address").value
+        ) +
+        "%0A%0A";
+
+    text += "🛒 ЗАКАЗ:%0A";
 
     cart.forEach(item => {
 
-        const itemTotal = item.price * item.quantity;
+        const itemTotal =
+            item.price * item.quantity;
 
         total += itemTotal;
 
         text +=
-            item.name +
+            encodeURIComponent(item.name) +
             " × " +
             item.quantity +
             " — " +
@@ -710,7 +867,33 @@ function sendOrder(){
 
     });
 
-    text += "%0AИтого: " + total + " ₸";
+    text +=
+        "%0A💰 Итого: " +
+        total +
+        " ₸";
+
+    text +=
+        "%0A%0A💳 Оплата: Kaspi перевод";
+
+    if(kaspi){
+
+        text +=
+            "%0A📱 Kaspi: " +
+            encodeURIComponent(kaspi.phone);
+
+        text +=
+            "%0A👤 Получатель: " +
+            encodeURIComponent(kaspi.name);
+
+    }
+
+    if(comment){
+
+        text +=
+            "%0A📝 Комментарий: " +
+            encodeURIComponent(comment);
+
+    }
 
     window.open(
         "https://wa.me/77479370909?text=" + text,
