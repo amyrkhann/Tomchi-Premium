@@ -444,7 +444,6 @@ function updateCartButton(){
 
 }
 // ---------------- ПРОВЕРКА ЗАКАЗА ----------------
-
 function openOrderCheck(){
 
     if(cart.length === 0){
@@ -455,8 +454,11 @@ function openOrderCheck(){
     document.getElementById("menu-screen").classList.remove("active");
     document.getElementById("order-screen").classList.add("active");
 
+    document.getElementById("cart").style.display = "none";
+
     renderOrder();
 }
+
 
     function renderOrder(){
 
