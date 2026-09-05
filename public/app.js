@@ -576,83 +576,253 @@ function openCart(){
 
 }
 // ---------------- ОФОРМЛЕНИЕ ЗАКАЗА ----------------
+async function sendOrder(){
 
-function sendOrder(){
-
-    const form = document.getElementById("customer-form");
-
-    // Первый клик — показываем форму
-    if(form.style.display === "none" || form.style.display === ""){
-
-        form.style.display = "block";
-
-        form.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
+    if(cart.length === 0){
+        alert("Корзина пуста");
         return;
     }
 
-    const name = document.getElementById("customer-name").value.trim();
-    const phone = document.getElementById("customer-phone").value.trim();
-    const comment = document.getElementById("customer-comment").value.trim();
+    const name =
+        document.getElementById("customer-name").value.trim();
+
+    const phone =
+        document.getElementById("customer-phone").value.trim();
+
+    const comment =
+        document.getElementById("customer-comment").value.trim();
 
     if(!name){
-
         alert("Введите ваше имя");
         return;
-
     }
 
     if(!phone){
-
         alert("Введите номер телефона");
+        return;
+    }
+
+    // =============================
+    // СУММА ЗАКАЗА
+    // =============================
+
+    const amount = getOrderTotal();
+
+    // =============================
+    // ЧЕК
+    // =============================
+
+    const receiptInput =
+        document.getElementById("kaspiReceipt");
+
+    if(!receiptInput || !receiptInput.files.length){
+
+        alert("Пожалуйста, выберите чек Kaspi.");
         return;
 
     }
 
-    let total = 0;
+    const file = receiptInput.files[0];
 
-    let text = "Здравствуйте! Хочу оформить заказ.%0A%0A";
+    // =============================
+    // ЗАГРУЖАЕМ ЧЕК НА СЕРВЕР
+    // =============================
 
-    text += "🏪 Филиал: " + selectedBranch + "%0A";
-    text += "👤 Имя: " + name + "%0A";
-    text += "📞 Телефон: " + phone + "%0A";
-    text += "📍 Адрес: " + document.getElementById("address").value + "%0A%0A";
+    let receiptUrl = "";
 
-    text += "🛒 ЗАКАЗ:%0A";
+    try {
 
-    cart.forEach(item => {
+        const formData = new FormData();
 
-        const itemTotal = item.price * item.quantity;
+        formData.append("receipt", file);
 
-        total += itemTotal;
+        const uploadResponse =
+            await fetch("/api/upload-receipt", {
+                method: "POST",
+                body: formData
+            });
+
+        const uploadData =
+            await uploadResponse.json();
+
+        if(!uploadResponse.ok || !uploadData.success){
+
+            alert(
+                uploadData.error ||
+                "Не удалось загрузить чек."
+            );
+
+            return;
+        }
+
+        receiptUrl =
+            uploadData.url;
+
+    } catch(error){
+
+        console.error(error);
+
+        alert("Ошибка загрузки чека.");
+
+        return;
+    }
+
+    // =============================
+    // СОЗДАЁМ ЗАКАЗ
+    // =============================
+
+    const address =
+        document.getElementById("address").value.trim();
+
+    const orderData = {
+
+        name: name,
+
+        phone: phone,
+
+        pickup: selectedBranch,
+
+        address: address,
+
+        amount: amount,
+
+        item: cart.map(item =>
+            `${item.name} × ${item.quantity}`
+        ).join(", "),
+
+        comment: comment,
+
+        receipt: receiptUrl
+
+    };
+
+    try {
+
+        const orderResponse =
+            await fetch("/api/orders", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(orderData)
+
+            });
+
+        const order =
+            await orderResponse.json();
+
+        if(!orderResponse.ok){
+
+            alert(
+                order.error ||
+                "Не удалось создать заказ."
+            );
+
+            return;
+        }
+
+        // =============================
+        // WHATSAPP
+        // =============================
+
+        let text =
+            "Здравствуйте! Хочу оформить заказ.%0A%0A";
 
         text +=
-            item.name +
-            " × " +
-            item.quantity +
-            " — " +
-            itemTotal +
-            " ₸%0A";
+            "🆔 Заказ №" +
+            order.id +
+            "%0A";
 
-    });
+        text +=
+            "🏪 Филиал: " +
+            encodeURIComponent(selectedBranch) +
+            "%0A";
 
-    text += "%0A💰 Итого: " + total + " ₸";
+        text +=
+            "👤 Имя: " +
+            encodeURIComponent(name) +
+            "%0A";
 
-    if(comment){
+        text +=
+            "📞 Телефон: " +
+            encodeURIComponent(phone) +
+            "%0A";
 
-        text += "%0A📝 Комментарий: " + comment;
+        text +=
+            "📍 Адрес: " +
+            encodeURIComponent(address) +
+            "%0A%0A";
+
+        text +=
+            "🛒 ЗАКАЗ:%0A";
+
+        cart.forEach(item => {
+
+            const itemTotal =
+                item.price * item.quantity;
+
+            text +=
+                encodeURIComponent(item.name) +
+                " × " +
+                item.quantity +
+                " — " +
+                itemTotal +
+                " ₸%0A";
+
+        });
+
+        text +=
+            "%0A💰 Итого: " +
+            amount +
+            " ₸";
+
+        text +=
+            "%0A%0A💳 Оплата: Kaspi перевод";
+
+        if(receiptUrl){
+
+            text +=
+                "%0A🧾 Чек: " +
+                encodeURIComponent(
+                    window.location.origin +
+                    receiptUrl
+                );
+
+        }
+
+        if(comment){
+
+            text +=
+                "%0A📝 Комментарий: " +
+                encodeURIComponent(comment);
+
+        }
+
+        window.open(
+            "https://wa.me/77479370909?text=" + text,
+            "_blank"
+        );
+
+        alert(
+            "✅ Заказ №" +
+            order.id +
+            " создан!\n\n" +
+            "Чек сохранён и отправлен вместе с заказом."
+        );
+
+    } catch(error){
+
+        console.error(error);
+
+        alert("Ошибка оформления заказа.");
 
     }
 
-    window.open(
-        "https://wa.me/77479370909?text=" + text,
-        "_blank"
-    );
-
 }
+
 // ---------------- НАЗАД ----------------
 
 function backToBranches(){
