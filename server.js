@@ -950,7 +950,97 @@ paymentStatus:
             order
           );
         }
+// =====================================================
+// ADMIN MENU BY BRANCH
+// =====================================================
 
+if (
+  u.pathname === "/api/menu" &&
+  method === "GET"
+) {
+
+  if (!auth(req)) {
+    return json(res, 401, {
+      error: "Нет доступа"
+    });
+  }
+
+  const data = read();
+
+  return json(res, 200, {
+    menuByBranch: data.menuByBranch || {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    }
+  });
+}
+
+
+if (
+  u.pathname === "/api/menu" &&
+  method === "PUT"
+) {
+
+  if (!auth(req)) {
+    return json(res, 401, {
+      error: "Нет доступа"
+    });
+  }
+
+  const body = await getBody(req);
+  const data = read();
+
+  const branchId = String(body.branchId);
+
+  if (!["1", "2", "3", "4", "5"].includes(branchId)) {
+    return json(res, 400, {
+      error: "Недопустимый филиал."
+    });
+  }
+
+  if (!Array.isArray(body.menu)) {
+    return json(res, 400, {
+      error: "Неверный формат меню."
+    });
+  }
+
+  if (!data.menuByBranch) {
+    data.menuByBranch = {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    };
+  }
+
+  data.menuByBranch[branchId] =
+    body.menu.map(item => ({
+      id:
+        item.id ||
+        Date.now() + Math.random(),
+
+      category:
+        String(item.category || ""),
+
+      name:
+        String(item.name || ""),
+
+      price:
+        Number(item.price || 0)
+    }));
+
+  save(data);
+
+  return json(res, 200, {
+    success: true,
+    branchId,
+    menu: data.menuByBranch[branchId]
+  });
+}
         // -----------------------------
         // STATIC FILES
         // -----------------------------
