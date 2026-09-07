@@ -1527,16 +1527,45 @@ function deleteMenuItem(index) {
 
 async function saveMenu() {
 
-    localStorage.setItem(
-        "tomchi_menu",
-        JSON.stringify(menu)
-    );
+    try {
 
-    showMessage(
-        "menuMessage",
-        "✅ Меню сохранено в текущем браузере. API сохранения добавим в server.js.",
-        "success"
-    );
+        const result =
+            await api("/api/menu", {
+
+                method: "PUT",
+
+                body:
+                    JSON.stringify({
+                        branchId:
+                            currentMenuBranch,
+
+                        menu:
+                            menu
+                    })
+
+            });
+
+        menuByBranch[currentMenuBranch] =
+            result.menu || menu;
+
+        menu =
+            menuByBranch[currentMenuBranch];
+
+        showMessage(
+            "menuMessage",
+            "✅ Меню этого филиала сохранено.",
+            "success"
+        );
+
+    } catch (error) {
+
+        showMessage(
+            "menuMessage",
+            error.message,
+            "error"
+        );
+
+    }
 
 }
 
