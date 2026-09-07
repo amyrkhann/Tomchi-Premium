@@ -1415,3 +1415,74 @@ function receiptSelected(){
     }
 
 }
+// =====================================================
+// ВРЕМЯ РАБОТЫ САЙТА: 11:00 — 23:00
+// =====================================================
+
+function checkWorkingHours(){
+
+    const now = new Date();
+
+    const time = new Intl.DateTimeFormat("ru-RU", {
+        timeZone: "Asia/Almaty",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    }).format(now);
+
+    const [hour, minute] = time.split(":").map(Number);
+
+    const currentMinutes = hour * 60 + minute;
+
+    const startMinutes = 11 * 60; // 11:00
+    const endMinutes = 23 * 60;   // 23:00
+
+    const isOpen =
+        currentMinutes >= startMinutes &&
+        currentMinutes < endMinutes;
+
+    if(!isOpen){
+
+        document.getElementById("app").innerHTML = `
+            <div style="
+                min-height:100vh;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                text-align:center;
+                padding:25px;
+                box-sizing:border-box;
+            ">
+
+                <div>
+
+                    <h1>TOMCHI PREMIUM</h1>
+
+                    <h2>Сейчас мы не принимаем заказы</h2>
+
+                    <p style="font-size:18px;">
+                        Онлайн-заказы принимаются ежедневно
+                        с <b>11:00 до 23:00</b>.
+                    </p>
+
+                    <p style="font-size:17px;">
+                        Пожалуйста, приходите снова в рабочее время.
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+
+        return false;
+    }
+
+    return true;
+}
+
+
+// Проверяем время сразу при открытии сайта
+checkWorkingHours();
+
+// Проверяем время каждую минуту
+setInterval(checkWorkingHours, 60000);
