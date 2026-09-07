@@ -1339,7 +1339,44 @@ async function saveBranches() {
 /* =========================================
    МЕНЮ
 ========================================= */
+async function loadMenu() {
 
+    try {
+
+        const data =
+            await api("/api/menu", {
+                method: "GET"
+            });
+
+        menuByBranch =
+            data.menuByBranch || {
+                "1": [],
+                "2": [],
+                "3": [],
+                "4": [],
+                "5": []
+            };
+
+        currentMenuBranch =
+            document.getElementById(
+                "menuBranchSelect"
+            )?.value || "1";
+
+        menu =
+            menuByBranch[currentMenuBranch] || [];
+
+        renderMenu();
+
+    } catch (error) {
+
+        console.error(
+            "Ошибка загрузки меню:",
+            error
+        );
+
+    }
+
+}
 function renderMenu() {
 
     const container =
