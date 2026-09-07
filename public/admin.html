@@ -1377,6 +1377,19 @@ async function loadMenu() {
     }
 
 }
+async function changeMenuBranch() {
+
+    currentMenuBranch =
+        document.getElementById(
+            "menuBranchSelect"
+        ).value;
+
+    menu =
+        menuByBranch[currentMenuBranch] || [];
+
+    renderMenu();
+
+}
 function renderMenu() {
 
     const container =
