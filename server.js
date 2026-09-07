@@ -28,6 +28,10 @@ const SMALL_ORDER_DELIVERY = 500;
 const DEFAULT = {
   nextOrderId: 1001,
 
+  // true = сайт включён
+  // false = сайт выключен
+  siteOpen: true,
+
   pickupPoints: [
 
     {
@@ -167,10 +171,21 @@ if (!fs.existsSync(DATA)) {
   );
 }
 
-const read = () =>
-  JSON.parse(
+const read = () => {
+
+  const data = JSON.parse(
     fs.readFileSync(DATA, "utf8")
   );
+
+  // Для уже существующего data.json
+  // автоматически добавляем настройку
+  if (typeof data.siteOpen !== "boolean") {
+    data.siteOpen = true;
+    save(data);
+  }
+
+  return data;
+};
 
 const save = data =>
   fs.writeFileSync(
@@ -614,6 +629,51 @@ if (
   });
 
 }
+// -----------------------------
+// СТАТУС САЙТА
+// -----------------------------
+
+if (
+  u.pathname === "/api/site-status" &&
+  method === "GET"
+) {
+
+  const data = read();
+
+  return json(res, 200, {
+    siteOpen: data.siteOpen
+  });
+}
+
+
+// -----------------------------
+// ВКЛЮЧИТЬ / ВЫКЛЮЧИТЬ САЙТ
+// -----------------------------
+
+if (
+  u.pathname === "/api/site-status" &&
+  method === "PATCH"
+) {
+
+  if (!auth(req)) {
+    return json(res, 401, {
+      error: "Нет доступа"
+    });
+  }
+
+  const body = await getBody(req);
+  const data = read();
+
+  data.siteOpen =
+    Boolean(body.siteOpen);
+
+  save(data);
+
+  return json(res, 200, {
+    success: true,
+    siteOpen: data.siteOpen
+  });
+}
         // -----------------------------
         // CONFIG
         // -----------------------------
@@ -649,6 +709,14 @@ if (
 
           const body =
             await getBody(req);
+            const currentData = read();
+
+if (!currentData.siteOpen) {
+  return json(res, 403, {
+    error:
+      "Сейчас заказы не принимаются. Заказы принимаются с 11:00 до 23:00."
+  });
+}
 
           if (!body.address) {
             return json(res, 400, {
