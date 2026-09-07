@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Tomchi Premium — Админка</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0 0 8px;
+}
+
+header p {
+    margin: 0;
+    opacity: .8;
+}
+
+.login-box,
+.panel {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 15px rgba(0,0,0,.08);
+}
+
+h2 {
+    margin-top: 0;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn {
+    background: #111;
+    color: white;
+}
+
+.btn:hover {
+    opacity: .85;
+}
+
+.btn-green {
+    background: #198754;
+    color: white;
+}
+
+.btn-red {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-gray {
+    background: #ddd;
+    color: #222;
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.status {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.status-open {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-closed {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.tab {
+    white-space: nowrap;
+    background: #ddd;
+    color: #222;
+}
+
+.tab.active {
+    background: #111;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.small {
+    font-size: 14px;
+    color: #666;
+}
+
+.order-card {
+    border-left: 5px solid #111;
+}
+
+.order-status {
+    display: inline-block;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: #eee;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.price {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.menu-item {
+    display: grid;
+    grid-template-columns: 1fr 150px 100px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.menu-item input {
+    margin: 0;
+}
+
+.zone-box {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.notice {
+    background: #fff3cd;
+    color: #664d03;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.success {
+    background: #d1e7dd;
+    color: #0f5132;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.error {
+    background: #f8d7da;
+    color: #842029;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+}
+
+@media (max-width: 700px) {
+
+    .row {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-item {
+        grid-template-columns: 1fr;
+    }
+
+    .card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+<h1>🍽️ TOMCHI PREMIUM</h1>
+
+<p>Панель администратора</p>
+
+</header>
+
+
+<!-- ============================= -->
+<!-- ВХОД -->
+<!-- ============================= -->
+
+<div id="loginSection" class="login-box">
+
+<h2>🔐 Вход в админку</h2>
+
+<p class="small">
+Введите ADMIN_TOKEN, который установлен на сервере.
+</p>
+
+<input
+    type="password"
+    id="adminToken"
+    placeholder="ADMIN_TOKEN"
+>
+
+<button
+    class="btn"
+    onclick="login()"
+>
+    Войти
+</button>
+
+<div id="loginMessage"></div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- АДМИНКА -->
+<!-- ============================= -->
+
+<div id="adminSection" class="hidden">
+
+
+<!-- СТАТУС САЙТА -->
+
+<div class="panel">
+
+<h2>🟢 Статус сайта</h2>
+
+<div
+    id="siteStatus"
+    class="status"
+>
+    Загрузка...
+</div>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+<button
+    class="btn-green"
+    onclick="setSiteStatus(true)"
+>
+    🟢 Включить сайт
+</button>
+
+<button
+    class="btn-red"
+    onclick="setSiteStatus(false)"
+>
+    🔴 Выключить сайт
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- TABS -->
+<!-- ============================= -->
+
+<div class="tabs">
+
+<button
+    class="tab active"
+    onclick="openTab('settings', this)"
+>
+⚙️ Настройки
+</button>
+
+<button
+    class="tab"
+    onclick="openTab('branches', this)"
+>
+🏪 Филиалы
+</button>
+
+<button
+    class="tab"
+    onclick="openTab('menu', this)"
+>
+🍽️ Меню
+</button>
+
+<button
+    class="tab"
+    onclick="openTab('zones', this)"
+>
+📍 Зоны
+</button>
+
+<button
+    class="tab"
+    onclick="openTab('orders', this)"
+>
+📦 Заказы
+</button>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- НАСТРОЙКИ -->
+<!-- ============================= -->
+
+<div
+    id="settings"
+    class="tab-content active"
+>
+
+<div class="panel">
+
+<h2>⚙️ Основные настройки</h2>
+
+<div class="row">
+
+<div>
+
+<label>
+Минимальная сумма для бесплатной доставки
+</label>
+
+<input
+    type="number"
+    id="freeDeliveryMinimum"
+    value="5000"
+>
+
+</div>
+
+<div>
+
+<label>
+Стоимость доставки для маленького заказа
+</label>
+
+<input
+    type="number"
+    id="smallOrderDelivery"
+    value="500"
+>
+
+</div>
+
+</div>
+
+
+<div class="row">
+
+<div>
+
+<label>
+Начало доставки
+</label>
+
+<input
+    type="time"
+    id="deliveryStart"
+    value="11:00"
+>
+
+</div>
+
+<div>
+
+<label>
+Конец доставки
+</label>
+
+<input
+    type="time"
+    id="deliveryEnd"
+    value="23:00"
+>
+
+</div>
+
+</div>
+
+
+<label>
+WhatsApp для заказов
+</label>
+
+<input
+    type="text"
+    id="whatsappNumber"
+    placeholder="+77479370909"
+>
+
+
+<button
+    class="btn"
+    onclick="saveSettings()"
+>
+💾 Сохранить настройки
+</button>
+
+<div id="settingsMessage"></div>
+
+</div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- ФИЛИАЛЫ -->
+<!-- ============================= -->
+
+<div
+    id="branches"
+    class="tab-content"
+>
+
+<div class="panel">
+
+<div class="card-header">
+
+<h2>🏪 Филиалы</h2>
+
+<button
+    class="btn"
+    onclick="addBranch()"
+>
+➕ Добавить филиал
+</button>
+
+</div>
+
+<div id="branchesList">
+
+<div class="loading">
+Загрузка филиалов...
+</div>
+
+</div>
+
+<button
+    class="btn"
+    onclick="saveBranches()"
+>
+💾 Сохранить филиалы
+</button>
+
+<div id="branchesMessage"></div>
+
+</div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- МЕНЮ -->
+<!-- ============================= -->
+
+<div
+    id="menu"
+    class="tab-content"
+>
+
+<div class="panel">
+
+<div class="card-header">
+
+<h2>🍽️ Меню</h2>
+
+<button
+    class="btn"
+    onclick="addMenuItem()"
+>
+➕ Добавить блюдо
+</button>
+
+</div>
+
+<div id="menuList">
+
+<div class="loading">
+Загрузка меню...
+</div>
+
+</div>
+
+<button
+    class="btn"
+    onclick="saveMenu()"
+>
+💾 Сохранить меню
+</button>
+
+<div id="menuMessage"></div>
+
+</div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- ЗОНЫ -->
+<!-- ============================= -->
+
+<div
+    id="zones"
+    class="tab-content"
+>
+
+<div class="panel">
+
+<h2>📍 Зоны доставки</h2>
+
+<div class="notice">
+
+Зоны задаются координатами.
+Изменение границ влияет на автоматическую проверку адреса.
+
+</div>
+
+<div id="zonesList">
+
+<div class="loading">
+Загрузка зон...
+</div>
+
+</div>
+
+<button
+    class="btn"
+    onclick="saveZones()"
+>
+💾 Сохранить зоны
+</button>
+
+<div id="zonesMessage"></div>
+
+</div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- ЗАКАЗЫ -->
+<!-- ============================= -->
+
+<div
+    id="orders"
+    class="tab-content"
+>
+
+<div class="panel">
+
+<div class="card-header">
+
+<h2>📦 Заказы</h2>
+
+<button
+    class="btn"
+    onclick="loadOrders()"
+>
+🔄 Обновить
+</button>
+
+</div>
+
+<div id="ordersList">
+
+<div class="loading">
+Загрузка заказов...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   СОСТОЯНИЕ
+========================================= */
+
+let token = "";
+let settings = {};
+let branches = [];
+let menu = [];
+let zones = [];
+let orders = [];
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+function login() {
+
+    const input =
+        document.getElementById("adminToken");
+
+    token =
+        input.value.trim();
+
+    if (!token) {
+
+        showMessage(
+            "loginMessage",
+            "Введите ADMIN_TOKEN.",
+            "error"
+        );
+
+        return;
+    }
+
+    loadAdminData();
+
+}
+
+
+/* =========================================
+   API
+========================================= */
+
+async function api(url, options = {}) {
+
+    options.headers = {
+
+        ...(options.headers || {}),
+
+        "Content-Type":
+            "application/json",
+
+        "Authorization":
+            "Bearer " + token
+
+    };
+
+    const response =
+        await fetch(url, options);
+
+    let data = {};
+
+    try {
+
+        data =
+            await response.json();
+
+    } catch (e) {}
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.error ||
+            "Ошибка сервера"
+        );
+
+    }
+
+    return data;
+
+}
+
+
+/* =========================================
+   ЗАГРУЗКА ДАННЫХ
+========================================= */
+
+async function loadAdminData() {
+
+    try {
+
+        /*
+         * Пока используем существующий
+         * /api/orders.
+         *
+         * Настройки и остальные API
+         * подключим в server.js.
+         */
+
+        await loadOrders();
+
+        document
+            .getElementById("loginSection")
+            .classList.add("hidden");
+
+        document
+            .getElementById("adminSection")
+            .classList.remove("hidden");
+
+        loadLocalSettings();
+
+        renderBranches();
+
+        renderMenu();
+
+        renderZones();
+
+        updateSiteStatus();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "loginMessage",
+            error.message ||
+            "Не удалось войти.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   LOCAL SETTINGS
+========================================= */
+
+function loadLocalSettings() {
+
+    settings = {
+
+        siteOpen:
+            localStorage.getItem(
+                "tomchi_site_open"
+            ) !== "false",
+
+        freeDeliveryMinimum:
+            Number(
+                localStorage.getItem(
+                    "tomchi_free_delivery"
+                ) || 5000
+            ),
+
+        smallOrderDelivery:
+            Number(
+                localStorage.getItem(
+                    "tomchi_small_delivery"
+                ) || 500
+            ),
+
+        deliveryStart:
+            localStorage.getItem(
+                "tomchi_delivery_start"
+            ) || "11:00",
+
+        deliveryEnd:
+            localStorage.getItem(
+                "tomchi_delivery_end"
+            ) || "23:00",
+
+        whatsapp:
+            localStorage.getItem(
+                "tomchi_whatsapp"
+            ) || "+77479370909"
+
+    };
+
+
+    document
+        .getElementById("freeDeliveryMinimum")
+        .value =
+        settings.freeDeliveryMinimum;
+
+
+    document
+        .getElementById("smallOrderDelivery")
+        .value =
+        settings.smallOrderDelivery;
+
+
+    document
+        .getElementById("deliveryStart")
+        .value =
+        settings.deliveryStart;
+
+
+    document
+        .getElementById("deliveryEnd")
+        .value =
+        settings.deliveryEnd;
+
+
+    document
+        .getElementById("whatsappNumber")
+        .value =
+        settings.whatsapp;
+
+}
+
+
+/* =========================================
+   СТАТУС САЙТА
+========================================= */
+
+function updateSiteStatus() {
+
+    const element =
+        document.getElementById(
+            "siteStatus"
+        );
+
+    if (settings.siteOpen) {
+
+        element.className =
+            "status status-open";
+
+        element.innerText =
+            "🟢 САЙТ ВКЛЮЧЕН — ЗАКАЗЫ ПРИНИМАЮТСЯ";
+
+    } else {
+
+        element.className =
+            "status status-closed";
+
+        element.innerText =
+            "🔴 САЙТ ВЫКЛЮЧЕН — ЗАКАЗЫ НЕ ПРИНИМАЮТСЯ";
+
+    }
+
+}
+
+
+function setSiteStatus(open) {
+
+    settings.siteOpen = open;
+
+    localStorage.setItem(
+        "tomchi_site_open",
+        String(open)
+    );
+
+    updateSiteStatus();
+
+    showMessage(
+        "settingsMessage",
+        open
+            ? "🟢 Сайт включён."
+            : "🔴 Сайт выключен.",
+        "success"
+    );
+
+}
+
+
+/* =========================================
+   СОХРАНЕНИЕ НАСТРОЕК
+========================================= */
+
+function saveSettings() {
+
+    settings.freeDeliveryMinimum =
+        Number(
+            document.getElementById(
+                "freeDeliveryMinimum"
+            ).value
+        ) || 5000;
+
+
+    settings.smallOrderDelivery =
+        Number(
+            document.getElementById(
+                "smallOrderDelivery"
+            ).value
+        ) || 500;
+
+
+    settings.deliveryStart =
+        document.getElementById(
+            "deliveryStart"
+        ).value || "11:00";
+
+
+    settings.deliveryEnd =
+        document.getElementById(
+            "deliveryEnd"
+        ).value || "23:00";
+
+
+    settings.whatsapp =
+        document.getElementById(
+            "whatsappNumber"
+        ).value.trim();
+
+
+    localStorage.setItem(
+        "tomchi_free_delivery",
+        settings.freeDeliveryMinimum
+    );
+
+    localStorage.setItem(
+        "tomchi_small_delivery",
+        settings.smallOrderDelivery
+    );
+
+    localStorage.setItem(
+        "tomchi_delivery_start",
+        settings.deliveryStart
+    );
+
+    localStorage.setItem(
+        "tomchi_delivery_end",
+        settings.deliveryEnd
+    );
+
+    localStorage.setItem(
+        "tomchi_whatsapp",
+        settings.whatsapp
+    );
+
+
+    showMessage(
+        "settingsMessage",
+        "✅ Настройки сохранены.",
+        "success"
+    );
+
+}
+
+
+/* =========================================
+   ВКЛАДКИ
+========================================= */
+
+function openTab(id, button) {
+
+    document
+        .querySelectorAll(".tab-content")
+        .forEach(element => {
+
+            element.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(element => {
+
+            element.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+
+    button.classList.add("active");
+
+
+    if (id === "orders") {
+
+        loadOrders();
+
+    }
+
+}
+
+
+/* =========================================
+   ФИЛИАЛЫ
+========================================= */
+
+function renderBranches() {
+
+    const container =
+        document.getElementById(
+            "branchesList"
+        );
+
+    if (!branches.length) {
+
+        branches = [
+
+            {
+                id: 1,
+                name: "Абылай Хана 24",
+                address: "Абылай Хана 24",
+                workTime: "24/7",
+                deliveryTime: "11:00-23:00",
+                kaspi: "",
+                whatsapp: ""
+            },
+
+            {
+                id: 2,
+                name: "Tomchi Premium",
+                address: "Абылай Хана 34",
+                workTime: "10:00-02:00",
+                deliveryTime: "11:00-23:00",
+                kaspi: "",
+                whatsapp: ""
+            },
+
+            {
+                id: 3,
+                name: "Жібек Жолы 106",
+                address: "Жібек Жолы 106",
+                workTime: "10:00-02:00",
+                deliveryTime: "11:00-23:00",
+                kaspi: "",
+                whatsapp: ""
+            },
+
+            {
+                id: 4,
+                name: "Абая 47",
+                address: "Абая 47",
+                workTime: "10:00-02:00",
+                deliveryTime: "11:00-23:00",
+                kaspi: "",
+                whatsapp: ""
+            },
+
+            {
+                id: 5,
+                name: "Яссауи 66",
+                address: "Яссауи 66А",
+                workTime: "10:00-02:00",
+                deliveryTime: "11:00-23:00",
+                kaspi: "",
+                whatsapp: ""
+            }
+
+        ];
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    branches.forEach(
+        (branch, index) => {
+
+            container.innerHTML += `
+
+                <div class="card">
+
+                    <h3>
+                        🏪 Филиал ${index + 1}
+                    </h3>
+
+                    <label>
+                        Название
+                    </label>
+
+                    <input
+                        value="${escapeHtml(branch.name || "")}"
+                        onchange="branches[${index}].name=this.value"
+                    >
+
+                    <label>
+                        Адрес
+                    </label>
+
+                    <input
+                        value="${escapeHtml(branch.address || "")}"
+                        onchange="branches[${index}].address=this.value"
+                    >
+
+                    <div class="row">
+
+                        <div>
+
+                            <label>
+                                Время работы
+                            </label>
+
+                            <input
+                                value="${escapeHtml(branch.workTime || "")}"
+                                onchange="branches[${index}].workTime=this.value"
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <label>
+                                Время доставки
+                            </label>
+
+                            <input
+                                value="${escapeHtml(branch.deliveryTime || "11:00-23:00")}"
+                                onchange="branches[${index}].deliveryTime=this.value"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <label>
+                        Kaspi номер
+                    </label>
+
+                    <input
+                        value="${escapeHtml(branch.kaspi || "")}"
+                        placeholder="+7747..."
+                        onchange="branches[${index}].kaspi=this.value"
+                    >
+
+                    <label>
+                        Получатель Kaspi
+                    </label>
+
+                    <input
+                        value="${escapeHtml(branch.kaspiName || "")}"
+                        placeholder="Имя получателя"
+                        onchange="branches[${index}].kaspiName=this.value"
+                    >
+
+                    <label>
+                        WhatsApp филиала
+                    </label>
+
+                    <input
+                        value="${escapeHtml(branch.whatsapp || "")}"
+                        placeholder="+7747..."
+                        onchange="branches[${index}].whatsapp=this.value"
+                    >
+
+                    <button
+                        class="btn-red"
+                        onclick="deleteBranch(${index})"
+                    >
+                        🗑️ Удалить филиал
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+function addBranch() {
+
+    branches.push({
+
+        id:
+            Date.now(),
+
+        name:
+            "Новый филиал",
+
+        address:
+            "",
+
+        workTime:
+            "10:00-02:00",
+
+        deliveryTime:
+            "11:00-23:00",
+
+        kaspi:
+            "",
+
+        kaspiName:
+            "",
+
+        whatsapp:
+            ""
+
+    });
+
+
+    renderBranches();
+
+}
+
+
+function deleteBranch(index) {
+
+    if (!confirm(
+        "Удалить этот филиал?"
+    )) return;
+
+    branches.splice(index, 1);
+
+    renderBranches();
+
+}
+
+
+async function saveBranches() {
+
+    /*
+     * API будет подключён
+     * в server.js.
+     */
+
+    localStorage.setItem(
+        "tomchi_branches",
+        JSON.stringify(branches)
+    );
+
+    showMessage(
+        "branchesMessage",
+        "✅ Филиалы сохранены в текущем браузере. После добавления API server.js они будут сохраняться на сервере.",
+        "success"
+    );
+
+}
+
+
+/* =========================================
+   МЕНЮ
+========================================= */
+
+function renderMenu() {
+
+    const container =
+        document.getElementById(
+            "menuList"
+        );
+
+    if (!menu.length) {
+
+        menu = [
+
+            {
+                category: "Плов",
+                name: "Ташкентский",
+                price: 1990
+            },
+
+            {
+                category: "Плов",
+                name: "Шифа",
+                price: 2190
+            },
+
+            {
+                category: "Плов",
+                name: "Ханский",
+                price: 2490
+            },
+
+            {
+                category: "Плов",
+                name: "По-казахски",
+                price: 2590
+            },
+
+            {
+                category: "Самса",
+                name: "Куриный",
+                price: 550
+            },
+
+            {
+                category: "Самса",
+                name: "Говядина",
+                price: 600
+            }
+
+        ];
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    menu.forEach(
+        (item, index) => {
+
+            container.innerHTML += `
+
+                <div class="card">
+
+                    <div class="menu-item">
+
+                        <input
+                            value="${escapeHtml(item.category || "")}"
+                            placeholder="Категория"
+                            onchange="menu[${index}].category=this.value"
+                        >
+
+                        <input
+                            value="${escapeHtml(item.name || "")}"
+                            placeholder="Название"
+                            onchange="menu[${index}].name=this.value"
+                        >
+
+                        <input
+                            type="number"
+                            value="${Number(item.price || 0)}"
+                            placeholder="Цена"
+                            onchange="menu[${index}].price=Number(this.value)"
+                        >
+
+                    </div>
+
+                    <button
+                        class="btn-red"
+                        onclick="deleteMenuItem(${index})"
+                    >
+                        🗑️ Удалить
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+function addMenuItem() {
+
+    menu.push({
+
+        category:
+            "Новая категория",
+
+        name:
+            "Новое блюдо",
+
+        price:
+            0
+
+    });
+
+    renderMenu();
+
+}
+
+
+function deleteMenuItem(index) {
+
+    if (!confirm(
+        "Удалить это блюдо?"
+    )) return;
+
+    menu.splice(index, 1);
+
+    renderMenu();
+
+}
+
+
+async function saveMenu() {
+
+    localStorage.setItem(
+        "tomchi_menu",
+        JSON.stringify(menu)
+    );
+
+    showMessage(
+        "menuMessage",
+        "✅ Меню сохранено в текущем браузере. API сохранения добавим в server.js.",
+        "success"
+    );
+
+}
+
+
+/* =========================================
+   ЗОНЫ
+========================================= */
+
+function renderZones() {
+
+    const container =
+        document.getElementById(
+            "zonesList"
+        );
+
+
+    if (!zones.length) {
+
+        zones = [
+
+            {
+                id: "zone1",
+                name: "Зона 1",
+                minLat: 43.2380,
+                maxLat: 43.2750,
+                minLon: 76.9100,
+                maxLon: 76.9600
+            },
+
+            {
+                id: "zone2",
+                name: "Зона 2",
+                minLat: 43.2050,
+                maxLat: 43.2400,
+                minLon: 76.7500,
+                maxLon: 76.8500
+            }
+
+        ];
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    zones.forEach(
+        (zone, index) => {
+
+            container.innerHTML += `
+
+                <div class="zone-box">
+
+                    <h3>
+                        📍 ${escapeHtml(zone.name)}
+                    </h3>
+
+                    <label>
+                        Минимальная широта
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.0001"
+                        value="${zone.minLat}"
+                        onchange="zones[${index}].minLat=Number(this.value)"
+                    >
+
+                    <label>
+                        Максимальная широта
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.0001"
+                        value="${zone.maxLat}"
+                        onchange="zones[${index}].maxLat=Number(this.value)"
+                    >
+
+                    <label>
+                        Минимальная долгота
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.0001"
+                        value="${zone.minLon}"
+                        onchange="zones[${index}].minLon=Number(this.value)"
+                    >
+
+                    <label>
+                        Максимальная долгота
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.0001"
+                        value="${zone.maxLon}"
+                        onchange="zones[${index}].maxLon=Number(this.value)"
+                    >
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+async function saveZones() {
+
+    localStorage.setItem(
+        "tomchi_zones",
+        JSON.stringify(zones)
+    );
+
+    showMessage(
+        "zonesMessage",
+        "✅ Зоны сохранены в текущем браузере. API сохранения добавим в server.js.",
+        "success"
+    );
+
+}
+
+
+/* =========================================
+   ЗАКАЗЫ
+========================================= */
+
+async function loadOrders() {
+
+    const container =
+        document.getElementById(
+            "ordersList"
+        );
+
+    if (!token) return;
+
+
+    container.innerHTML =
+        '<div class="loading">Загрузка заказов...</div>';
+
+
+    try {
+
+        orders =
+            await api("/api/orders", {
+                method: "GET"
+            });
+
+
+        renderOrders();
+
+
+    } catch (error) {
+
+        container.innerHTML =
+            `<div class="error">${escapeHtml(error.message)}</div>`;
+
+    }
+
+}
+
+
+function renderOrders() {
+
+    const container =
+        document.getElementById(
+            "ordersList"
+        );
+
+
+    if (!orders.length) {
+
+        container.innerHTML =
+            '<div class="success">📭 Заказов пока нет.</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    orders.forEach(
+        order => {
+
+            container.innerHTML += `
+
+                <div class="card order-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h3>
+                                Заказ №${order.id}
+                            </h3>
+
+                            <div class="small">
+                                ${formatDate(order.createdAt)}
+                            </div>
+
+                        </div>
+
+                        <span class="order-status">
+                            ${escapeHtml(order.status || "Новый")}
+                        </span>
+
+                    </div>
+
+                    <p>
+                        <b>👤 Клиент:</b>
+                        ${escapeHtml(order.name || "")}
+                    </p>
+
+                    <p>
+                        <b>📞 Телефон:</b>
+                        ${escapeHtml(order.phone || "")}
+                    </p>
+
+                    <p>
+                        <b>🏪 Филиал:</b>
+                        ${escapeHtml(order.pickup || "")}
+                    </p>
+
+                    <p>
+                        <b>📍 Адрес:</b>
+                        ${escapeHtml(order.address || "")}
+                    </p>
+
+                    <p>
+                        <b>🛒 Заказ:</b>
+                        ${escapeHtml(order.item || "")}
+                    </p>
+
+                    <p>
+                        <b>💬 Комментарий:</b>
+                        ${escapeHtml(order.comment || "—")}
+                    </p>
+
+                    <p>
+                        <b>💰 Сумма:</b>
+                        <span class="price">
+                            ${Number(order.total || order.amount || 0).toLocaleString("ru-RU")} ₸
+                        </span>
+                    </p>
+
+                    <p>
+                        <b>💳 Оплата:</b>
+                        ${escapeHtml(order.paymentStatus || "Не оплачено")}
+                    </p>
+
+                    ${
+                        order.receipt
+                        ?
+                        `
+                        <p>
+                            <b>🧾 Чек:</b>
+                            <br>
+                            <a
+                                href="${escapeHtml(order.receipt)}"
+                                target="_blank"
+                            >
+                                Открыть чек
+                            </a>
+                        </p>
+                        `
+                        :
+                        ""
+                    }
+
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+
+                        <button
+                            class="btn-green"
+                            onclick="changeOrderStatus(${order.id}, 'Принят')"
+                        >
+                            ✅ Принят
+                        </button>
+
+                        <button
+                            class="btn"
+                            onclick="changeOrderStatus(${order.id}, 'Готовится')"
+                        >
+                            👨‍🍳 Готовится
+                        </button>
+
+                        <button
+                            class="btn"
+                            onclick="changeOrderStatus(${order.id}, 'Готов')"
+                        >
+                            🍽️ Готов
+                        </button>
+
+                        <button
+                            class="btn"
+                            onclick="changeOrderStatus(${order.id}, 'Передан курьеру')"
+                        >
+                            🚗 Курьер
+                        </button>
+
+                        <button
+                            class="btn"
+                            onclick="changeOrderStatus(${order.id}, 'Доставлен')"
+                        >
+                            📦 Доставлен
+                        </button>
+
+                        <button
+                            class="btn-red"
+                            onclick="changeOrderStatus(${order.id}, 'Отменён')"
+                        >
+                            ❌ Отменить
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+async function changeOrderStatus(id, status) {
+
+    try {
+
+        await api(
+            "/api/orders/" + id,
+            {
+
+                method: "PATCH",
+
+                body:
+                    JSON.stringify({
+                        status: status
+                    })
+
+            }
+        );
+
+
+        await loadOrders();
+
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function showMessage(
+    id,
+    message,
+    type
+) {
+
+    const element =
+        document.getElementById(id);
+
+    if (!element) return;
+
+    element.innerHTML =
+        `<div class="${type}">${escapeHtml(message)}</div>`;
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+function formatDate(date) {
+
+    if (!date) return "";
+
+    try {
+
+        return new Date(date)
+            .toLocaleString("ru-RU");
+
+    } catch (e) {
+
+        return date;
+
+    }
+
+}
+
+
+/* =========================================
+   АВТОЗАГРУЗКА
+========================================= */
+
+</script>
+
+</body>
+</html>
