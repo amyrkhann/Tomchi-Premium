@@ -570,7 +570,17 @@ WhatsApp для заказов
 <div class="card-header">
 
 <h2>🍽️ Меню</h2>
+<label>
+    Выберите филиал
+</label>
 
+<select id="menuBranchSelect" onchange="changeMenuBranch()">
+    <option value="1">Абылай Хана 24</option>
+    <option value="2">Tomchi Premium — Абылай Хана 34</option>
+    <option value="3">Жибек Жолы 106</option>
+    <option value="4">Абая 47</option>
+    <option value="5">Яссауи 66</option>
+</select>
 <button
     class="btn"
     onclick="addMenuItem()"
