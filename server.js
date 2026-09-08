@@ -17,9 +17,6 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_TOKEN =
   process.env.ADMIN_TOKEN || "CHANGE_ME";
 
-const DG_KEY =
-  process.env.DGIS_KEY || "";
-
 // =====================================================
 // TOMCHI — НАСТРОЙКИ
 // =====================================================
@@ -133,7 +130,16 @@ const DEFAULT_MENU = {
 };
 
 // =====================================================
-// ЗОНЫ
+// ЗОНА ДОСТАВКИ TOMCHI
+// =====================================================
+//
+// 4 точки:
+// 1. Сейфуллина — Алматы-2
+// 2. Пушкина — Алматы-2
+// 3. Достык — Сатпаева
+// 4. Сейфуллина — Сатпаева
+//
+// Порядок точек идёт по периметру зоны.
 // =====================================================
 
 const DEFAULT_ZONES = [
@@ -142,22 +148,27 @@ const DEFAULT_ZONES = [
     id: "zone1",
     name: "Зона 1",
 
-    minLat: 43.2380,
-    maxLat: 43.2750,
+    points: [
+      {
+        lat: 43.273766,
+        lon: 76.930407
+      },
 
-    minLon: 76.9100,
-    maxLon: 76.9600
-  },
+      {
+        lat: 43.276133,
+        lon: 76.948280
+      },
 
-  {
-    id: "zone2",
-    name: "Зона 2",
+      {
+        lat: 43.239663,
+        lon: 76.957169
+      },
 
-    minLat: 43.2050,
-    maxLat: 43.2400,
-
-    minLon: 76.7500,
-    maxLon: 76.8500
+      {
+        lat: 43.237826,
+        lon: 76.935170
+      }
+    ]
   }
 
 ];
@@ -367,6 +378,47 @@ function read() {
 
     data.nextOrderId = 1001;
     changed = true;
+
+  }
+
+  // ---------------------------------------------------
+  // MIGRATION СТАРОГО ФОРМАТА ЗОН
+  // ---------------------------------------------------
+
+  if (
+    Array.isArray(data.zones)
+  ) {
+
+    data.zones = data.zones.map(
+      (zone, index) => {
+
+        if (
+          Array.isArray(zone.points) &&
+          zone.points.length >= 3
+        ) {
+
+          return zone;
+
+        }
+
+        // Если старые зоны остались в data.json,
+        // превращаем их в первую новую зону.
+        if (
+          index === 0
+        ) {
+
+          return JSON.parse(
+            JSON.stringify(
+              DEFAULT_ZONES[0]
+            )
+          );
+
+        }
+
+        return null;
+
+      }
+    ).filter(Boolean);
 
   }
 
@@ -762,72 +814,170 @@ function getMultipartFile(req) {
 }
 
 // =====================================================
-// 2GIS
+// GEOCODING
+// =====================================================
+//
+// 2GIS здесь НЕ используется.
+//
+// Используем OpenStreetMap Nominatim.
 // =====================================================
 
 async function geocode(query) {
 
-  if (!DG_KEY) {
+  const cleanQuery =
+    String(query || "")
+      .trim();
 
-    throw Error(
-      "DGIS_KEY is not configured"
-    );
-
+  if (!cleanQuery) {
+    return null;
   }
 
   const url =
-    "https://catalog.api.2gis.com/3.0/items/geocode?" +
+    "https://nominatim.openstreetmap.org/search?" +
     new URLSearchParams({
 
       q:
-        query +
+        cleanQuery +
         ", Алматы, Казахстан",
 
-      fields:
-        "items.point,items.full_address_name",
+      format:
+        "json",
 
-      page_size:
+      limit:
         "1",
 
-      key:
-        DG_KEY
+      addressdetails:
+        "1"
 
     });
 
   const response =
-    await fetch(url);
+    await fetch(
+      url,
+      {
+        headers: {
+          "User-Agent":
+            "Tomchi-Premium/1.0"
+        }
+      }
+    );
 
   if (!response.ok) {
 
     throw Error(
-      "Geocoder error"
+      "Не удалось найти адрес."
     );
 
   }
 
-  const data =
+  const results =
     await response.json();
 
   const item =
-    data?.result?.items?.[0];
+    results?.[0];
 
-  if (!item?.point) {
+  if (!item) {
     return null;
+  }
+
+  const lat =
+    Number(item.lat);
+
+  const lon =
+    Number(item.lon);
+
+  if (
+    !Number.isFinite(lat) ||
+    !Number.isFinite(lon)
+  ) {
+
+    return null;
+
   }
 
   return {
 
-    lat:
-      Number(item.point.lat),
+    lat,
 
-    lon:
-      Number(item.point.lon),
+    lon,
 
     address:
-      item.full_address_name ||
-      query
+      item.display_name ||
+      cleanQuery
 
   };
+
+}
+
+// =====================================================
+// POINT IN POLYGON
+// =====================================================
+//
+// Проверяем, находится ли координата внутри
+// многоугольника из 4 точек.
+// =====================================================
+
+function pointInPolygon(point, polygon) {
+
+  const x =
+    Number(point.lon);
+
+  const y =
+    Number(point.lat);
+
+  if (
+    !Number.isFinite(x) ||
+    !Number.isFinite(y) ||
+    !Array.isArray(polygon) ||
+    polygon.length < 3
+  ) {
+
+    return false;
+
+  }
+
+  let inside = false;
+
+  for (
+    let i = 0,
+    j = polygon.length - 1;
+    i < polygon.length;
+    j = i++
+  ) {
+
+    const xi =
+      Number(polygon[i].lon);
+
+    const yi =
+      Number(polygon[i].lat);
+
+    const xj =
+      Number(polygon[j].lon);
+
+    const yj =
+      Number(polygon[j].lat);
+
+    const intersect =
+      (
+        yi > y
+      ) !== (
+        yj > y
+      ) &&
+      x <
+        (
+          (xj - xi) *
+          (y - yi) /
+          (yj - yi)
+        ) +
+        xi;
+
+    if (intersect) {
+      inside = !inside;
+    }
+
+  }
+
+  return inside;
 
 }
 
@@ -837,26 +987,33 @@ async function geocode(query) {
 
 function insideZone(point, zone) {
 
-  return (
+  if (
+    !zone ||
+    !Array.isArray(zone.points)
+  ) {
 
-    point.lat >= Number(zone.minLat) &&
+    return false;
 
-    point.lat <= Number(zone.maxLat) &&
+  }
 
-    point.lon >= Number(zone.minLon) &&
-
-    point.lon <= Number(zone.maxLon)
-
+  return pointInPolygon(
+    point,
+    zone.points
   );
 
 }
 
 function findZone(point, zones) {
 
-  for (const zone of zones) {
+  for (
+    const zone of zones
+  ) {
 
     if (
-      insideZone(point, zone)
+      insideZone(
+        point,
+        zone
+      )
     ) {
 
       return zone;
@@ -889,20 +1046,28 @@ function calculateDelivery(
       settings.smallOrderDelivery
     ) || 500;
 
+  // ===================================================
   // ВНЕ ЗОНЫ
+  // ===================================================
+
   if (!inZone) {
 
     return {
 
       deliveryPrice: null,
+
       total: null,
+
       externalCourier: true
 
     };
 
   }
 
+  // ===================================================
   // БЕСПЛАТНО
+  // ===================================================
+
   if (
     amount >= minimum
   ) {
@@ -910,14 +1075,19 @@ function calculateDelivery(
     return {
 
       deliveryPrice: 0,
+
       total: amount,
+
       externalCourier: false
 
     };
 
   }
 
+  // ===================================================
   // 500 ₸
+  // ===================================================
+
   return {
 
     deliveryPrice:
@@ -963,6 +1133,29 @@ async function checkZone(
 
   }
 
+  console.log(
+    "================================="
+  );
+
+  console.log(
+    "TOMCHI CHECK ZONE"
+  );
+
+  console.log(
+    "Адрес:",
+    address
+  );
+
+  console.log(
+    "Координаты:",
+    destination.lat,
+    destination.lon
+  );
+
+  console.log(
+    "================================="
+  );
+
   const zone =
     findZone(
       destination,
@@ -978,6 +1171,10 @@ async function checkZone(
       inZone,
       data.settings
     );
+
+  // ===================================================
+  // ВНЕ ЗОНЫ
+  // ===================================================
 
   if (!zone) {
 
@@ -1007,6 +1204,10 @@ async function checkZone(
     };
 
   }
+
+  // ===================================================
+  // ВНУТРИ ЗОНЫ
+  // ===================================================
 
   return {
 
@@ -1197,7 +1398,6 @@ const server =
 
         // =================================================
         // CONFIG
-        // Публичный API
         // =================================================
 
         if (
@@ -2186,41 +2386,46 @@ const server =
 
           data.zones =
             body.zones.map(
-              (zone, index) => ({
+              (zone, index) => {
 
-                id:
-                  String(
-                    zone.id ||
-                    `zone${index + 1}`
-                  ),
-
-                name:
-                  String(
-                    zone.name ||
-                    `Зона ${index + 1}`
-                  ),
-
-                minLat:
-                  Number(
-                    zone.minLat
-                  ),
-
-                maxLat:
-                  Number(
-                    zone.maxLat
-                  ),
-
-                minLon:
-                  Number(
-                    zone.minLon
-                  ),
-
-                maxLon:
-                  Number(
-                    zone.maxLon
+                const points =
+                  Array.isArray(
+                    zone.points
                   )
+                    ? zone.points.map(
+                        point => ({
+                          lat:
+                            Number(
+                              point.lat
+                            ),
 
-              })
+                          lon:
+                            Number(
+                              point.lon
+                            )
+                        })
+                      )
+                    : [];
+
+                return {
+
+                  id:
+                    String(
+                      zone.id ||
+                      `zone${index + 1}`
+                    ),
+
+                  name:
+                    String(
+                      zone.name ||
+                      `Зона ${index + 1}`
+                    ),
+
+                  points
+
+                };
+
+              }
             );
 
           save(data);
