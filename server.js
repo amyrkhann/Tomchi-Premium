@@ -11,6 +11,7 @@ const UPLOADS = path.join(ROOT, "uploads");
 if (!fs.existsSync(UPLOADS)) {
   fs.mkdirSync(UPLOADS, { recursive: true });
 }
+
 const PORT = process.env.PORT || 3000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "CHANGE_ME";
 const DG_KEY = process.env.DGIS_KEY || "";
@@ -25,6 +26,7 @@ const SMALL_ORDER_DELIVERY = 500;
 // =====================================================
 // 5 ТОЧЕК ОТПРАВЛЕНИЯ — НЕ УДАЛЯЕМ
 // =====================================================
+
 const DEFAULT = {
   nextOrderId: 1001,
 
@@ -33,102 +35,99 @@ const DEFAULT = {
   siteOpen: true,
 
   pickupPoints: [
-
     {
-      id:1,
-      name:"Абылай Хана 24",
-      address:"Абылай Хана 24",
+      id: 1,
+      name: "Абылай Хана 24",
+      address: "Абылай Хана 24",
 
-      lat:43.2636,
-      lon:76.9399,
+      lat: 43.2636,
+      lon: 76.9399,
 
-      workTime:"24/7",
+      workTime: "24/7",
+      deliveryTime: "11:00-23:00",
 
-      deliveryTime:"11:00-23:00",
-
-      kaspi:"",
-      whatsapp:""
+      kaspi: "",
+      whatsapp: ""
     },
 
     {
-      id:2,
-      name:"Tomchi Premium",
+      id: 2,
+      name: "Tomchi Premium",
 
-      address:"Абылай Хана 34",
+      address: "Абылай Хана 34",
 
-      lat:43.2641,
-      lon:76.9406,
+      lat: 43.2641,
+      lon: 76.9406,
 
-      workTime:"10:00-02:00",
+      workTime: "10:00-02:00",
+      deliveryTime: "11:00-23:00",
 
-      deliveryTime:"11:00-23:00",
-
-      kaspi:"",
-      whatsapp:""
+      kaspi: "",
+      whatsapp: ""
     },
 
     {
-      id:3,
-      name:"Арбат",
+      id: 3,
+      name: "Арбат",
 
-      address:"Жибек Жолы 106",
+      address: "Жибек Жолы 106",
 
-      lat:43.2624,
-      lon:76.9447,
+      lat: 43.2624,
+      lon: 76.9447,
 
-      workTime:"10:00-02:00",
+      workTime: "10:00-02:00",
+      deliveryTime: "11:00-23:00",
 
-      deliveryTime:"11:00-23:00",
-
-      kaspi:"",
-      whatsapp:""
+      kaspi: "",
+      whatsapp: ""
     },
 
     {
-      id:4,
-      name:"Абая 47",
+      id: 4,
+      name: "Абая 47",
 
-      address:"Абая 47",
+      address: "Абая 47",
 
-      lat:43.2410,
-      lon:76.9126,
+      lat: 43.2410,
+      lon: 76.9126,
 
-      workTime:"10:00-02:00",
+      workTime: "10:00-02:00",
+      deliveryTime: "11:00-23:00",
 
-      deliveryTime:"11:00-23:00",
-
-      kaspi:"",
-      whatsapp:""
+      kaspi: "",
+      whatsapp: ""
     },
 
     {
-      id:5,
-      name:"Яссауи",
+      id: 5,
+      name: "Яссауи",
 
-      address:"Яссауи 66А",
+      address: "Яссауи 66А",
 
-      lat:43.2210,
-      lon:76.7950,
+      lat: 43.2210,
+      lon: 76.7950,
 
-      workTime:"10:00-02:00",
+      workTime: "10:00-02:00",
+      deliveryTime: "11:00-23:00",
 
-      deliveryTime:"11:00-23:00",
-
-      kaspi:"",
-      whatsapp:""
+      kaspi: "",
+      whatsapp: ""
     }
-
   ],
 
-  orders:[],
+  orders: [],
 
-menuByBranch: {
-  "1": [],
-  "2": [],
-  "3": [],
-  "4": [],
-  "5": []
-}
+  // ===================================================
+  // МЕНЮ КАЖДОГО ФИЛИАЛА
+  // ===================================================
+
+  menuByBranch: {
+    "1": [],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": []
+  }
 };
 
 // =====================================================
@@ -180,23 +179,19 @@ if (!fs.existsSync(DATA)) {
 }
 
 const read = () => {
-
   const data = JSON.parse(
     fs.readFileSync(DATA, "utf8")
   );
 
-  // Для уже существующего data.json
-  // автоматически добавляем настройку
-  const read = () => {
-
-  const data = JSON.parse(
-    fs.readFileSync(DATA, "utf8")
-  );
-
+  // Для старого data.json
+  // автоматически добавляем siteOpen
   if (typeof data.siteOpen !== "boolean") {
     data.siteOpen = true;
+    save(data);
   }
 
+  // Для старого data.json
+  // автоматически добавляем menuByBranch
   if (!data.menuByBranch) {
     data.menuByBranch = {
       "1": [],
@@ -205,12 +200,9 @@ const read = () => {
       "4": [],
       "5": []
     };
+
+    save(data);
   }
-
-  save(data);
-
-  return data;
-};
 
   return data;
 };
@@ -255,10 +247,15 @@ const getBody = req =>
       }
     });
   });
+
+// =====================================================
+// UPLOAD FILE
+// =====================================================
+
 const getMultipartFile = req =>
   new Promise((resolve, reject) => {
-
-    const contentType = req.headers["content-type"] || "";
+    const contentType =
+      req.headers["content-type"] || "";
 
     if (!contentType.includes("multipart/form-data")) {
       return reject(
@@ -266,7 +263,8 @@ const getMultipartFile = req =>
       );
     }
 
-    const match = contentType.match(/boundary=(.+)$/);
+    const match =
+      contentType.match(/boundary=(.+)$/);
 
     if (!match) {
       return reject(
@@ -280,25 +278,23 @@ const getMultipartFile = req =>
     let size = 0;
 
     req.on("data", chunk => {
-
       size += chunk.length;
 
       if (size > 8 * 1024 * 1024) {
         req.destroy();
 
         return reject(
-          Error("Файл слишком большой. Максимум 8 МБ.")
+          Error(
+            "Файл слишком большой. Максимум 8 МБ."
+          )
         );
       }
 
       chunks.push(chunk);
-
     });
 
     req.on("end", () => {
-
       try {
-
         const buffer = Buffer.concat(chunks);
 
         const startMarker =
@@ -347,7 +343,9 @@ const getMultipartFile = req =>
 
         if (!filenameMatch) {
           return reject(
-            Error("Название файла не найдено")
+            Error(
+              "Название файла не найдено"
+            )
           );
         }
 
@@ -400,7 +398,9 @@ const getMultipartFile = req =>
 
         if (fileEnd === -1) {
           return reject(
-            Error("Конец файла не найден")
+            Error(
+              "Конец файла не найден"
+            )
           );
         }
 
@@ -430,16 +430,17 @@ const getMultipartFile = req =>
         });
 
       } catch (error) {
-
         reject(error);
-
       }
-
     });
 
     req.on("error", reject);
-
   });
+
+// =====================================================
+// AUTH
+// =====================================================
+
 const auth = req =>
   req.headers.authorization ===
   `Bearer ${ADMIN_TOKEN}`;
@@ -450,25 +451,37 @@ const auth = req =>
 
 async function geocode(query) {
   if (!DG_KEY) {
-    throw Error("DGIS_KEY is not configured");
+    throw Error(
+      "DGIS_KEY is not configured"
+    );
   }
 
   const url =
     "https://catalog.api.2gis.com/3.0/items/geocode?" +
     new URLSearchParams({
-      q: query + ", Алматы, Казахстан",
-      fields: "items.point,items.full_address_name",
+      q:
+        query +
+        ", Алматы, Казахстан",
+
+      fields:
+        "items.point,items.full_address_name",
+
       page_size: "1",
+
       key: DG_KEY
     });
 
-  const response = await fetch(url);
+  const response =
+    await fetch(url);
 
   if (!response.ok) {
-    throw Error("Geocoder error");
+    throw Error(
+      "Geocoder error"
+    );
   }
 
-  const data = await response.json();
+  const data =
+    await response.json();
 
   const item =
     data?.result?.items?.[0];
@@ -478,10 +491,15 @@ async function geocode(query) {
   }
 
   return {
-    lat: Number(item.point.lat),
-    lon: Number(item.point.lon),
+    lat:
+      Number(item.point.lat),
+
+    lon:
+      Number(item.point.lon),
+
     address:
-      item.full_address_name || query
+      item.full_address_name ||
+      query
   };
 }
 
@@ -512,8 +530,10 @@ function findZone(point) {
 // РАСЧЁТ ДОСТАВКИ
 // =====================================================
 
-function calculateDelivery(amount, inZone) {
-
+function calculateDelivery(
+  amount,
+  inZone
+) {
   // ВНЕ ЗОНЫ
   if (!inZone) {
     return {
@@ -524,7 +544,10 @@ function calculateDelivery(amount, inZone) {
   }
 
   // В ЗОНЕ + 5000 И БОЛЬШЕ
-  if (amount >= FREE_DELIVERY_MINIMUM) {
+  if (
+    amount >=
+    FREE_DELIVERY_MINIMUM
+  ) {
     return {
       deliveryPrice: 0,
       total: amount,
@@ -534,8 +557,13 @@ function calculateDelivery(amount, inZone) {
 
   // В ЗОНЕ + МЕНЬШЕ 5000
   return {
-    deliveryPrice: SMALL_ORDER_DELIVERY,
-    total: amount + SMALL_ORDER_DELIVERY,
+    deliveryPrice:
+      SMALL_ORDER_DELIVERY,
+
+    total:
+      amount +
+      SMALL_ORDER_DELIVERY,
+
     externalCourier: false
   };
 }
@@ -544,15 +572,19 @@ function calculateDelivery(amount, inZone) {
 // ПРОВЕРКА АДРЕСА
 // =====================================================
 
-async function checkZone(address, amount = 0) {
-
+async function checkZone(
+  address,
+  amount = 0
+) {
   const destination =
     await geocode(address);
 
   if (!destination) {
     return {
       found: false,
+
       inZone: false,
+
       message:
         "Не удалось найти этот адрес. Уточните адрес."
     };
@@ -561,7 +593,8 @@ async function checkZone(address, amount = 0) {
   const zone =
     findZone(destination);
 
-  const inZone = Boolean(zone);
+  const inZone =
+    Boolean(zone);
 
   const delivery =
     calculateDelivery(
@@ -569,16 +602,20 @@ async function checkZone(address, amount = 0) {
       inZone
     );
 
+  // ВНЕ ЗОНЫ
   if (!zone) {
-
     return {
       found: true,
+
       inZone: false,
+
       zone: null,
 
-      coordinates: destination,
+      coordinates:
+        destination,
 
       deliveryPrice: null,
+
       total: null,
 
       externalCourier: true,
@@ -595,7 +632,8 @@ async function checkZone(address, amount = 0) {
 
     zone: zone.name,
 
-    coordinates: destination,
+    coordinates:
+      destination,
 
     deliveryPrice:
       delivery.deliveryPrice,
@@ -603,7 +641,8 @@ async function checkZone(address, amount = 0) {
     total:
       delivery.total,
 
-    externalCourier: false,
+    externalCourier:
+      false,
 
     message:
       delivery.deliveryPrice === 0
@@ -626,132 +665,193 @@ const server =
           `http://${req.headers.host}`
         );
 
-      const method = req.method;
+      const method =
+        req.method;
+
+      // =================================================
+      // CORS
+      // =================================================
 
       if (method === "OPTIONS") {
         res.writeHead(204, {
           "Access-Control-Allow-Origin": "*",
+
           "Access-Control-Allow-Headers":
-            "Content-Type,Authorization"
+            "Content-Type,Authorization",
+
+          "Access-Control-Allow-Methods":
+            "GET,POST,PUT,PATCH,OPTIONS"
         });
 
         return res.end();
       }
 
       try {
-// -----------------------------
-// UPLOAD PAYMENT RECEIPT
-// -----------------------------
 
-if (
-  u.pathname === "/api/upload-receipt" &&
-  method === "POST"
-) {
-
-  const file =
-    await getMultipartFile(req);
-
-  return json(res, 201, {
-    success: true,
-    receipt: file.url
-  });
-
-}
-// -----------------------------
-// СТАТУС САЙТА
-// -----------------------------
-
-if (
-  u.pathname === "/api/site-status" &&
-  method === "GET"
-) {
-
-  const data = read();
-
-  return json(res, 200, {
-    siteOpen: data.siteOpen
-  });
-}
-
-
-// -----------------------------
-// ВКЛЮЧИТЬ / ВЫКЛЮЧИТЬ САЙТ
-// -----------------------------
-
-if (
-  u.pathname === "/api/site-status" &&
-  method === "PATCH"
-) {
-
-  if (!auth(req)) {
-    return json(res, 401, {
-      error: "Нет доступа"
-    });
-  }
-
-  const body = await getBody(req);
-  const data = read();
-
-  data.siteOpen =
-    Boolean(body.siteOpen);
-
-  save(data);
-
-  return json(res, 200, {
-    success: true,
-    siteOpen: data.siteOpen
-  });
-}
-        // -----------------------------
-        // CONFIG
-        // -----------------------------
+        // ===============================================
+        // UPLOAD PAYMENT RECEIPT
+        // ===============================================
 
         if (
-          u.pathname === "/api/config" &&
+          u.pathname ===
+            "/api/upload-receipt" &&
+          method === "POST"
+        ) {
+
+          const file =
+            await getMultipartFile(req);
+
+          return json(
+            res,
+            201,
+            {
+              success: true,
+
+              receipt:
+                file.url
+            }
+          );
+        }
+
+        // ===============================================
+        // СТАТУС САЙТА
+        // ===============================================
+
+        if (
+          u.pathname ===
+            "/api/site-status" &&
           method === "GET"
         ) {
 
-          const data = read();
+          const data =
+            read();
 
-          return json(res, 200, {
-            pickupPoints:
-              data.pickupPoints.map(
-                x => x.address
-              ),
-
-            zones:
-              DELIVERY_ZONES.map(
-                x => x.name
-              )
-          });
+          return json(
+            res,
+            200,
+            {
+              siteOpen:
+                data.siteOpen
+            }
+          );
         }
 
-        // -----------------------------
-        // CHECK ZONE
-        // -----------------------------
+        // ===============================================
+        // ВКЛЮЧИТЬ / ВЫКЛЮЧИТЬ САЙТ
+        // ===============================================
 
         if (
-          u.pathname === "/api/check-zone" &&
+          u.pathname ===
+            "/api/site-status" &&
+          method === "PATCH"
+        ) {
+
+          if (!auth(req)) {
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+          }
+
+          const body =
+            await getBody(req);
+
+          const data =
+            read();
+
+          data.siteOpen =
+            Boolean(
+              body.siteOpen
+            );
+
+          save(data);
+
+          return json(
+            res,
+            200,
+            {
+              success: true,
+
+              siteOpen:
+                data.siteOpen
+            }
+          );
+        }
+
+        // ===============================================
+        // CONFIG
+        // ===============================================
+
+        if (
+          u.pathname ===
+            "/api/config" &&
+          method === "GET"
+        ) {
+
+          const data =
+            read();
+
+          return json(
+            res,
+            200,
+            {
+              pickupPoints:
+                data.pickupPoints.map(
+                  x => x.address
+                ),
+
+              zones:
+                DELIVERY_ZONES.map(
+                  x => x.name
+                )
+            }
+          );
+        }
+
+        // ===============================================
+        // CHECK ZONE
+        // ===============================================
+
+        if (
+          u.pathname ===
+            "/api/check-zone" &&
           method === "POST"
         ) {
 
           const body =
             await getBody(req);
-            const currentData = read();
 
-if (!currentData.siteOpen) {
-  return json(res, 403, {
-    error:
-      "Сейчас заказы не принимаются. Заказы принимаются с 11:00 до 23:00."
-  });
-}
+          const currentData =
+            read();
+
+          if (
+            !currentData.siteOpen
+          ) {
+            return json(
+              res,
+              403,
+              {
+                error:
+                  "Сейчас заказы не принимаются. Заказы принимаются с 11:00 до 23:00."
+              }
+            );
+          }
 
           if (!body.address) {
-            return json(res, 400, {
-              found: false,
-              message:
-                "Введите адрес доставки."
-            });
+            return json(
+              res,
+              400,
+              {
+                found: false,
+
+                message:
+                  "Введите адрес доставки."
+              }
+            );
           }
 
           return json(
@@ -759,24 +859,41 @@ if (!currentData.siteOpen) {
             200,
             await checkZone(
               body.address,
-              Number(body.amount || 0)
+
+              Number(
+                body.amount || 0
+              )
             )
           );
         }
 
-        // -----------------------------
+        // ===============================================
         // CREATE ORDER
-        // -----------------------------
+        // ===============================================
 
         if (
-          u.pathname === "/api/orders" &&
+          u.pathname ===
+            "/api/orders" &&
           method === "POST"
         ) {
 
           const body =
             await getBody(req);
 
-          const data = read();
+          const data =
+            read();
+
+          // Проверяем сайт
+          if (!data.siteOpen) {
+            return json(
+              res,
+              403,
+              {
+                error:
+                  "Сейчас заказы не принимаются. Заказы принимаются с 11:00 до 23:00."
+              }
+            );
+          }
 
           if (
             !body.name ||
@@ -784,30 +901,48 @@ if (!currentData.siteOpen) {
             !body.pickup ||
             !body.address
           ) {
-            return json(res, 400, {
-              error:
-                "Заполните обязательные поля."
-            });
+            return json(
+              res,
+              400,
+              {
+                error:
+                  "Заполните обязательные поля."
+              }
+            );
           }
 
           if (
             !data.pickupPoints.some(
-              x => x.address === body.pickup
+              x =>
+                x.address ===
+                body.pickup
             )
           ) {
-            return json(res, 400, {
-              error:
-                "Недопустимая точка отправления."
-            });
+            return json(
+              res,
+              400,
+              {
+                error:
+                  "Недопустимая точка отправления."
+              }
+            );
           }
 
-          const amount = Number(body.amount || 0);
+          const amount =
+            Number(
+              body.amount || 0
+            );
 
-if (amount <= 0) {
-  return json(res, 400, {
-    error: "Введите сумму заказа."
-  });
-}
+          if (amount <= 0) {
+            return json(
+              res,
+              400,
+              {
+                error:
+                  "Введите сумму заказа."
+              }
+            );
+          }
 
           const zone =
             await checkZone(
@@ -816,9 +951,14 @@ if (amount <= 0) {
             );
 
           if (!zone.found) {
-            return json(res, 400, {
-              error: zone.message
-            });
+            return json(
+              res,
+              400,
+              {
+                error:
+                  zone.message
+              }
+            );
           }
 
           const order = {
@@ -843,17 +983,25 @@ if (amount <= 0) {
             amount,
 
             item:
-              String(body.item || ""),
+              String(
+                body.item || ""
+              ),
 
             comment:
-              String(body.comment || ""),
-receipt:
-  String(body.receipt || ""),
+              String(
+                body.comment || ""
+              ),
 
-paymentStatus:
-  body.receipt
-    ? "Оплата ожидает проверки"
-    : "Не оплачено",
+            receipt:
+              String(
+                body.receipt || ""
+              ),
+
+            paymentStatus:
+              body.receipt
+                ? "Оплата ожидает проверки"
+                : "Не оплачено",
+
             inZone:
               zone.inZone,
 
@@ -876,7 +1024,9 @@ paymentStatus:
               "Новый"
           };
 
-          data.orders.unshift(order);
+          data.orders.unshift(
+            order
+          );
 
           save(data);
 
@@ -887,19 +1037,25 @@ paymentStatus:
           );
         }
 
-        // -----------------------------
+        // ===============================================
         // ADMIN ORDERS
-        // -----------------------------
+        // ===============================================
 
         if (
-          u.pathname === "/api/orders" &&
+          u.pathname ===
+            "/api/orders" &&
           method === "GET"
         ) {
 
           if (!auth(req)) {
-            return json(res, 401, {
-              error: "Нет доступа"
-            });
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
           }
 
           return json(
@@ -909,9 +1065,9 @@ paymentStatus:
           );
         }
 
-        // -----------------------------
-        // ADMIN PATCH
-        // -----------------------------
+        // ===============================================
+        // ADMIN PATCH ORDER
+        // ===============================================
 
         if (
           u.pathname.startsWith(
@@ -921,9 +1077,14 @@ paymentStatus:
         ) {
 
           if (!auth(req)) {
-            return json(res, 401, {
-              error: "Нет доступа"
-            });
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
           }
 
           const id =
@@ -936,7 +1097,8 @@ paymentStatus:
           const body =
             await getBody(req);
 
-          const data = read();
+          const data =
+            read();
 
           const order =
             data.orders.find(
@@ -944,10 +1106,14 @@ paymentStatus:
             );
 
           if (!order) {
-            return json(res, 404, {
-              error:
-                "Заказ не найден"
-            });
+            return json(
+              res,
+              404,
+              {
+                error:
+                  "Заказ не найден"
+              }
+            );
           }
 
           if (body.status) {
@@ -962,6 +1128,15 @@ paymentStatus:
               body.deliveryPrice;
           }
 
+          if (
+            "paymentStatus" in body
+          ) {
+            order.paymentStatus =
+              String(
+                body.paymentStatus
+              );
+          }
+
           save(data);
 
           return json(
@@ -970,100 +1145,176 @@ paymentStatus:
             order
           );
         }
-// =====================================================
-// ADMIN MENU BY BRANCH
-// =====================================================
 
-if (
-  u.pathname === "/api/menu" &&
-  method === "GET"
-) {
+        // ===============================================
+        // ADMIN MENU BY BRANCH — GET
+        // ===============================================
 
-  if (!auth(req)) {
-    return json(res, 401, {
-      error: "Нет доступа"
-    });
-  }
+        if (
+          u.pathname ===
+            "/api/menu" &&
+          method === "GET"
+        ) {
 
-  const data = read();
+          if (!auth(req)) {
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+          }
 
-  return json(res, 200, {
-    menuByBranch: data.menuByBranch || {
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": []
-    }
-  });
-}
+          const data =
+            read();
 
+          return json(
+            res,
+            200,
+            {
+              menuByBranch:
+                data.menuByBranch ||
+                {
+                  "1": [],
+                  "2": [],
+                  "3": [],
+                  "4": [],
+                  "5": []
+                }
+            }
+          );
+        }
 
-if (
-  u.pathname === "/api/menu" &&
-  method === "PUT"
-) {
+        // ===============================================
+        // ADMIN MENU BY BRANCH — PUT
+        // ===============================================
 
-  if (!auth(req)) {
-    return json(res, 401, {
-      error: "Нет доступа"
-    });
-  }
+        if (
+          u.pathname ===
+            "/api/menu" &&
+          method === "PUT"
+        ) {
 
-  const body = await getBody(req);
-  const data = read();
+          if (!auth(req)) {
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+          }
 
-  const branchId = String(body.branchId);
+          const body =
+            await getBody(req);
 
-  if (!["1", "2", "3", "4", "5"].includes(branchId)) {
-    return json(res, 400, {
-      error: "Недопустимый филиал."
-    });
-  }
+          const data =
+            read();
 
-  if (!Array.isArray(body.menu)) {
-    return json(res, 400, {
-      error: "Неверный формат меню."
-    });
-  }
+          const branchId =
+            String(
+              body.branchId
+            );
 
-  if (!data.menuByBranch) {
-    data.menuByBranch = {
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": []
-    };
-  }
+          if (
+            ![
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ].includes(branchId)
+          ) {
+            return json(
+              res,
+              400,
+              {
+                error:
+                  "Недопустимый филиал."
+              }
+            );
+          }
 
-  data.menuByBranch[branchId] =
-    body.menu.map(item => ({
-      id:
-        item.id ||
-        Date.now() + Math.random(),
+          if (
+            !Array.isArray(
+              body.menu
+            )
+          ) {
+            return json(
+              res,
+              400,
+              {
+                error:
+                  "Неверный формат меню."
+              }
+            );
+          }
 
-      category:
-        String(item.category || ""),
+          if (
+            !data.menuByBranch
+          ) {
+            data.menuByBranch = {
+              "1": [],
+              "2": [],
+              "3": [],
+              "4": [],
+              "5": []
+            };
+          }
 
-      name:
-        String(item.name || ""),
+          data.menuByBranch[
+            branchId
+          ] =
+            body.menu.map(
+              item => ({
+                id:
+                  item.id ||
+                  Date.now() +
+                    Math.random(),
 
-      price:
-        Number(item.price || 0)
-    }));
+                category:
+                  String(
+                    item.category ||
+                    ""
+                  ),
 
-  save(data);
+                name:
+                  String(
+                    item.name ||
+                    ""
+                  ),
 
-  return json(res, 200, {
-    success: true,
-    branchId,
-    menu: data.menuByBranch[branchId]
-  });
-}
-        // -----------------------------
+                price:
+                  Number(
+                    item.price || 0
+                  )
+              })
+            );
+
+          save(data);
+
+          return json(
+            res,
+            200,
+            {
+              success: true,
+
+              branchId,
+
+              menu:
+                data.menuByBranch[
+                  branchId
+                ]
+            }
+          );
+        }
+
+        // ===============================================
         // STATIC FILES
-        // -----------------------------
+        // ===============================================
 
         let file =
           u.pathname === "/"
@@ -1071,18 +1322,29 @@ if (
             : u.pathname;
 
         if (file === "/admin") {
-          file = "/admin.html";
+          file =
+            "/admin.html";
         }
 
         const full =
           path.normalize(
-            path.join(ROOT, file)
+            path.join(
+              ROOT,
+              file
+            )
           );
 
-        if (!full.startsWith(ROOT)) {
-          return json(res, 403, {
-            error: "Forbidden"
-          });
+        if (
+          !full.startsWith(ROOT)
+        ) {
+          return json(
+            res,
+            403,
+            {
+              error:
+                "Forbidden"
+            }
+          );
         }
 
         fs.readFile(
@@ -1090,57 +1352,72 @@ if (
           (error, content) => {
 
             if (error) {
-              res.writeHead(404);
+              res.writeHead(
+                404
+              );
+
               return res.end(
                 "Not found"
               );
             }
 
             const ext =
-              path.extname(full);
+              path.extname(
+                full
+              );
 
             const types = {
+              ".html":
+                "text/html; charset=utf-8",
 
-  ".html":
-    "text/html; charset=utf-8",
+              ".js":
+                "text/javascript; charset=utf-8",
 
-  ".js":
-    "text/javascript; charset=utf-8",
+              ".css":
+                "text/css; charset=utf-8",
 
-  ".css":
-    "text/css; charset=utf-8",
+              ".jpg":
+                "image/jpeg",
 
-  ".jpg":
-    "image/jpeg",
+              ".jpeg":
+                "image/jpeg",
 
-  ".jpeg":
-    "image/jpeg",
+              ".png":
+                "image/png",
 
-  ".png":
-    "image/png",
+              ".webp":
+                "image/webp"
+            };
 
-  ".webp":
-    "image/webp"
-};
+            res.writeHead(
+              200,
+              {
+                "Content-Type":
+                  types[ext] ||
+                  "text/plain; charset=utf-8"
+              }
+            );
 
-            res.writeHead(200, {
-              "Content-Type":
-                types[ext] ||
-                "text/plain; charset=utf-8"
-            });
-
-            res.end(content);
+            res.end(
+              content
+            );
           }
         );
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          error
+        );
 
-        json(res, 500, {
-          error:
-            error.message
-        });
+        json(
+          res,
+          500,
+          {
+            error:
+              error.message
+          }
+        );
       }
     }
   );
