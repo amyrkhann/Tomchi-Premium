@@ -13,452 +13,772 @@ if (!fs.existsSync(UPLOADS)) {
 }
 
 const PORT = process.env.PORT || 3000;
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "CHANGE_ME";
-const DG_KEY = process.env.DGIS_KEY || "";
+
+const ADMIN_TOKEN =
+  process.env.ADMIN_TOKEN || "CHANGE_ME";
+
+const DG_KEY =
+  process.env.DGIS_KEY || "";
 
 // =====================================================
-// TOMCHI — ДОСТАВКА
+// TOMCHI — НАСТРОЙКИ
 // =====================================================
 
-const FREE_DELIVERY_MINIMUM = 5000;
-const SMALL_ORDER_DELIVERY = 500;
+const DEFAULT_SETTINGS = {
+  freeDeliveryMinimum: 5000,
+  smallOrderDelivery: 500,
+  deliveryStart: "11:00",
+  deliveryEnd: "23:00",
+  whatsapp: "+77479370909"
+};
 
 // =====================================================
-// 5 ТОЧЕК ОТПРАВЛЕНИЯ — НЕ УДАЛЯЕМ
+// 5 ТОЧЕК ОТПРАВЛЕНИЯ
+// =====================================================
+
+const DEFAULT_PICKUP_POINTS = [
+
+  {
+    id: 1,
+    name: "Абылай Хана 24",
+    address: "Абылай Хана 24",
+
+    lat: 43.2636,
+    lon: 76.9399,
+
+    workTime: "24/7",
+    deliveryTime: "11:00-23:00",
+
+    kaspi: "",
+    kaspiName: "",
+    whatsapp: ""
+  },
+
+  {
+    id: 2,
+    name: "Tomchi Premium",
+    address: "Абылай Хана 34",
+
+    lat: 43.2641,
+    lon: 76.9406,
+
+    workTime: "10:00-02:00",
+    deliveryTime: "11:00-23:00",
+
+    kaspi: "",
+    kaspiName: "",
+    whatsapp: ""
+  },
+
+  {
+    id: 3,
+    name: "Арбат",
+    address: "Жибек Жолы 106",
+
+    lat: 43.2624,
+    lon: 76.9447,
+
+    workTime: "10:00-02:00",
+    deliveryTime: "11:00-23:00",
+
+    kaspi: "",
+    kaspiName: "",
+    whatsapp: ""
+  },
+
+  {
+    id: 4,
+    name: "Абая 47",
+    address: "Абая 47",
+
+    lat: 43.2410,
+    lon: 76.9126,
+
+    workTime: "10:00-02:00",
+    deliveryTime: "11:00-23:00",
+
+    kaspi: "",
+    kaspiName: "",
+    whatsapp: ""
+  },
+
+  {
+    id: 5,
+    name: "Яссауи",
+    address: "Яссауи 66А",
+
+    lat: 43.2210,
+    lon: 76.7950,
+
+    workTime: "10:00-02:00",
+    deliveryTime: "11:00-23:00",
+
+    kaspi: "",
+    kaspiName: "",
+    whatsapp: ""
+  }
+
+];
+
+// =====================================================
+// МЕНЮ
+// =====================================================
+
+const DEFAULT_MENU = {
+  "1": [],
+  "2": [],
+  "3": [],
+  "4": [],
+  "5": []
+};
+
+// =====================================================
+// ЗОНЫ
+// =====================================================
+
+const DEFAULT_ZONES = [
+
+  {
+    id: "zone1",
+    name: "Зона 1",
+
+    minLat: 43.2380,
+    maxLat: 43.2750,
+
+    minLon: 76.9100,
+    maxLon: 76.9600
+  },
+
+  {
+    id: "zone2",
+    name: "Зона 2",
+
+    minLat: 43.2050,
+    maxLat: 43.2400,
+
+    minLon: 76.7500,
+    maxLon: 76.8500
+  }
+
+];
+
+// =====================================================
+// DEFAULT DATA
 // =====================================================
 
 const DEFAULT = {
+
   nextOrderId: 1001,
 
-  // true = сайт включён
-  // false = сайт выключен
+  // true = сайт принимает заказы
+  // false = сайт закрыт
   siteOpen: true,
 
-  pickupPoints: [
-    {
-      id: 1,
-      name: "Абылай Хана 24",
-      address: "Абылай Хана 24",
+  settings: DEFAULT_SETTINGS,
 
-      lat: 43.2636,
-      lon: 76.9399,
+  pickupPoints: DEFAULT_PICKUP_POINTS,
 
-      workTime: "24/7",
-      deliveryTime: "11:00-23:00",
+  zones: DEFAULT_ZONES,
 
-      kaspi: "",
-      whatsapp: ""
-    },
+  menuByBranch: DEFAULT_MENU,
 
-    {
-      id: 2,
-      name: "Tomchi Premium",
+  orders: []
 
-      address: "Абылай Хана 34",
-
-      lat: 43.2641,
-      lon: 76.9406,
-
-      workTime: "10:00-02:00",
-      deliveryTime: "11:00-23:00",
-
-      kaspi: "",
-      whatsapp: ""
-    },
-
-    {
-      id: 3,
-      name: "Арбат",
-
-      address: "Жибек Жолы 106",
-
-      lat: 43.2624,
-      lon: 76.9447,
-
-      workTime: "10:00-02:00",
-      deliveryTime: "11:00-23:00",
-
-      kaspi: "",
-      whatsapp: ""
-    },
-
-    {
-      id: 4,
-      name: "Абая 47",
-
-      address: "Абая 47",
-
-      lat: 43.2410,
-      lon: 76.9126,
-
-      workTime: "10:00-02:00",
-      deliveryTime: "11:00-23:00",
-
-      kaspi: "",
-      whatsapp: ""
-    },
-
-    {
-      id: 5,
-      name: "Яссауи",
-
-      address: "Яссауи 66А",
-
-      lat: 43.2210,
-      lon: 76.7950,
-
-      workTime: "10:00-02:00",
-      deliveryTime: "11:00-23:00",
-
-      kaspi: "",
-      whatsapp: ""
-    }
-  ],
-
-  orders: [],
-
-  // ===================================================
-  // МЕНЮ КАЖДОГО ФИЛИАЛА
-  // ===================================================
-
-  menuByBranch: {
-    "1": [],
-    "2": [],
-    "3": [],
-    "4": [],
-    "5": []
-  }
 };
-
-// =====================================================
-// 2 КВАДРАТНЫЕ ЗОНЫ
-// =====================================================
-
-// ЗОНА 1
-// Алматы-2 / Сейфуллина / Сатпаева / Пушкина
-
-const ZONE_1 = {
-  id: "zone1",
-  name: "Зона 1",
-
-  minLat: 43.2380,
-  maxLat: 43.2750,
-
-  minLon: 76.9100,
-  maxLon: 76.9600
-};
-
-// ЗОНА 2
-// Ташкентская / Каргалинская / Б. Момышулы / Абая
-
-const ZONE_2 = {
-  id: "zone2",
-  name: "Зона 2",
-
-  minLat: 43.2050,
-  maxLat: 43.2400,
-
-  minLon: 76.7500,
-  maxLon: 76.8500
-};
-
-const DELIVERY_ZONES = [
-  ZONE_1,
-  ZONE_2
-];
 
 // =====================================================
 // DATA
 // =====================================================
 
 if (!fs.existsSync(DATA)) {
+
   fs.writeFileSync(
     DATA,
-    JSON.stringify(DEFAULT, null, 2)
+    JSON.stringify(DEFAULT, null, 2),
+    "utf8"
   );
+
 }
 
-const read = () => {
-  const data = JSON.parse(
-    fs.readFileSync(DATA, "utf8")
-  );
+// =====================================================
+// READ DATA
+// =====================================================
 
-  // Для старого data.json
-  // автоматически добавляем siteOpen
-  if (typeof data.siteOpen !== "boolean") {
-    data.siteOpen = true;
-    save(data);
+function read() {
+
+  let data;
+
+  try {
+
+    data = JSON.parse(
+      fs.readFileSync(DATA, "utf8")
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Ошибка чтения data.json:",
+      error
+    );
+
+    data = JSON.parse(
+      JSON.stringify(DEFAULT)
+    );
+
   }
 
-  // Для старого data.json
-  // автоматически добавляем menuByBranch
-  if (!data.menuByBranch) {
-    data.menuByBranch = {
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": []
-    };
+  let changed = false;
 
+  // ---------------------------------------------------
+  // SITE OPEN
+  // ---------------------------------------------------
+
+  if (
+    typeof data.siteOpen !== "boolean"
+  ) {
+
+    data.siteOpen = true;
+    changed = true;
+
+  }
+
+  // ---------------------------------------------------
+  // SETTINGS
+  // ---------------------------------------------------
+
+  if (
+    !data.settings ||
+    typeof data.settings !== "object"
+  ) {
+
+    data.settings =
+      JSON.parse(
+        JSON.stringify(DEFAULT_SETTINGS)
+      );
+
+    changed = true;
+
+  } else {
+
+    for (
+      const key of Object.keys(DEFAULT_SETTINGS)
+    ) {
+
+      if (
+        data.settings[key] === undefined
+      ) {
+
+        data.settings[key] =
+          DEFAULT_SETTINGS[key];
+
+        changed = true;
+
+      }
+
+    }
+
+  }
+
+  // ---------------------------------------------------
+  // PICKUP POINTS
+  // ---------------------------------------------------
+
+  if (
+    !Array.isArray(data.pickupPoints)
+  ) {
+
+    data.pickupPoints =
+      JSON.parse(
+        JSON.stringify(DEFAULT_PICKUP_POINTS)
+      );
+
+    changed = true;
+
+  }
+
+  // ---------------------------------------------------
+  // ZONES
+  // ---------------------------------------------------
+
+  if (
+    !Array.isArray(data.zones)
+  ) {
+
+    data.zones =
+      JSON.parse(
+        JSON.stringify(DEFAULT_ZONES)
+      );
+
+    changed = true;
+
+  }
+
+  // ---------------------------------------------------
+  // MENU
+  // ---------------------------------------------------
+
+  if (
+    !data.menuByBranch ||
+    typeof data.menuByBranch !== "object"
+  ) {
+
+    data.menuByBranch =
+      JSON.parse(
+        JSON.stringify(DEFAULT_MENU)
+      );
+
+    changed = true;
+
+  }
+
+  for (const id of ["1", "2", "3", "4", "5"]) {
+
+    if (
+      !Array.isArray(data.menuByBranch[id])
+    ) {
+
+      data.menuByBranch[id] = [];
+      changed = true;
+
+    }
+
+  }
+
+  // ---------------------------------------------------
+  // ORDERS
+  // ---------------------------------------------------
+
+  if (
+    !Array.isArray(data.orders)
+  ) {
+
+    data.orders = [];
+    changed = true;
+
+  }
+
+  // ---------------------------------------------------
+  // NEXT ORDER ID
+  // ---------------------------------------------------
+
+  if (
+    typeof data.nextOrderId !== "number"
+  ) {
+
+    data.nextOrderId = 1001;
+    changed = true;
+
+  }
+
+  if (changed) {
     save(data);
   }
 
   return data;
-};
 
-const save = data =>
+}
+
+// =====================================================
+// SAVE DATA
+// =====================================================
+
+function save(data) {
+
   fs.writeFileSync(
     DATA,
-    JSON.stringify(data, null, 2)
+    JSON.stringify(data, null, 2),
+    "utf8"
   );
+
+}
 
 // =====================================================
 // HELPERS
 // =====================================================
 
-const json = (res, code, data) => {
+function json(res, code, data) {
+
   res.writeHead(code, {
+
     "Content-Type":
       "application/json; charset=utf-8",
 
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin":
+      "*",
 
     "Access-Control-Allow-Headers":
-      "Content-Type,Authorization"
+      "Content-Type,Authorization",
+
+    "Access-Control-Allow-Methods":
+      "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+
   });
 
-  res.end(JSON.stringify(data));
-};
+  res.end(
+    JSON.stringify(data)
+  );
 
-const getBody = req =>
-  new Promise((resolve, reject) => {
-    let body = "";
+}
 
-    req.on("data", chunk => {
-      body += chunk;
-    });
+function auth(req) {
 
-    req.on("end", () => {
-      try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch (e) {
-        reject(e);
-      }
-    });
-  });
+  return (
+    req.headers.authorization ===
+    `Bearer ${ADMIN_TOKEN}`
+  );
+
+}
+
+function getBody(req) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      let body = "";
+
+      req.on(
+        "data",
+        chunk => {
+
+          body += chunk;
+
+          if (
+            body.length >
+            2 * 1024 * 1024
+          ) {
+
+            reject(
+              Error(
+                "Запрос слишком большой."
+              )
+            );
+
+            req.destroy();
+
+          }
+
+        }
+      );
+
+      req.on(
+        "end",
+        () => {
+
+          try {
+
+            resolve(
+              body
+                ? JSON.parse(body)
+                : {}
+            );
+
+          } catch (error) {
+
+            reject(
+              Error(
+                "Неверный JSON."
+              )
+            );
+
+          }
+
+        }
+      );
+
+      req.on(
+        "error",
+        reject
+      );
+
+    }
+  );
+
+}
 
 // =====================================================
-// UPLOAD FILE
+// MULTIPART FILE
 // =====================================================
 
-const getMultipartFile = req =>
-  new Promise((resolve, reject) => {
-    const contentType =
-      req.headers["content-type"] || "";
+function getMultipartFile(req) {
 
-    if (!contentType.includes("multipart/form-data")) {
-      return reject(
-        Error("Неверный формат загрузки")
-      );
-    }
+  return new Promise(
+    (resolve, reject) => {
 
-    const match =
-      contentType.match(/boundary=(.+)$/);
+      const contentType =
+        req.headers["content-type"] || "";
 
-    if (!match) {
-      return reject(
-        Error("Boundary не найден")
-      );
-    }
-
-    const boundary = "--" + match[1];
-
-    const chunks = [];
-    let size = 0;
-
-    req.on("data", chunk => {
-      size += chunk.length;
-
-      if (size > 8 * 1024 * 1024) {
-        req.destroy();
+      if (
+        !contentType.includes(
+          "multipart/form-data"
+        )
+      ) {
 
         return reject(
           Error(
-            "Файл слишком большой. Максимум 8 МБ."
+            "Неверный формат загрузки."
           )
         );
+
       }
 
-      chunks.push(chunk);
-    });
-
-    req.on("end", () => {
-      try {
-        const buffer = Buffer.concat(chunks);
-
-        const startMarker =
-          Buffer.from(
-            boundary + "\r\n"
-          );
-
-        const start =
-          buffer.indexOf(startMarker);
-
-        if (start === -1) {
-          return reject(
-            Error("Файл не найден")
-          );
-        }
-
-        const headerStart =
-          start + startMarker.length;
-
-        const headerEnd =
-          buffer.indexOf(
-            Buffer.from("\r\n\r\n"),
-            headerStart
-          );
-
-        if (headerEnd === -1) {
-          return reject(
-            Error("Ошибка файла")
-          );
-        }
-
-        const headers =
-          buffer
-            .slice(headerStart, headerEnd)
-            .toString();
-
-        const filenameMatch =
-          headers.match(
-            /filename="([^"]*)"/i
-          );
-
-        const typeMatch =
-          headers.match(
-            /Content-Type:\s*([^\r\n]+)/i
-          );
-
-        if (!filenameMatch) {
-          return reject(
-            Error(
-              "Название файла не найдено"
-            )
-          );
-        }
-
-        const originalName =
-          filenameMatch[1];
-
-        const mime =
-          typeMatch
-            ? typeMatch[1].trim().toLowerCase()
-            : "";
-
-        const allowedTypes = [
-          "image/jpeg",
-          "image/png",
-          "image/webp"
-        ];
-
-        if (!allowedTypes.includes(mime)) {
-          return reject(
-            Error(
-              "Можно загрузить только JPG, PNG или WEBP."
-            )
-          );
-        }
-
-        const extension =
-          mime === "image/png"
-            ? ".png"
-            : mime === "image/webp"
-              ? ".webp"
-              : ".jpg";
-
-        const fileName =
-          crypto.randomBytes(16).toString("hex") +
-          extension;
-
-        const fileStart =
-          headerEnd + 4;
-
-        const endMarker =
-          Buffer.from(
-            "\r\n" + boundary
-          );
-
-        const fileEnd =
-          buffer.indexOf(
-            endMarker,
-            fileStart
-          );
-
-        if (fileEnd === -1) {
-          return reject(
-            Error(
-              "Конец файла не найден"
-            )
-          );
-        }
-
-        const fileBuffer =
-          buffer.slice(
-            fileStart,
-            fileEnd
-          );
-
-        const fullPath =
-          path.join(
-            UPLOADS,
-            fileName
-          );
-
-        fs.writeFileSync(
-          fullPath,
-          fileBuffer
+      const match =
+        contentType.match(
+          /boundary=(?:"([^"]+)"|([^;]+))/
         );
 
-        resolve({
-          originalName,
-          mime,
-          fileName,
-          url:
-            "/uploads/" + fileName
-        });
+      if (!match) {
 
-      } catch (error) {
-        reject(error);
+        return reject(
+          Error(
+            "Boundary не найден."
+          )
+        );
+
       }
-    });
 
-    req.on("error", reject);
-  });
+      const boundary =
+        "--" +
+        (match[1] || match[2]);
 
-// =====================================================
-// AUTH
-// =====================================================
+      const chunks = [];
+      let size = 0;
 
-const auth = req =>
-  req.headers.authorization ===
-  `Bearer ${ADMIN_TOKEN}`;
+      req.on(
+        "data",
+        chunk => {
+
+          size += chunk.length;
+
+          if (
+            size >
+            8 * 1024 * 1024
+          ) {
+
+            req.destroy();
+
+            return reject(
+              Error(
+                "Файл слишком большой. Максимум 8 МБ."
+              )
+            );
+
+          }
+
+          chunks.push(chunk);
+
+        }
+      );
+
+      req.on(
+        "end",
+        () => {
+
+          try {
+
+            const buffer =
+              Buffer.concat(chunks);
+
+            const startMarker =
+              Buffer.from(
+                boundary + "\r\n"
+              );
+
+            const start =
+              buffer.indexOf(
+                startMarker
+              );
+
+            if (start === -1) {
+
+              return reject(
+                Error(
+                  "Файл не найден."
+                )
+              );
+
+            }
+
+            const headerStart =
+              start +
+              startMarker.length;
+
+            const headerEnd =
+              buffer.indexOf(
+                Buffer.from(
+                  "\r\n\r\n"
+                ),
+                headerStart
+              );
+
+            if (headerEnd === -1) {
+
+              return reject(
+                Error(
+                  "Ошибка файла."
+                )
+              );
+
+            }
+
+            const headers =
+              buffer
+                .slice(
+                  headerStart,
+                  headerEnd
+                )
+                .toString();
+
+            const filenameMatch =
+              headers.match(
+                /filename="([^"]*)"/i
+              );
+
+            const typeMatch =
+              headers.match(
+                /Content-Type:\s*([^\r\n]+)/i
+              );
+
+            if (!filenameMatch) {
+
+              return reject(
+                Error(
+                  "Название файла не найдено."
+                )
+              );
+
+            }
+
+            const originalName =
+              filenameMatch[1];
+
+            const mime =
+              typeMatch
+                ? typeMatch[1]
+                    .trim()
+                    .toLowerCase()
+                : "";
+
+            const allowedTypes = [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ];
+
+            if (
+              !allowedTypes.includes(mime)
+            ) {
+
+              return reject(
+                Error(
+                  "Можно загрузить только JPG, PNG или WEBP."
+                )
+              );
+
+            }
+
+            const extension =
+              mime === "image/png"
+                ? ".png"
+                : mime === "image/webp"
+                  ? ".webp"
+                  : ".jpg";
+
+            const fileName =
+              crypto
+                .randomBytes(16)
+                .toString("hex") +
+              extension;
+
+            const fileStart =
+              headerEnd + 4;
+
+            const endMarker =
+              Buffer.from(
+                "\r\n" + boundary
+              );
+
+            const fileEnd =
+              buffer.indexOf(
+                endMarker,
+                fileStart
+              );
+
+            if (fileEnd === -1) {
+
+              return reject(
+                Error(
+                  "Конец файла не найден."
+                )
+              );
+
+            }
+
+            const fileBuffer =
+              buffer.slice(
+                fileStart,
+                fileEnd
+              );
+
+            const fullPath =
+              path.join(
+                UPLOADS,
+                fileName
+              );
+
+            fs.writeFileSync(
+              fullPath,
+              fileBuffer
+            );
+
+            resolve({
+
+              originalName,
+              mime,
+              fileName,
+
+              url:
+                "/uploads/" +
+                fileName
+
+            });
+
+          } catch (error) {
+
+            reject(error);
+
+          }
+
+        }
+      );
+
+      req.on(
+        "error",
+        reject
+      );
+
+    }
+  );
+
+}
 
 // =====================================================
 // 2GIS
 // =====================================================
 
 async function geocode(query) {
+
   if (!DG_KEY) {
+
     throw Error(
       "DGIS_KEY is not configured"
     );
+
   }
 
   const url =
     "https://catalog.api.2gis.com/3.0/items/geocode?" +
     new URLSearchParams({
+
       q:
         query +
         ", Алматы, Казахстан",
@@ -466,18 +786,23 @@ async function geocode(query) {
       fields:
         "items.point,items.full_address_name",
 
-      page_size: "1",
+      page_size:
+        "1",
 
-      key: DG_KEY
+      key:
+        DG_KEY
+
     });
 
   const response =
     await fetch(url);
 
   if (!response.ok) {
+
     throw Error(
       "Geocoder error"
     );
+
   }
 
   const data =
@@ -491,6 +816,7 @@ async function geocode(query) {
   }
 
   return {
+
     lat:
       Number(item.point.lat),
 
@@ -500,98 +826,148 @@ async function geocode(query) {
     address:
       item.full_address_name ||
       query
+
   };
+
 }
 
 // =====================================================
-// ПРОВЕРКА КВАДРАТА
+// ZONE
 // =====================================================
 
 function insideZone(point, zone) {
+
   return (
-    point.lat >= zone.minLat &&
-    point.lat <= zone.maxLat &&
-    point.lon >= zone.minLon &&
-    point.lon <= zone.maxLon
+
+    point.lat >= Number(zone.minLat) &&
+
+    point.lat <= Number(zone.maxLat) &&
+
+    point.lon >= Number(zone.minLon) &&
+
+    point.lon <= Number(zone.maxLon)
+
   );
+
 }
 
-function findZone(point) {
-  for (const zone of DELIVERY_ZONES) {
-    if (insideZone(point, zone)) {
+function findZone(point, zones) {
+
+  for (const zone of zones) {
+
+    if (
+      insideZone(point, zone)
+    ) {
+
       return zone;
+
     }
+
   }
 
   return null;
+
 }
 
 // =====================================================
-// РАСЧЁТ ДОСТАВКИ
+// DELIVERY
 // =====================================================
 
 function calculateDelivery(
   amount,
-  inZone
+  inZone,
+  settings
 ) {
+
+  const minimum =
+    Number(
+      settings.freeDeliveryMinimum
+    ) || 5000;
+
+  const smallDelivery =
+    Number(
+      settings.smallOrderDelivery
+    ) || 500;
+
   // ВНЕ ЗОНЫ
   if (!inZone) {
+
     return {
+
       deliveryPrice: null,
       total: null,
       externalCourier: true
+
     };
+
   }
 
-  // В ЗОНЕ + 5000 И БОЛЬШЕ
+  // БЕСПЛАТНО
   if (
-    amount >=
-    FREE_DELIVERY_MINIMUM
+    amount >= minimum
   ) {
+
     return {
+
       deliveryPrice: 0,
       total: amount,
       externalCourier: false
+
     };
+
   }
 
-  // В ЗОНЕ + МЕНЬШЕ 5000
+  // 500 ₸
   return {
+
     deliveryPrice:
-      SMALL_ORDER_DELIVERY,
+      smallDelivery,
 
     total:
-      amount +
-      SMALL_ORDER_DELIVERY,
+      amount + smallDelivery,
 
-    externalCourier: false
+    externalCourier:
+      false
+
   };
+
 }
 
 // =====================================================
-// ПРОВЕРКА АДРЕСА
+// CHECK ZONE
 // =====================================================
 
 async function checkZone(
   address,
   amount = 0
 ) {
+
+  const data =
+    read();
+
   const destination =
     await geocode(address);
 
   if (!destination) {
+
     return {
+
       found: false,
 
       inZone: false,
 
       message:
         "Не удалось найти этот адрес. Уточните адрес."
+
     };
+
   }
 
   const zone =
-    findZone(destination);
+    findZone(
+      destination,
+      data.zones
+    );
 
   const inZone =
     Boolean(zone);
@@ -599,12 +975,14 @@ async function checkZone(
   const delivery =
     calculateDelivery(
       Number(amount) || 0,
-      inZone
+      inZone,
+      data.settings
     );
 
-  // ВНЕ ЗОНЫ
   if (!zone) {
+
     return {
+
       found: true,
 
       inZone: false,
@@ -614,23 +992,30 @@ async function checkZone(
       coordinates:
         destination,
 
-      deliveryPrice: null,
+      deliveryPrice:
+        null,
 
-      total: null,
+      total:
+        null,
 
-      externalCourier: true,
+      externalCourier:
+        true,
 
       message:
         "Адрес вне зоны доставки. Курьера нужно вызвать через Яндекс Go или inDrive."
+
     };
+
   }
 
   return {
+
     found: true,
 
     inZone: true,
 
-    zone: zone.name,
+    zone:
+      zone.name,
 
     coordinates:
       destination,
@@ -646,9 +1031,13 @@ async function checkZone(
 
     message:
       delivery.deliveryPrice === 0
+
         ? "Адрес входит в зону. Доставка бесплатная — 0 ₸."
-        : "Адрес входит в зону. Доставка — 500 ₸."
+
+        : `Адрес входит в зону. Доставка — ${delivery.deliveryPrice} ₸.`
+
   };
+
 }
 
 // =====================================================
@@ -669,28 +1058,38 @@ const server =
         req.method;
 
       // =================================================
-      // CORS
+      // OPTIONS
       // =================================================
 
-      if (method === "OPTIONS") {
-        res.writeHead(204, {
-          "Access-Control-Allow-Origin": "*",
+      if (
+        method === "OPTIONS"
+      ) {
 
-          "Access-Control-Allow-Headers":
-            "Content-Type,Authorization",
+        res.writeHead(
+          204,
+          {
 
-          "Access-Control-Allow-Methods":
-            "GET,POST,PUT,PATCH,OPTIONS"
-        });
+            "Access-Control-Allow-Origin":
+              "*",
+
+            "Access-Control-Allow-Headers":
+              "Content-Type,Authorization",
+
+            "Access-Control-Allow-Methods":
+              "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+
+          }
+        );
 
         return res.end();
+
       }
 
       try {
 
-        // ===============================================
-        // UPLOAD PAYMENT RECEIPT
-        // ===============================================
+        // =================================================
+        // UPLOAD RECEIPT
+        // =================================================
 
         if (
           u.pathname ===
@@ -705,17 +1104,20 @@ const server =
             res,
             201,
             {
+
               success: true,
 
               receipt:
                 file.url
+
             }
           );
+
         }
 
-        // ===============================================
-        // СТАТУС САЙТА
-        // ===============================================
+        // =================================================
+        // SITE STATUS GET
+        // =================================================
 
         if (
           u.pathname ===
@@ -730,15 +1132,21 @@ const server =
             res,
             200,
             {
+
               siteOpen:
-                data.siteOpen
+                data.siteOpen,
+
+              settings:
+                data.settings
+
             }
           );
+
         }
 
-        // ===============================================
-        // ВКЛЮЧИТЬ / ВЫКЛЮЧИТЬ САЙТ
-        // ===============================================
+        // =================================================
+        // SITE STATUS PATCH
+        // =================================================
 
         if (
           u.pathname ===
@@ -747,6 +1155,7 @@ const server =
         ) {
 
           if (!auth(req)) {
+
             return json(
               res,
               401,
@@ -755,6 +1164,7 @@ const server =
                   "Нет доступа"
               }
             );
+
           }
 
           const body =
@@ -774,17 +1184,21 @@ const server =
             res,
             200,
             {
+
               success: true,
 
               siteOpen:
                 data.siteOpen
+
             }
           );
+
         }
 
-        // ===============================================
+        // =================================================
         // CONFIG
-        // ===============================================
+        // Публичный API
+        // =================================================
 
         if (
           u.pathname ===
@@ -799,22 +1213,30 @@ const server =
             res,
             200,
             {
+
+              siteOpen:
+                data.siteOpen,
+
+              settings:
+                data.settings,
+
               pickupPoints:
-                data.pickupPoints.map(
-                  x => x.address
-                ),
+                data.pickupPoints,
 
               zones:
-                DELIVERY_ZONES.map(
-                  x => x.name
-                )
+                data.zones,
+
+              menuByBranch:
+                data.menuByBranch
+
             }
           );
+
         }
 
-        // ===============================================
+        // =================================================
         // CHECK ZONE
-        // ===============================================
+        // =================================================
 
         if (
           u.pathname ===
@@ -825,51 +1247,63 @@ const server =
           const body =
             await getBody(req);
 
-          const currentData =
+          const data =
             read();
 
           if (
-            !currentData.siteOpen
+            !data.siteOpen
           ) {
+
             return json(
               res,
               403,
               {
+
                 error:
                   "Сейчас заказы не принимаются. Заказы принимаются с 11:00 до 23:00."
+
               }
             );
+
           }
 
-          if (!body.address) {
+          if (
+            !body.address
+          ) {
+
             return json(
               res,
               400,
               {
+
                 found: false,
 
                 message:
                   "Введите адрес доставки."
+
               }
             );
+
           }
 
           return json(
             res,
             200,
             await checkZone(
-              body.address,
-
+              String(
+                body.address
+              ),
               Number(
                 body.amount || 0
               )
             )
           );
+
         }
 
-        // ===============================================
+        // =================================================
         // CREATE ORDER
-        // ===============================================
+        // =================================================
 
         if (
           u.pathname ===
@@ -883,16 +1317,21 @@ const server =
           const data =
             read();
 
-          // Проверяем сайт
-          if (!data.siteOpen) {
+          if (
+            !data.siteOpen
+          ) {
+
             return json(
               res,
               403,
               {
+
                 error:
                   "Сейчас заказы не принимаются. Заказы принимаются с 11:00 до 23:00."
+
               }
             );
+
           }
 
           if (
@@ -901,31 +1340,42 @@ const server =
             !body.pickup ||
             !body.address
           ) {
+
             return json(
               res,
               400,
               {
+
                 error:
                   "Заполните обязательные поля."
+
               }
             );
+
           }
 
-          if (
-            !data.pickupPoints.some(
-              x =>
-                x.address ===
+          const pickupExists =
+            data.pickupPoints.some(
+              point =>
+                point.address ===
                 body.pickup
-            )
+            );
+
+          if (
+            !pickupExists
           ) {
+
             return json(
               res,
               400,
               {
+
                 error:
                   "Недопустимая точка отправления."
+
               }
             );
+
           }
 
           const amount =
@@ -933,35 +1383,50 @@ const server =
               body.amount || 0
             );
 
-          if (amount <= 0) {
+          if (
+            amount <= 0
+          ) {
+
             return json(
               res,
               400,
               {
+
                 error:
                   "Введите сумму заказа."
+
               }
             );
+
           }
 
           const zone =
             await checkZone(
-              body.address,
+              String(
+                body.address
+              ),
               amount
             );
 
-          if (!zone.found) {
+          if (
+            !zone.found
+          ) {
+
             return json(
               res,
               400,
               {
+
                 error:
                   zone.message
+
               }
             );
+
           }
 
           const order = {
+
             id:
               data.nextOrderId++,
 
@@ -969,18 +1434,27 @@ const server =
               new Date().toISOString(),
 
             name:
-              String(body.name),
+              String(
+                body.name
+              ),
 
             phone:
-              String(body.phone),
+              String(
+                body.phone
+              ),
 
             pickup:
-              String(body.pickup),
+              String(
+                body.pickup
+              ),
 
             address:
-              String(body.address),
+              String(
+                body.address
+              ),
 
-            amount,
+            amount:
+              amount,
 
             item:
               String(
@@ -1022,6 +1496,7 @@ const server =
 
             status:
               "Новый"
+
           };
 
           data.orders.unshift(
@@ -1035,11 +1510,12 @@ const server =
             201,
             order
           );
+
         }
 
-        // ===============================================
+        // =================================================
         // ADMIN ORDERS
-        // ===============================================
+        // =================================================
 
         if (
           u.pathname ===
@@ -1048,6 +1524,7 @@ const server =
         ) {
 
           if (!auth(req)) {
+
             return json(
               res,
               401,
@@ -1056,6 +1533,7 @@ const server =
                   "Нет доступа"
               }
             );
+
           }
 
           return json(
@@ -1063,11 +1541,12 @@ const server =
             200,
             read().orders
           );
+
         }
 
-        // ===============================================
-        // ADMIN PATCH ORDER
-        // ===============================================
+        // =================================================
+        // ADMIN ORDER PATCH
+        // =================================================
 
         if (
           u.pathname.startsWith(
@@ -1077,6 +1556,7 @@ const server =
         ) {
 
           if (!auth(req)) {
+
             return json(
               res,
               401,
@@ -1085,6 +1565,7 @@ const server =
                   "Нет доступа"
               }
             );
+
           }
 
           const id =
@@ -1102,39 +1583,68 @@ const server =
 
           const order =
             data.orders.find(
-              x => x.id === id
+              item =>
+                item.id === id
             );
 
           if (!order) {
+
             return json(
               res,
               404,
               {
+
                 error:
-                  "Заказ не найден"
+                  "Заказ не найден."
+
               }
             );
+
           }
 
-          if (body.status) {
+          if (
+            body.status
+          ) {
+
             order.status =
-              body.status;
+              String(
+                body.status
+              );
+
           }
 
           if (
             "deliveryPrice" in body
           ) {
+
             order.deliveryPrice =
               body.deliveryPrice;
+
+            if (
+              order.inZone
+            ) {
+
+              order.total =
+                Number(
+                  order.amount || 0
+                ) +
+                Number(
+                  body.deliveryPrice || 0
+                );
+
+            }
+
           }
 
           if (
             "paymentStatus" in body
           ) {
+
             order.paymentStatus =
               String(
                 body.paymentStatus
               );
+
           }
 
           save(data);
@@ -1144,19 +1654,21 @@ const server =
             200,
             order
           );
+
         }
 
-        // ===============================================
-        // ADMIN MENU BY BRANCH — GET
-        // ===============================================
+        // =================================================
+        // ADMIN SETTINGS GET
+        // =================================================
 
         if (
           u.pathname ===
-            "/api/menu" &&
+            "/api/settings" &&
           method === "GET"
         ) {
 
           if (!auth(req)) {
+
             return json(
               res,
               401,
@@ -1165,6 +1677,7 @@ const server =
                   "Нет доступа"
               }
             );
+
           }
 
           const data =
@@ -1174,30 +1687,30 @@ const server =
             res,
             200,
             {
-              menuByBranch:
-                data.menuByBranch ||
-                {
-                  "1": [],
-                  "2": [],
-                  "3": [],
-                  "4": [],
-                  "5": []
-                }
+
+              settings:
+                data.settings,
+
+              siteOpen:
+                data.siteOpen
+
             }
           );
+
         }
 
-        // ===============================================
-        // ADMIN MENU BY BRANCH — PUT
-        // ===============================================
+        // =================================================
+        // ADMIN SETTINGS PUT
+        // =================================================
 
         if (
           u.pathname ===
-            "/api/menu" &&
+            "/api/settings" &&
           method === "PUT"
         ) {
 
           if (!auth(req)) {
+
             return json(
               res,
               401,
@@ -1206,6 +1719,7 @@ const server =
                   "Нет доступа"
               }
             );
+
           }
 
           const body =
@@ -1213,6 +1727,276 @@ const server =
 
           const data =
             read();
+
+          data.settings = {
+
+            freeDeliveryMinimum:
+              Number(
+                body.freeDeliveryMinimum
+              ) || 5000,
+
+            smallOrderDelivery:
+              Number(
+                body.smallOrderDelivery
+              ) || 500,
+
+            deliveryStart:
+              String(
+                body.deliveryStart ||
+                "11:00"
+              ),
+
+            deliveryEnd:
+              String(
+                body.deliveryEnd ||
+                "23:00"
+              ),
+
+            whatsapp:
+              String(
+                body.whatsapp ||
+                ""
+              )
+
+          };
+
+          save(data);
+
+          return json(
+            res,
+            200,
+            {
+
+              success: true,
+
+              settings:
+                data.settings
+
+            }
+          );
+
+        }
+
+        // =================================================
+        // ADMIN BRANCHES GET
+        // =================================================
+
+        if (
+          u.pathname ===
+            "/api/branches" &&
+          method === "GET"
+        ) {
+
+          if (!auth(req)) {
+
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+
+          }
+
+          return json(
+            res,
+            200,
+            {
+
+              pickupPoints:
+                read().pickupPoints
+
+            }
+          );
+
+        }
+
+        // =================================================
+        // ADMIN BRANCHES PUT
+        // =================================================
+
+        if (
+          u.pathname ===
+            "/api/branches" &&
+          method === "PUT"
+        ) {
+
+          if (!auth(req)) {
+
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+
+          }
+
+          const body =
+            await getBody(req);
+
+          if (
+            !Array.isArray(
+              body.pickupPoints
+            )
+          ) {
+
+            return json(
+              res,
+              400,
+              {
+
+                error:
+                  "Неверный формат филиалов."
+
+              }
+            );
+
+          }
+
+          const data =
+            read();
+
+          data.pickupPoints =
+            body.pickupPoints.map(
+              (branch, index) => ({
+
+                id:
+                  branch.id ||
+                  Date.now() +
+                  index,
+
+                name:
+                  String(
+                    branch.name || ""
+                  ),
+
+                address:
+                  String(
+                    branch.address || ""
+                  ),
+
+                lat:
+                  Number(
+                    branch.lat || 0
+                  ),
+
+                lon:
+                  Number(
+                    branch.lon || 0
+                  ),
+
+                workTime:
+                  String(
+                    branch.workTime || ""
+                  ),
+
+                deliveryTime:
+                  String(
+                    branch.deliveryTime ||
+                    "11:00-23:00"
+                  ),
+
+                kaspi:
+                  String(
+                    branch.kaspi || ""
+                  ),
+
+                kaspiName:
+                  String(
+                    branch.kaspiName || ""
+                  ),
+
+                whatsapp:
+                  String(
+                    branch.whatsapp || ""
+                  )
+
+              })
+            );
+
+          save(data);
+
+          return json(
+            res,
+            200,
+            {
+
+              success: true,
+
+              pickupPoints:
+                data.pickupPoints
+
+            }
+          );
+
+        }
+
+        // =================================================
+        // ADMIN MENU GET
+        // =================================================
+
+        if (
+          u.pathname ===
+            "/api/menu" &&
+          method === "GET"
+        ) {
+
+          if (!auth(req)) {
+
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+
+          }
+
+          return json(
+            res,
+            200,
+            {
+
+              menuByBranch:
+                read().menuByBranch
+
+            }
+          );
+
+        }
+
+        // =================================================
+        // ADMIN MENU PUT
+        // =================================================
+
+        if (
+          u.pathname ===
+            "/api/menu" &&
+          method === "PUT"
+        ) {
+
+          if (!auth(req)) {
+
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+
+          }
+
+          const body =
+            await getBody(req);
 
           const branchId =
             String(
@@ -1226,16 +2010,22 @@ const server =
               "3",
               "4",
               "5"
-            ].includes(branchId)
+            ].includes(
+              branchId
+            )
           ) {
+
             return json(
               res,
               400,
               {
+
                 error:
                   "Недопустимый филиал."
+
               }
             );
+
           }
 
           if (
@@ -1243,54 +2033,49 @@ const server =
               body.menu
             )
           ) {
+
             return json(
               res,
               400,
               {
+
                 error:
                   "Неверный формат меню."
+
               }
             );
+
           }
 
-          if (
-            !data.menuByBranch
-          ) {
-            data.menuByBranch = {
-              "1": [],
-              "2": [],
-              "3": [],
-              "4": [],
-              "5": []
-            };
-          }
+          const data =
+            read();
 
           data.menuByBranch[
             branchId
           ] =
             body.menu.map(
-              item => ({
+              (item, index) => ({
+
                 id:
                   item.id ||
                   Date.now() +
-                    Math.random(),
+                  index,
 
                 category:
                   String(
-                    item.category ||
-                    ""
+                    item.category || ""
                   ),
 
                 name:
                   String(
-                    item.name ||
-                    ""
+                    item.name || ""
                   ),
 
                 price:
                   Number(
                     item.price || 0
                   )
+
               })
             );
 
@@ -1300,6 +2085,7 @@ const server =
             res,
             200,
             {
+
               success: true,
 
               branchId,
@@ -1308,22 +2094,168 @@ const server =
                 data.menuByBranch[
                   branchId
                 ]
+
             }
           );
+
         }
 
-        // ===============================================
+        // =================================================
+        // ADMIN ZONES GET
+        // =================================================
+
+        if (
+          u.pathname ===
+            "/api/zones" &&
+          method === "GET"
+        ) {
+
+          if (!auth(req)) {
+
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+
+          }
+
+          return json(
+            res,
+            200,
+            {
+
+              zones:
+                read().zones
+
+            }
+          );
+
+        }
+
+        // =================================================
+        // ADMIN ZONES PUT
+        // =================================================
+
+        if (
+          u.pathname ===
+            "/api/zones" &&
+          method === "PUT"
+        ) {
+
+          if (!auth(req)) {
+
+            return json(
+              res,
+              401,
+              {
+                error:
+                  "Нет доступа"
+              }
+            );
+
+          }
+
+          const body =
+            await getBody(req);
+
+          if (
+            !Array.isArray(
+              body.zones
+            )
+          ) {
+
+            return json(
+              res,
+              400,
+              {
+
+                error:
+                  "Неверный формат зон."
+
+              }
+            );
+
+          }
+
+          const data =
+            read();
+
+          data.zones =
+            body.zones.map(
+              (zone, index) => ({
+
+                id:
+                  String(
+                    zone.id ||
+                    `zone${index + 1}`
+                  ),
+
+                name:
+                  String(
+                    zone.name ||
+                    `Зона ${index + 1}`
+                  ),
+
+                minLat:
+                  Number(
+                    zone.minLat
+                  ),
+
+                maxLat:
+                  Number(
+                    zone.maxLat
+                  ),
+
+                minLon:
+                  Number(
+                    zone.minLon
+                  ),
+
+                maxLon:
+                  Number(
+                    zone.maxLon
+                  )
+
+              })
+            );
+
+          save(data);
+
+          return json(
+            res,
+            200,
+            {
+
+              success: true,
+
+              zones:
+                data.zones
+
+            }
+          );
+
+        }
+
+        // =================================================
         // STATIC FILES
-        // ===============================================
+        // =================================================
 
         let file =
           u.pathname === "/"
             ? "/index.html"
             : u.pathname;
 
-        if (file === "/admin") {
+        if (
+          file === "/admin"
+        ) {
+
           file =
             "/admin.html";
+
         }
 
         const full =
@@ -1337,14 +2269,18 @@ const server =
         if (
           !full.startsWith(ROOT)
         ) {
+
           return json(
             res,
             403,
             {
+
               error:
                 "Forbidden"
+
             }
           );
+
         }
 
         fs.readFile(
@@ -1352,6 +2288,7 @@ const server =
           (error, content) => {
 
             if (error) {
+
               res.writeHead(
                 404
               );
@@ -1359,14 +2296,16 @@ const server =
               return res.end(
                 "Not found"
               );
+
             }
 
             const ext =
               path.extname(
                 full
-              );
+              ).toLowerCase();
 
             const types = {
+
               ".html":
                 "text/html; charset=utf-8",
 
@@ -1386,21 +2325,31 @@ const server =
                 "image/png",
 
               ".webp":
-                "image/webp"
+                "image/webp",
+
+              ".svg":
+                "image/svg+xml",
+
+              ".json":
+                "application/json; charset=utf-8"
+
             };
 
             res.writeHead(
               200,
               {
+
                 "Content-Type":
                   types[ext] ||
                   "text/plain; charset=utf-8"
+
               }
             );
 
             res.end(
               content
             );
+
           }
         );
 
@@ -1410,23 +2359,38 @@ const server =
           error
         );
 
-        json(
-          res,
-          500,
-          {
-            error:
-              error.message
-          }
-        );
+        if (!res.headersSent) {
+
+          return json(
+            res,
+            500,
+            {
+
+              error:
+                error.message ||
+                "Ошибка сервера."
+
+            }
+          );
+
+        }
+
       }
+
     }
   );
+
+// =====================================================
+// START
+// =====================================================
 
 server.listen(
   PORT,
   () => {
+
     console.log(
       `Tomchi: http://localhost:${PORT}`
     );
+
   }
 );
