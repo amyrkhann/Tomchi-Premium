@@ -1,60 +1,353 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
 <title>Tomchi Premium</title>
 
-<link rel="stylesheet" href="style.css">
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+
+<style>
+
+/* =====================================================
+   TOMCHI — ЗАКРЫТЫЙ САЙТ
+   ===================================================== */
+
+#site-closed-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999999;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 25px;
+
+    box-sizing: border-box;
+
+    background:
+        #f7f1e5;
+
+    text-align: center;
+
+}
+
+#site-closed-screen.show {
+
+    display: flex;
+
+}
+
+.site-closed-box {
+
+    width: 100%;
+
+    max-width: 500px;
+
+    padding: 35px 25px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,0.12);
+
+}
+
+.site-closed-icon {
+
+    font-size: 65px;
+
+    margin-bottom: 15px;
+
+}
+
+.site-closed-title {
+
+    margin: 0 0 15px 0;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    color: #8b6518;
+
+}
+
+.site-closed-text {
+
+    margin: 0;
+
+    font-size: 18px;
+
+    line-height: 1.5;
+
+    color: #555;
+
+}
+
+.site-closed-time {
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    background: #f7f1e5;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    color: #8b6518;
+
+}
+
+/* Пока проверяем статус */
+
+#site-loading-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999998;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f7f1e5;
+
+    transition: opacity 0.2s ease;
+
+}
+
+#site-loading-screen.hidden {
+
+    display: none;
+
+}
+
+.site-loading-box {
+
+    text-align: center;
+
+}
+
+.site-loading-logo {
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    color: #8b6518;
+
+    margin-bottom: 12px;
+
+}
+
+.site-loading-text {
+
+    font-size: 16px;
+
+    color: #777;
+
+}
+
+/* =====================================================
+   ОТКРЫТЫЙ САЙТ
+   ===================================================== */
+
+#app {
+
+    min-height: 100vh;
+
+}
+
+</style>
 
 </head>
 
 <body>
 
+<!-- =====================================================
+     ЭКРАН ЗАГРУЗКИ
+     ===================================================== -->
+
+<div id="site-loading-screen">
+
+    <div class="site-loading-box">
+
+        <div class="site-loading-logo">
+            TOMCHI PREMIUM
+        </div>
+
+        <div class="site-loading-text">
+            Проверяем доступность сайта...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ЭКРАН ЗАКРЫТОГО САЙТА
+     ===================================================== -->
+
+<div id="site-closed-screen">
+
+    <div class="site-closed-box">
+
+        <div class="site-closed-icon">
+            🔴
+        </div>
+
+        <h1 class="site-closed-title">
+            Сайт временно закрыт
+        </h1>
+
+        <p class="site-closed-text">
+            Сейчас мы не принимаем новые заказы.
+        </p>
+
+        <div class="site-closed-time">
+            Заказы принимаются с 11:00 до 23:00
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ОСНОВНОЙ САЙТ
+     ===================================================== -->
+
 <div id="app">
 
-<section id="language-screen" class="screen active">
+<!-- =====================================================
+     LANGUAGE
+     ===================================================== -->
 
-<h1>TOMCHI PREMIUM</h1>
+<section
+    id="language-screen"
+    class="screen active"
+>
 
-<p>Тілді таңдаңыз / Выберите язык</p>
+    <h1>
+        TOMCHI PREMIUM
+    </h1>
 
-<button class="btn" type="button" onclick="setLanguage('kz')">
-    🇰🇿 Қазақша
-</button>
+    <p>
+        Тілді таңдаңыз / Выберите язык
+    </p>
 
-<button class="btn" type="button" onclick="setLanguage('ru')">
-    🇷🇺 Русский
-</button>
+    <button
+        class="btn"
+        type="button"
+        onclick="setLanguage('kz')"
+    >
+        🇰🇿 Қазақша
+    </button>
 
-</section>
-
-<section id="address-screen" class="screen">
-
-<h2>Введите адрес доставки</h2>
-
-<input
-id="address"
-type="text"
-placeholder="Например: Абая 47">
-
-<button class="btn" onclick="checkAddress()">
-Проверить адрес
-</button>
-<div id="result"></div>
-</section>
-
-<section id="branch-screen" class="screen">
-
-<h2>Выберите филиал</h2>
-
-<div id="branches"></div>
+    <button
+        class="btn"
+        type="button"
+        onclick="setLanguage('ru')"
+    >
+        🇷🇺 Русский
+    </button>
 
 </section>
 
-<section id="menu-screen" class="screen">
 
-    <button class="btn" onclick="backToBranches()">
+<!-- =====================================================
+     ADDRESS
+     ===================================================== -->
+
+<section
+    id="address-screen"
+    class="screen"
+>
+
+    <h2>
+        Введите адрес доставки
+    </h2>
+
+    <input
+        id="address"
+        type="text"
+        placeholder="Например: Абая 47"
+    >
+
+    <button
+        class="btn"
+        type="button"
+        onclick="checkAddress()"
+    >
+        Проверить адрес
+    </button>
+
+    <div id="result"></div>
+
+</section>
+
+
+<!-- =====================================================
+     BRANCHES
+     ===================================================== -->
+
+<section
+    id="branch-screen"
+    class="screen"
+>
+
+    <h2>
+        Выберите филиал
+    </h2>
+
+    <div id="branches"></div>
+
+</section>
+
+
+<!-- =====================================================
+     MENU
+     ===================================================== -->
+
+<section
+    id="menu-screen"
+    class="screen"
+>
+
+    <button
+        class="btn"
+        type="button"
+        onclick="backToBranches()"
+    >
         ← Назад
     </button>
 
@@ -65,124 +358,236 @@ placeholder="Например: Абая 47">
 </section>
 
 
-<section id="order-screen" class="screen">
+<!-- =====================================================
+     ORDER
+     ===================================================== -->
 
-    <button class="btn" onclick="backToMenu()">
+<section
+    id="order-screen"
+    class="screen"
+>
+
+    <button
+        class="btn"
+        type="button"
+        onclick="backToMenu()"
+    >
         ← Вернуться в меню
     </button>
 
-    <h2>Проверка заказа</h2>
+    <h2>
+        Проверка заказа
+    </h2>
 
     <div id="order-list"></div>
 
     <div id="order-total">
-        Итого: <span id="order-total-price">0</span> ₸
-    </div>
 
-    <button class="btn" onclick="backToMenu()">
-        ➕ Добавить ещё
-    </button>
+        Итого:
+        <span id="order-total-price">
+            0
+        </span>
+        ₸
 
-<button class="btn" onclick="payWithKaspi()">
-    💳 Оплатить через Kaspi
-</button>
-<div id="customer-form" style="display:none;">
-<!-- KASPI ОПЛАТА -->
-<div id="kaspi-payment" style="display:none;">
-
-    <h2>💳 Оплата Kaspi</h2>
-
-    <p>Переведите сумму заказа на Kaspi:</p>
-
-    <div class="kaspi-box">
-        <h3 id="kaspi-name"></h3>
-        <p id="kaspi-phone"></p>
-        <p>
-            Сумма:
-            <strong><span id="kaspi-amount">0</span> ₸</strong>
-        </p>
     </div>
 
     <button
         class="btn"
         type="button"
-        onclick="copyKaspiNumber()">
-        📋 Скопировать номер
+        onclick="backToMenu()"
+    >
+        ➕ Добавить ещё
     </button>
 
-    <input
-    type="file"
-    id="kaspiReceipt"
-    accept="image/jpeg,image/png,image/webp"
-    style="display:none;"
-    onchange="receiptSelected()"
->
 
-<button
-    class="btn"
-    type="button"
-    onclick="document.getElementById('kaspiReceipt').click()">
-    📷 Выбрать чек
-</button>
+    <!-- =================================================
+         KASPI PAYMENT
+         ================================================= -->
 
-<p id="receiptStatus"></p>
-
-<button
-    class="btn"
-    type="button"
-    onclick="showCustomerForm()">
-    ✅ Я оплатил
-</button>
-
-
-
-</div>
-    <h2>Оформление заказа</h2>
-
-    <input
-        id="customer-name"
-        type="text"
-        placeholder="Ваше имя"
+    <button
+        class="btn"
+        type="button"
+        onclick="payWithKaspi()"
     >
-
-    <input
-        id="customer-phone"
-        type="tel"
-        placeholder="Номер телефона"
-    >
-
-    <textarea
-        id="customer-comment"
-        placeholder="Комментарий к заказу"
-        style="width:100%; min-height:90px; padding:15px; font-size:17px; border:1px solid #ccc; border-radius:10px; margin-bottom:15px; font-family:Arial,sans-serif;"
-    ></textarea>
-
-    <button class="btn" type="button" onclick="sendOrder()">
-        📲 Отправить заказ
+        💳 Оплатить через Kaspi
     </button>
 
-</div>
-</section>
-</section>
 
-<!-- KASPI ОПЛАТА -->
-<div id="kaspiModal" class="modal">
+    <!-- =================================================
+         CUSTOMER FORM
+         ================================================= -->
 
-    <div class="modal-content">
+    <div
+        id="customer-form"
+        style="display:none;"
+    >
 
-        <h2>💳 Оплата через Kaspi</h2>
+        <h2>
+            Оформление заказа
+        </h2>
 
-        <p id="kaspiPaymentInfo"></p>
+        <input
+            id="customer-name"
+            type="text"
+            placeholder="Ваше имя"
+        >
 
-        <button class="btn" type="button" onclick="openKaspiApp()">
-            📱 Открыть Kaspi
+        <input
+            id="customer-phone"
+            type="tel"
+            placeholder="Номер телефона"
+        >
+
+        <textarea
+            id="customer-comment"
+            placeholder="Комментарий к заказу"
+            style="
+                width:100%;
+                min-height:90px;
+                padding:15px;
+                font-size:17px;
+                border:1px solid #ccc;
+                border-radius:10px;
+                margin-bottom:15px;
+                font-family:Arial,sans-serif;
+                box-sizing:border-box;
+            "
+        ></textarea>
+
+        <button
+            class="btn"
+            type="button"
+            onclick="sendOrder()"
+        >
+            📲 Отправить заказ
         </button>
 
-        <button class="btn" type="button" onclick="kaspiPaid()">
+    </div>
+
+
+    <!-- =================================================
+         KASPI PAYMENT BOX
+         ================================================= -->
+
+    <div
+        id="kaspi-payment"
+        style="display:none;"
+    >
+
+        <h2>
+            💳 Оплата Kaspi
+        </h2>
+
+        <p>
+            Переведите сумму заказа на Kaspi:
+        </p>
+
+        <div class="kaspi-box">
+
+            <h3 id="kaspi-name"></h3>
+
+            <p id="kaspi-phone"></p>
+
+            <p>
+
+                Сумма:
+
+                <strong>
+                    <span id="kaspi-amount">
+                        0
+                    </span>
+                    ₸
+                </strong>
+
+            </p>
+
+        </div>
+
+
+        <button
+            class="btn"
+            type="button"
+            onclick="copyKaspiNumber()"
+        >
+            📋 Скопировать номер
+        </button>
+
+
+        <input
+            type="file"
+            id="kaspiReceipt"
+            accept="image/jpeg,image/png,image/webp"
+            style="display:none;"
+            onchange="receiptSelected()"
+        >
+
+
+        <button
+            class="btn"
+            type="button"
+            onclick="document.getElementById('kaspiReceipt').click()"
+        >
+            📷 Выбрать чек
+        </button>
+
+
+        <p id="receiptStatus"></p>
+
+
+        <button
+            class="btn"
+            type="button"
+            onclick="showCustomerForm()"
+        >
             ✅ Я оплатил
         </button>
 
-        <button class="btn cancel" type="button" onclick="closeKaspiModal()">
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     KASPI MODAL
+     ===================================================== -->
+
+<div
+    id="kaspiModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <h2>
+            💳 Оплата через Kaspi
+        </h2>
+
+        <p id="kaspiPaymentInfo"></p>
+
+
+        <button
+            class="btn"
+            type="button"
+            onclick="openKaspiApp()"
+        >
+            📱 Открыть Kaspi
+        </button>
+
+
+        <button
+            class="btn"
+            type="button"
+            onclick="kaspiPaid()"
+        >
+            ✅ Я оплатил
+        </button>
+
+
+        <button
+            class="btn cancel"
+            type="button"
+            onclick="closeKaspiModal()"
+        >
             Отмена
         </button>
 
@@ -190,41 +595,248 @@ placeholder="Например: Абая 47">
 
 </div>
 
-<div id="cart">
+
+<!-- =====================================================
+     CART
+     ===================================================== -->
+
 <div id="cart">
 
-<button onclick="openOrderCheck()">
-🛒 Проверить заказ
-</button>
+    <button
+        type="button"
+        onclick="openOrderCheck()"
+    >
+        🛒 Проверить заказ
+    </button>
 
 </div>
 
-<a id="whatsapp"
-href="#"
-target="_blank">
-WhatsApp
+
+<!-- =====================================================
+     WHATSAPP
+     ===================================================== -->
+
+<a
+    id="whatsapp"
+    href="#"
+    target="_blank"
+>
+    WhatsApp
 </a>
+
+
+<!-- =====================================================
+     DELIVERY MODAL
+     ===================================================== -->
+
+<div
+    id="deliveryModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <h2 id="modalTitle"></h2>
+
+        <p id="modalText"></p>
+
+
+        <button
+            class="btn"
+            type="button"
+            onclick="continueOrder()"
+        >
+            Продолжить
+        </button>
+
+
+        <button
+            class="btn cancel"
+            type="button"
+            onclick="closeModal()"
+        >
+            Изменить адрес
+        </button>
+
+    </div>
+
 </div>
-<div id="deliveryModal" class="modal">
-
-  <div class="modal-content">
-
-    <h2 id="modalTitle"></h2>
-
-    <p id="modalText"></p>
-
-    <button class="btn" onclick="continueOrder()">
-      Продолжить
-    </button>
-
-    <button class="btn cancel" onclick="closeModal()">
-      Изменить адрес
-    </button>
-
-  </div>
 
 </div>
+
+
+<!-- =====================================================
+     APP.JS
+     ===================================================== -->
+
 <script src="app.js"></script>
+
+
+<!-- =====================================================
+     ПРОВЕРКА СТАТУСА САЙТА
+     ===================================================== -->
+
+<script>
+
+(function () {
+
+    async function checkSiteStatus() {
+
+        const loading =
+            document.getElementById(
+                "site-loading-screen"
+            );
+
+        const closed =
+            document.getElementById(
+                "site-closed-screen"
+            );
+
+        const app =
+            document.getElementById(
+                "app"
+            );
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/config",
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Не удалось получить статус сайта"
+                );
+
+            }
+
+            const config =
+                await response.json();
+
+
+            /* =========================================
+               ЕСЛИ САЙТ ВЫКЛЮЧЕН
+               ========================================= */
+
+            if (
+                config.siteOpen === false
+            ) {
+
+                closed.classList.add(
+                    "show"
+                );
+
+                /*
+                 * Блокируем основной сайт
+                 */
+
+                app.style.pointerEvents =
+                    "none";
+
+                app.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+            }
+
+
+            /* =========================================
+               ЕСЛИ САЙТ ВКЛЮЧЕН
+               ========================================= */
+
+            else {
+
+                closed.classList.remove(
+                    "show"
+                );
+
+                app.style.pointerEvents =
+                    "auto";
+
+                app.removeAttribute(
+                    "aria-hidden"
+                );
+
+            }
+
+
+            /* =========================================
+               УБИРАЕМ ЭКРАН ЗАГРУЗКИ
+               ========================================= */
+
+            loading.classList.add(
+                "hidden"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Ошибка проверки статуса сайта:",
+                error
+            );
+
+            /*
+             * Если сервер доступен, но статус
+             * получить не удалось — не показываем
+             * пользователю старый интерфейс.
+             */
+
+            loading.innerHTML = `
+
+                <div class="site-loading-box">
+
+                    <div
+                        class="site-loading-logo"
+                    >
+                        TOMCHI PREMIUM
+                    </div>
+
+                    <div
+                        class="site-loading-text"
+                    >
+                        Не удалось проверить статус сайта.
+                        Обновите страницу.
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /*
+     * Проверяем сразу после загрузки.
+     */
+
+    checkSiteStatus();
+
+
+    /*
+     * Дополнительно проверяем каждые 30 секунд.
+     *
+     * Поэтому если администратор выключил сайт,
+     * уже открытая страница тоже увидит изменение.
+     */
+
+    setInterval(
+        checkSiteStatus,
+        30000
+    );
+
+
+})();
+
+</script>
 
 </body>
 </html>
