@@ -1249,9 +1249,7 @@ function updateSiteStatus() {
 // SET SITE STATUS
 // =====================================================
 async function setSiteStatus(open) {
-
     try {
-
         const result = await api("/api/site-status", {
             method: "PATCH",
             body: JSON.stringify({
@@ -1277,17 +1275,13 @@ async function setSiteStatus(open) {
         );
 
     } catch (error) {
-
         showMessage(
             "settingsMessage",
             error.message || "Не удалось изменить статус сайта.",
             "error"
         );
-
     }
-
 }
-
 
 
 
