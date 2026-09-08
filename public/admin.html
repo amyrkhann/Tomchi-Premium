@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -18,7 +20,13 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
     background: #f5f5f5;
     color: #222;
 }
@@ -33,31 +41,43 @@ body {
 header {
     background: #111;
     color: white;
-    padding: 20px;
-    border-radius: 15px;
+    padding: 24px;
+    border-radius: 16px;
     margin-bottom: 20px;
 }
 
 header h1 {
     margin: 0 0 8px;
+    font-size: 28px;
 }
 
 header p {
     margin: 0;
-    opacity: .8;
+    opacity: .75;
 }
 
 .login-box,
 .panel {
     background: white;
-    border-radius: 15px;
+    border-radius: 16px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 3px 15px rgba(0,0,0,.08);
+    box-shadow:
+        0 3px 15px rgba(0,0,0,.08);
 }
 
 h2 {
     margin-top: 0;
+}
+
+h3 {
+    margin-top: 0;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
 }
 
 input,
@@ -69,6 +89,7 @@ select {
     border-radius: 10px;
     font-size: 16px;
     margin-bottom: 12px;
+    background: white;
 }
 
 textarea {
@@ -82,6 +103,11 @@ button {
     padding: 12px 18px;
     font-size: 16px;
     cursor: pointer;
+    transition: .15s;
+}
+
+button:hover {
+    transform: translateY(-1px);
 }
 
 .btn {
@@ -111,11 +137,12 @@ button {
 button:disabled {
     opacity: .5;
     cursor: not-allowed;
+    transform: none;
 }
 
 .status {
-    padding: 15px;
-    border-radius: 10px;
+    padding: 16px;
+    border-radius: 12px;
     margin-bottom: 15px;
     font-weight: bold;
 }
@@ -139,6 +166,7 @@ button:disabled {
     gap: 8px;
     overflow-x: auto;
     margin-bottom: 20px;
+    padding-bottom: 3px;
 }
 
 .tab {
@@ -171,10 +199,7 @@ button:disabled {
     border-radius: 12px;
     padding: 15px;
     margin-bottom: 12px;
-}
-
-.card h3 {
-    margin-top: 0;
+    background: #fff;
 }
 
 .card-header {
@@ -211,10 +236,11 @@ button:disabled {
 
 .menu-item {
     display: grid;
-    grid-template-columns: 1fr 150px 100px;
+    grid-template-columns:
+        1fr 1fr 150px;
+
     gap: 10px;
     align-items: center;
-    margin-bottom: 10px;
 }
 
 .menu-item input {
@@ -258,7 +284,49 @@ button:disabled {
     color: #666;
 }
 
+.branch-number {
+    display: inline-block;
+    background: #111;
+    color: white;
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-bottom: 12px;
+}
+
+.order-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.coordinates {
+    font-family: monospace;
+    font-size: 13px;
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+}
+
 @media (max-width: 700px) {
+
+    .container {
+        padding: 10px;
+    }
+
+    header {
+        padding: 18px;
+    }
+
+    header h1 {
+        font-size: 23px;
+    }
 
     .row {
         grid-template-columns: 1fr;
@@ -273,9 +341,18 @@ button:disabled {
         flex-direction: column;
     }
 
+    button {
+        width: 100%;
+    }
+
+    .order-actions button {
+        width: 100%;
+    }
+
 }
 
 </style>
+
 </head>
 
 <body>
@@ -286,21 +363,29 @@ button:disabled {
 
 <h1>🍽️ TOMCHI PREMIUM</h1>
 
-<p>Панель администратора</p>
+<p>
+Панель администратора
+</p>
 
 </header>
 
 
-<!-- ============================= -->
-<!-- ВХОД -->
-<!-- ============================= -->
+<!-- ================================================= -->
+<!-- LOGIN -->
+<!-- ================================================= -->
 
-<div id="loginSection" class="login-box">
+<div
+    id="loginSection"
+    class="login-box"
+>
 
-<h2>🔐 Вход в админку</h2>
+<h2>
+🔐 Вход в админку
+</h2>
 
 <p class="small">
-Введите ADMIN_TOKEN, который установлен на сервере.
+Введите ADMIN_TOKEN, который установлен
+в настройках сервера.
 </p>
 
 <input
@@ -313,7 +398,7 @@ button:disabled {
     class="btn"
     onclick="login()"
 >
-    Войти
+Войти
 </button>
 
 <div id="loginMessage"></div>
@@ -321,50 +406,65 @@ button:disabled {
 </div>
 
 
-<!-- ============================= -->
-<!-- АДМИНКА -->
-<!-- ============================= -->
+<!-- ================================================= -->
+<!-- ADMIN -->
+<!-- ================================================= -->
 
-<div id="adminSection" class="hidden">
+<div
+    id="adminSection"
+    class="hidden"
+>
 
 
-<!-- СТАТУС САЙТА -->
+<!-- ================================================= -->
+<!-- SITE STATUS -->
+<!-- ================================================= -->
 
 <div class="panel">
 
-<h2>🟢 Статус сайта</h2>
+<h2>
+🟢 Статус сайта
+</h2>
 
 <div
     id="siteStatus"
     class="status"
 >
-    Загрузка...
+Загрузка...
 </div>
 
-<div style="display:flex;gap:10px;flex-wrap:wrap;">
+<div
+    style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+    "
+>
 
 <button
     class="btn-green"
     onclick="setSiteStatus(true)"
 >
-    🟢 Включить сайт
+🟢 Включить сайт
 </button>
 
 <button
     class="btn-red"
     onclick="setSiteStatus(false)"
 >
-    🔴 Выключить сайт
+🔴 Выключить сайт
 </button>
 
 </div>
 
+<div id="siteMessage"></div>
+
 </div>
 
 
-<!-- ============================= -->
+<!-- ================================================= -->
 <!-- TABS -->
-<!-- ============================= -->
+<!-- ================================================= -->
 
 <div class="tabs">
 
@@ -406,9 +506,9 @@ button:disabled {
 </div>
 
 
-<!-- ============================= -->
-<!-- НАСТРОЙКИ -->
-<!-- ============================= -->
+<!-- ================================================= -->
+<!-- SETTINGS -->
+<!-- ================================================= -->
 
 <div
     id="settings"
@@ -417,7 +517,9 @@ button:disabled {
 
 <div class="panel">
 
-<h2>⚙️ Основные настройки</h2>
+<h2>
+⚙️ Основные настройки
+</h2>
 
 <div class="row">
 
@@ -438,7 +540,7 @@ button:disabled {
 <div>
 
 <label>
-Стоимость доставки для маленького заказа
+Стоимость доставки маленького заказа
 </label>
 
 <input
@@ -450,7 +552,6 @@ button:disabled {
 </div>
 
 </div>
-
 
 <div class="row">
 
@@ -484,9 +585,8 @@ button:disabled {
 
 </div>
 
-
 <label>
-WhatsApp для заказов
+Общий WhatsApp
 </label>
 
 <input
@@ -494,7 +594,6 @@ WhatsApp для заказов
     id="whatsappNumber"
     placeholder="+77479370909"
 >
-
 
 <button
     class="btn"
@@ -510,9 +609,9 @@ WhatsApp для заказов
 </div>
 
 
-<!-- ============================= -->
-<!-- ФИЛИАЛЫ -->
-<!-- ============================= -->
+<!-- ================================================= -->
+<!-- BRANCHES -->
+<!-- ================================================= -->
 
 <div
     id="branches"
@@ -523,7 +622,9 @@ WhatsApp для заказов
 
 <div class="card-header">
 
-<h2>🏪 Филиалы</h2>
+<h2>
+🏪 Филиалы
+</h2>
 
 <button
     class="btn"
@@ -556,9 +657,9 @@ WhatsApp для заказов
 </div>
 
 
-<!-- ============================= -->
-<!-- МЕНЮ -->
-<!-- ============================= -->
+<!-- ================================================= -->
+<!-- MENU -->
+<!-- ================================================= -->
 
 <div
     id="menu"
@@ -567,20 +668,49 @@ WhatsApp для заказов
 
 <div class="panel">
 
-<div class="card-header">
+<h2>
+🍽️ Меню
+</h2>
 
-<h2>🍽️ Меню</h2>
 <label>
-    Выберите филиал
+Выберите филиал
 </label>
 
-<select id="menuBranchSelect" onchange="changeMenuBranch()">
-    <option value="1">Абылай Хана 24</option>
-    <option value="2">Tomchi Premium — Абылай Хана 34</option>
-    <option value="3">Жибек Жолы 106</option>
-    <option value="4">Абая 47</option>
-    <option value="5">Яссауи 66</option>
+<select
+    id="menuBranchSelect"
+    onchange="changeMenuBranch()"
+>
+
+<option value="1">
+Абылай Хана 24
+</option>
+
+<option value="2">
+Tomchi Premium — Абылай Хана 34
+</option>
+
+<option value="3">
+Арбат — Жибек Жолы 106
+</option>
+
+<option value="4">
+Абая 47
+</option>
+
+<option value="5">
+Яссауи 66А
+</option>
+
 </select>
+
+<div
+    style="
+        display:flex;
+        gap:10px;
+        margin-bottom:15px;
+    "
+>
+
 <button
     class="btn"
     onclick="addMenuItem()"
@@ -612,9 +742,9 @@ WhatsApp для заказов
 </div>
 
 
-<!-- ============================= -->
-<!-- ЗОНЫ -->
-<!-- ============================= -->
+<!-- ================================================= -->
+<!-- ZONES -->
+<!-- ================================================= -->
 
 <div
     id="zones"
@@ -623,12 +753,15 @@ WhatsApp для заказов
 
 <div class="panel">
 
-<h2>📍 Зоны доставки</h2>
+<h2>
+📍 Зоны доставки
+</h2>
 
 <div class="notice">
 
-Зоны задаются координатами.
-Изменение границ влияет на автоматическую проверку адреса.
+Здесь можно менять границы зон.
+После сохранения они будут использоваться
+сервером при автоматической проверке адреса.
 
 </div>
 
@@ -642,7 +775,15 @@ WhatsApp для заказов
 
 <button
     class="btn"
+    onclick="addZone()"
+>
+➕ Добавить зону
+</button>
+
+<button
+    class="btn"
     onclick="saveZones()"
+    style="margin-top:10px;"
 >
 💾 Сохранить зоны
 </button>
@@ -654,9 +795,9 @@ WhatsApp для заказов
 </div>
 
 
-<!-- ============================= -->
-<!-- ЗАКАЗЫ -->
-<!-- ============================= -->
+<!-- ================================================= -->
+<!-- ORDERS -->
+<!-- ================================================= -->
 
 <div
     id="orders"
@@ -667,7 +808,9 @@ WhatsApp для заказов
 
 <div class="card-header">
 
-<h2>📦 Заказы</h2>
+<h2>
+📦 Заказы
+</h2>
 
 <button
     class="btn"
@@ -698,28 +841,56 @@ WhatsApp для заказов
 
 <script>
 
-/* =========================================
-   СОСТОЯНИЕ
-========================================= */
+// =====================================================
+// STATE
+// =====================================================
 
 let token = "";
+
 let settings = {};
+
 let branches = [];
-let menu = [];
+
 let menuByBranch = {};
+
+let menu = [];
+
 let currentMenuBranch = "1";
+
 let zones = [];
+
 let orders = [];
 
 
-/* =========================================
-   LOGIN
-========================================= */
+// =====================================================
+// DEFAULTS
+// =====================================================
 
-function login() {
+const DEFAULT_SETTINGS = {
+
+    freeDeliveryMinimum: 5000,
+
+    smallOrderDelivery: 500,
+
+    deliveryStart: "11:00",
+
+    deliveryEnd: "23:00",
+
+    whatsapp: "+77479370909"
+
+};
+
+
+// =====================================================
+// LOGIN
+// =====================================================
+
+async function login() {
 
     const input =
-        document.getElementById("adminToken");
+        document.getElementById(
+            "adminToken"
+        );
 
     token =
         input.value.trim();
@@ -733,18 +904,58 @@ function login() {
         );
 
         return;
+
     }
 
-    loadAdminData();
+    try {
+
+        await api(
+            "/api/orders",
+            {
+                method: "GET"
+            }
+        );
+
+        document
+            .getElementById(
+                "loginSection"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+        document
+            .getElementById(
+                "adminSection"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+        await loadAdminData();
+
+    } catch (error) {
+
+        showMessage(
+            "loginMessage",
+            error.message ||
+            "Неверный ADMIN_TOKEN.",
+            "error"
+        );
+
+    }
 
 }
 
 
-/* =========================================
-   API
-========================================= */
+// =====================================================
+// API
+// =====================================================
 
-async function api(url, options = {}) {
+async function api(
+    url,
+    options = {}
+) {
 
     options.headers = {
 
@@ -759,7 +970,10 @@ async function api(url, options = {}) {
     };
 
     const response =
-        await fetch(url, options);
+        await fetch(
+            url,
+            options
+        );
 
     let data = {};
 
@@ -768,7 +982,7 @@ async function api(url, options = {}) {
         data =
             await response.json();
 
-    } catch (e) {}
+    } catch (error) {}
 
     if (!response.ok) {
 
@@ -784,50 +998,40 @@ async function api(url, options = {}) {
 }
 
 
-/* =========================================
-   ЗАГРУЗКА ДАННЫХ
-========================================= */
+// =====================================================
+// LOAD ADMIN DATA
+// =====================================================
 
 async function loadAdminData() {
 
     try {
 
-        /*
-         * Пока используем существующий
-         * /api/orders.
-         *
-         * Настройки и остальные API
-         * подключим в server.js.
-         */
+        await Promise.all([
 
-        await loadOrders();
+            loadSettings(),
 
-        document
-            .getElementById("loginSection")
-            .classList.add("hidden");
+            loadBranches(),
 
-        document
-            .getElementById("adminSection")
-            .classList.remove("hidden");
+            loadMenu(),
 
-        loadLocalSettings();
+            loadZones(),
 
-        renderBranches();
+            loadOrders(),
 
-        renderMenu();
+            loadSiteStatus()
 
-        renderZones();
-
-        updateSiteStatus();
+        ]);
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
         showMessage(
             "loginMessage",
             error.message ||
-            "Не удалось войти.",
+            "Ошибка загрузки данных.",
             "error"
         );
 
@@ -836,86 +1040,180 @@ async function loadAdminData() {
 }
 
 
-/* =========================================
-   LOCAL SETTINGS
-========================================= */
+// =====================================================
+// SETTINGS
+// =====================================================
 
-function loadLocalSettings() {
+async function loadSettings() {
 
-    settings = {
+    const data =
+        await api(
+            "/api/settings",
+            {
+                method: "GET"
+            }
+        );
 
-        siteOpen:
-            localStorage.getItem(
-                "tomchi_site_open"
-            ) !== "false",
-
-        freeDeliveryMinimum:
-            Number(
-                localStorage.getItem(
-                    "tomchi_free_delivery"
-                ) || 5000
-            ),
-
-        smallOrderDelivery:
-            Number(
-                localStorage.getItem(
-                    "tomchi_small_delivery"
-                ) || 500
-            ),
-
-        deliveryStart:
-            localStorage.getItem(
-                "tomchi_delivery_start"
-            ) || "11:00",
-
-        deliveryEnd:
-            localStorage.getItem(
-                "tomchi_delivery_end"
-            ) || "23:00",
-
-        whatsapp:
-            localStorage.getItem(
-                "tomchi_whatsapp"
-            ) || "+77479370909"
-
-    };
-
+    settings =
+        data.settings ||
+        {
+            ...DEFAULT_SETTINGS
+        };
 
     document
-        .getElementById("freeDeliveryMinimum")
+        .getElementById(
+            "freeDeliveryMinimum"
+        )
         .value =
         settings.freeDeliveryMinimum;
 
-
     document
-        .getElementById("smallOrderDelivery")
+        .getElementById(
+            "smallOrderDelivery"
+        )
         .value =
         settings.smallOrderDelivery;
 
-
     document
-        .getElementById("deliveryStart")
+        .getElementById(
+            "deliveryStart"
+        )
         .value =
         settings.deliveryStart;
 
-
     document
-        .getElementById("deliveryEnd")
+        .getElementById(
+            "deliveryEnd"
+        )
         .value =
         settings.deliveryEnd;
 
-
     document
-        .getElementById("whatsappNumber")
+        .getElementById(
+            "whatsappNumber"
+        )
         .value =
-        settings.whatsapp;
+        settings.whatsapp || "";
 
 }
 
 
-/* =========================================
-   СТАТУС САЙТА
-========================================= */
+// =====================================================
+// SAVE SETTINGS
+// =====================================================
+
+async function saveSettings() {
+
+    try {
+
+        const body = {
+
+            freeDeliveryMinimum:
+                Number(
+                    document
+                        .getElementById(
+                            "freeDeliveryMinimum"
+                        )
+                        .value
+                ) || 5000,
+
+            smallOrderDelivery:
+                Number(
+                    document
+                        .getElementById(
+                            "smallOrderDelivery"
+                        )
+                        .value
+                ) || 500,
+
+            deliveryStart:
+                document
+                    .getElementById(
+                        "deliveryStart"
+                    )
+                    .value ||
+                "11:00",
+
+            deliveryEnd:
+                document
+                    .getElementById(
+                        "deliveryEnd"
+                    )
+                    .value ||
+                "23:00",
+
+            whatsapp:
+                document
+                    .getElementById(
+                        "whatsappNumber"
+                    )
+                    .value
+                    .trim()
+
+        };
+
+        const result =
+            await api(
+                "/api/settings",
+                {
+
+                    method: "PUT",
+
+                    body:
+                        JSON.stringify(
+                            body
+                        )
+
+                }
+            );
+
+        settings =
+            result.settings;
+
+        showMessage(
+            "settingsMessage",
+            "✅ Настройки сохранены на сервере.",
+            "success"
+        );
+
+    } catch (error) {
+
+        showMessage(
+            "settingsMessage",
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// SITE STATUS
+// =====================================================
+
+async function loadSiteStatus() {
+
+    const data =
+        await api(
+            "/api/site-status",
+            {
+                method: "GET"
+            }
+        );
+
+    settings.siteOpen =
+        data.siteOpen;
+
+    updateSiteStatus();
+
+}
+
+
+// =====================================================
+// UPDATE STATUS UI
+// =====================================================
 
 function updateSiteStatus() {
 
@@ -924,7 +1222,9 @@ function updateSiteStatus() {
             "siteStatus"
         );
 
-    if (settings.siteOpen) {
+    if (
+        settings.siteOpen
+    ) {
 
         element.className =
             "status status-open";
@@ -945,140 +1245,110 @@ function updateSiteStatus() {
 }
 
 
-function setSiteStatus(open) {
+// =====================================================
+// SET SITE STATUS
+// =====================================================
 
-    settings.siteOpen = open;
+async function setSiteStatus(
+    open
+) {
 
-    localStorage.setItem(
-        "tomchi_site_open",
-        String(open)
-    );
+    try {
 
-    updateSiteStatus();
+        const result =
+            await api(
+                "/api/site-status",
+                {
 
-    showMessage(
-        "settingsMessage",
-        open
-            ? "🟢 Сайт включён."
-            : "🔴 Сайт выключен.",
-        "success"
-    );
+                    method: "PATCH",
+
+                    body:
+                        JSON.stringify({
+                            siteOpen:
+                                open
+                        })
+
+                }
+            );
+
+        settings.siteOpen =
+            result.siteOpen;
+
+        updateSiteStatus();
+
+        showMessage(
+            "siteMessage",
+            open
+                ? "🟢 Сайт включён. Заказы снова принимаются."
+                : "🔴 Сайт выключен. Новые заказы не принимаются.",
+            "success"
+        );
+
+    } catch (error) {
+
+        showMessage(
+            "siteMessage",
+            error.message,
+            "error"
+        );
+
+    }
 
 }
 
 
-/* =========================================
-   СОХРАНЕНИЕ НАСТРОЕК
-========================================= */
+// =====================================================
+// TABS
+// =====================================================
 
-function saveSettings() {
-
-    settings.freeDeliveryMinimum =
-        Number(
-            document.getElementById(
-                "freeDeliveryMinimum"
-            ).value
-        ) || 5000;
-
-
-    settings.smallOrderDelivery =
-        Number(
-            document.getElementById(
-                "smallOrderDelivery"
-            ).value
-        ) || 500;
-
-
-    settings.deliveryStart =
-        document.getElementById(
-            "deliveryStart"
-        ).value || "11:00";
-
-
-    settings.deliveryEnd =
-        document.getElementById(
-            "deliveryEnd"
-        ).value || "23:00";
-
-
-    settings.whatsapp =
-        document.getElementById(
-            "whatsappNumber"
-        ).value.trim();
-
-
-    localStorage.setItem(
-        "tomchi_free_delivery",
-        settings.freeDeliveryMinimum
-    );
-
-    localStorage.setItem(
-        "tomchi_small_delivery",
-        settings.smallOrderDelivery
-    );
-
-    localStorage.setItem(
-        "tomchi_delivery_start",
-        settings.deliveryStart
-    );
-
-    localStorage.setItem(
-        "tomchi_delivery_end",
-        settings.deliveryEnd
-    );
-
-    localStorage.setItem(
-        "tomchi_whatsapp",
-        settings.whatsapp
-    );
-
-
-    showMessage(
-        "settingsMessage",
-        "✅ Настройки сохранены.",
-        "success"
-    );
-
-}
-
-
-/* =========================================
-   ВКЛАДКИ
-========================================= */
-
-function openTab(id, button) {
+function openTab(
+    id,
+    button
+) {
 
     document
-        .querySelectorAll(".tab-content")
-        .forEach(element => {
+        .querySelectorAll(
+            ".tab-content"
+        )
+        .forEach(
+            element => {
 
-            element.classList.remove(
-                "active"
-            );
+                element.classList.remove(
+                    "active"
+                );
 
-        });
-
-
-    document
-        .querySelectorAll(".tab")
-        .forEach(element => {
-
-            element.classList.remove(
-                "active"
-            );
-
-        });
-
+            }
+        );
 
     document
-        .getElementById(id)
-        .classList.add("active");
+        .querySelectorAll(
+            ".tab"
+        )
+        .forEach(
+            element => {
 
+                element.classList.remove(
+                    "active"
+                );
 
-    button.classList.add("active");
+            }
+        );
 
+    document
+        .getElementById(
+            id
+        )
+        .classList.add(
+            "active"
+        );
 
-    if (id === "orders") {
+    button.classList.add(
+        "active"
+    );
+
+    if (
+        id === "orders"
+    ) {
 
         loadOrders();
 
@@ -1087,9 +1357,31 @@ function openTab(id, button) {
 }
 
 
-/* =========================================
-   ФИЛИАЛЫ
-========================================= */
+// =====================================================
+// BRANCHES LOAD
+// =====================================================
+
+async function loadBranches() {
+
+    const data =
+        await api(
+            "/api/branches",
+            {
+                method: "GET"
+            }
+        );
+
+    branches =
+        data.pickupPoints || [];
+
+    renderBranches();
+
+}
+
+
+// =====================================================
+// BRANCHES RENDER
+// =====================================================
 
 function renderBranches() {
 
@@ -1098,67 +1390,22 @@ function renderBranches() {
             "branchesList"
         );
 
-    if (!branches.length) {
-
-        branches = [
-
-            {
-                id: 1,
-                name: "Абылай Хана 24",
-                address: "Абылай Хана 24",
-                workTime: "24/7",
-                deliveryTime: "11:00-23:00",
-                kaspi: "",
-                whatsapp: ""
-            },
-
-            {
-                id: 2,
-                name: "Tomchi Premium",
-                address: "Абылай Хана 34",
-                workTime: "10:00-02:00",
-                deliveryTime: "11:00-23:00",
-                kaspi: "",
-                whatsapp: ""
-            },
-
-            {
-                id: 3,
-                name: "Жібек Жолы 106",
-                address: "Жібек Жолы 106",
-                workTime: "10:00-02:00",
-                deliveryTime: "11:00-23:00",
-                kaspi: "",
-                whatsapp: ""
-            },
-
-            {
-                id: 4,
-                name: "Абая 47",
-                address: "Абая 47",
-                workTime: "10:00-02:00",
-                deliveryTime: "11:00-23:00",
-                kaspi: "",
-                whatsapp: ""
-            },
-
-            {
-                id: 5,
-                name: "Яссауи 66",
-                address: "Яссауи 66А",
-                workTime: "10:00-02:00",
-                deliveryTime: "11:00-23:00",
-                kaspi: "",
-                whatsapp: ""
-            }
-
-        ];
-
-    }
-
-
     container.innerHTML = "";
 
+    if (
+        !branches.length
+    ) {
+
+        container.innerHTML =
+            `
+            <div class="notice">
+                Филиалов пока нет.
+            </div>
+            `;
+
+        return;
+
+    }
 
     branches.forEach(
         (branch, index) => {
@@ -1167,9 +1414,9 @@ function renderBranches() {
 
                 <div class="card">
 
-                    <h3>
-                        🏪 Филиал ${index + 1}
-                    </h3>
+                    <div class="branch-number">
+                        Филиал ${index + 1}
+                    </div>
 
                     <label>
                         Название
@@ -1177,7 +1424,7 @@ function renderBranches() {
 
                     <input
                         value="${escapeHtml(branch.name || "")}"
-                        onchange="branches[${index}].name=this.value"
+                        onchange="updateBranch(${index}, 'name', this.value)"
                     >
 
                     <label>
@@ -1186,8 +1433,42 @@ function renderBranches() {
 
                     <input
                         value="${escapeHtml(branch.address || "")}"
-                        onchange="branches[${index}].address=this.value"
+                        onchange="updateBranch(${index}, 'address', this.value)"
                     >
+
+                    <div class="row">
+
+                        <div>
+
+                            <label>
+                                Широта
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.0001"
+                                value="${Number(branch.lat || 0)}"
+                                onchange="updateBranch(${index}, 'lat', Number(this.value))"
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <label>
+                                Долгота
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.0001"
+                                value="${Number(branch.lon || 0)}"
+                                onchange="updateBranch(${index}, 'lon', Number(this.value))"
+                            >
+
+                        </div>
+
+                    </div>
 
                     <div class="row">
 
@@ -1199,7 +1480,7 @@ function renderBranches() {
 
                             <input
                                 value="${escapeHtml(branch.workTime || "")}"
-                                onchange="branches[${index}].workTime=this.value"
+                                onchange="updateBranch(${index}, 'workTime', this.value)"
                             >
 
                         </div>
@@ -1212,41 +1493,43 @@ function renderBranches() {
 
                             <input
                                 value="${escapeHtml(branch.deliveryTime || "11:00-23:00")}"
-                                onchange="branches[${index}].deliveryTime=this.value"
+                                onchange="updateBranch(${index}, 'deliveryTime', this.value)"
                             >
 
                         </div>
 
                     </div>
 
+                    <hr>
+
                     <label>
-                        Kaspi номер
+                        💳 Kaspi номер
                     </label>
 
                     <input
                         value="${escapeHtml(branch.kaspi || "")}"
                         placeholder="+7747..."
-                        onchange="branches[${index}].kaspi=this.value"
+                        onchange="updateBranch(${index}, 'kaspi', this.value)"
                     >
 
                     <label>
-                        Получатель Kaspi
+                        👤 Получатель Kaspi
                     </label>
 
                     <input
                         value="${escapeHtml(branch.kaspiName || "")}"
                         placeholder="Имя получателя"
-                        onchange="branches[${index}].kaspiName=this.value"
+                        onchange="updateBranch(${index}, 'kaspiName', this.value)"
                     >
 
                     <label>
-                        WhatsApp филиала
+                        📱 WhatsApp филиала
                     </label>
 
                     <input
                         value="${escapeHtml(branch.whatsapp || "")}"
                         placeholder="+7747..."
-                        onchange="branches[${index}].whatsapp=this.value"
+                        onchange="updateBranch(${index}, 'whatsapp', this.value)"
                     >
 
                     <button
@@ -1266,6 +1549,32 @@ function renderBranches() {
 }
 
 
+// =====================================================
+// UPDATE BRANCH
+// =====================================================
+
+function updateBranch(
+    index,
+    key,
+    value
+) {
+
+    if (
+        branches[index]
+    ) {
+
+        branches[index][key] =
+            value;
+
+    }
+
+}
+
+
+// =====================================================
+// ADD BRANCH
+// =====================================================
+
 function addBranch() {
 
     branches.push({
@@ -1278,6 +1587,12 @@ function addBranch() {
 
         address:
             "",
+
+        lat:
+            0,
+
+        lon:
+            0,
 
         workTime:
             "10:00-02:00",
@@ -1296,100 +1611,160 @@ function addBranch() {
 
     });
 
+    renderBranches();
+
+}
+
+
+// =====================================================
+// DELETE BRANCH
+// =====================================================
+
+function deleteBranch(
+    index
+) {
+
+    if (
+        !confirm(
+            "Удалить этот филиал?"
+        )
+    ) {
+
+        return;
+
+    }
+
+    branches.splice(
+        index,
+        1
+    );
 
     renderBranches();
 
 }
 
 
-function deleteBranch(index) {
-
-    if (!confirm(
-        "Удалить этот филиал?"
-    )) return;
-
-    branches.splice(index, 1);
-
-    renderBranches();
-
-}
-
+// =====================================================
+// SAVE BRANCHES
+// =====================================================
 
 async function saveBranches() {
 
-    /*
-     * API будет подключён
-     * в server.js.
-     */
-
-    localStorage.setItem(
-        "tomchi_branches",
-        JSON.stringify(branches)
-    );
-
-    showMessage(
-        "branchesMessage",
-        "✅ Филиалы сохранены в текущем браузере. После добавления API server.js они будут сохраняться на сервере.",
-        "success"
-    );
-
-}
-
-
-/* =========================================
-   МЕНЮ
-========================================= */
-async function loadMenu() {
-
     try {
 
-        const data =
-            await api("/api/menu", {
-                method: "GET"
-            });
+        const result =
+            await api(
+                "/api/branches",
+                {
 
-        menuByBranch =
-            data.menuByBranch || {
-                "1": [],
-                "2": [],
-                "3": [],
-                "4": [],
-                "5": []
-            };
+                    method: "PUT",
 
-        currentMenuBranch =
-            document.getElementById(
-                "menuBranchSelect"
-            )?.value || "1";
+                    body:
+                        JSON.stringify({
+                            pickupPoints:
+                                branches
+                        })
 
-        menu =
-            menuByBranch[currentMenuBranch] || [];
+                }
+            );
 
-        renderMenu();
+        branches =
+            result.pickupPoints;
+
+        renderBranches();
+
+        showMessage(
+            "branchesMessage",
+            "✅ Все филиалы сохранены на сервере.",
+            "success"
+        );
 
     } catch (error) {
 
-        console.error(
-            "Ошибка загрузки меню:",
-            error
+        showMessage(
+            "branchesMessage",
+            error.message,
+            "error"
         );
 
     }
 
 }
-async function changeMenuBranch() {
+
+
+// =====================================================
+// MENU LOAD
+// =====================================================
+
+async function loadMenu() {
+
+    try {
+
+        const data =
+            await api(
+                "/api/menu",
+                {
+                    method: "GET"
+                }
+            );
+
+        menuByBranch =
+            data.menuByBranch || {};
+
+        currentMenuBranch =
+            document
+                .getElementById(
+                    "menuBranchSelect"
+                )
+                .value;
+
+        menu =
+            menuByBranch[
+                currentMenuBranch
+            ] || [];
+
+        renderMenu();
+
+    } catch (error) {
+
+        showMessage(
+            "menuMessage",
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// CHANGE MENU BRANCH
+// =====================================================
+
+function changeMenuBranch() {
 
     currentMenuBranch =
-        document.getElementById(
-            "menuBranchSelect"
-        ).value;
+        document
+            .getElementById(
+                "menuBranchSelect"
+            )
+            .value;
 
     menu =
-        menuByBranch[currentMenuBranch] || [];
+        menuByBranch[
+            currentMenuBranch
+        ] || [];
 
     renderMenu();
 
 }
+
+
+// =====================================================
+// RENDER MENU
+// =====================================================
+
 function renderMenu() {
 
     const container =
@@ -1397,53 +1772,23 @@ function renderMenu() {
             "menuList"
         );
 
-    if (!menu.length) {
-
-        menu = [
-
-            {
-                category: "Плов",
-                name: "Ташкентский",
-                price: 1990
-            },
-
-            {
-                category: "Плов",
-                name: "Шифа",
-                price: 2190
-            },
-
-            {
-                category: "Плов",
-                name: "Ханский",
-                price: 2490
-            },
-
-            {
-                category: "Плов",
-                name: "По-казахски",
-                price: 2590
-            },
-
-            {
-                category: "Самса",
-                name: "Куриный",
-                price: 550
-            },
-
-            {
-                category: "Самса",
-                name: "Говядина",
-                price: 600
-            }
-
-        ];
-
-    }
-
-
     container.innerHTML = "";
 
+    if (
+        !menu.length
+    ) {
+
+        container.innerHTML =
+            `
+            <div class="notice">
+                В этом филиале меню пока пустое.
+                Нажмите «Добавить блюдо».
+            </div>
+            `;
+
+        return;
+
+    }
 
     menu.forEach(
         (item, index) => {
@@ -1454,24 +1799,46 @@ function renderMenu() {
 
                     <div class="menu-item">
 
-                        <input
-                            value="${escapeHtml(item.category || "")}"
-                            placeholder="Категория"
-                            onchange="menu[${index}].category=this.value"
-                        >
+                        <div>
 
-                        <input
-                            value="${escapeHtml(item.name || "")}"
-                            placeholder="Название"
-                            onchange="menu[${index}].name=this.value"
-                        >
+                            <label>
+                                Категория
+                            </label>
 
-                        <input
-                            type="number"
-                            value="${Number(item.price || 0)}"
-                            placeholder="Цена"
-                            onchange="menu[${index}].price=Number(this.value)"
-                        >
+                            <input
+                                value="${escapeHtml(item.category || "")}"
+                                onchange="menu[${index}].category=this.value"
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <label>
+                                Название блюда
+                            </label>
+
+                            <input
+                                value="${escapeHtml(item.name || "")}"
+                                onchange="menu[${index}].name=this.value"
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <label>
+                                Цена
+                            </label>
+
+                            <input
+                                type="number"
+                                min="0"
+                                value="${Number(item.price || 0)}"
+                                onchange="menu[${index}].price=Number(this.value)"
+                            >
+
+                        </div>
 
                     </div>
 
@@ -1479,7 +1846,7 @@ function renderMenu() {
                         class="btn-red"
                         onclick="deleteMenuItem(${index})"
                     >
-                        🗑️ Удалить
+                        🗑️ Удалить блюдо
                     </button>
 
                 </div>
@@ -1492,9 +1859,16 @@ function renderMenu() {
 }
 
 
+// =====================================================
+// ADD MENU ITEM
+// =====================================================
+
 function addMenuItem() {
 
     menu.push({
+
+        id:
+            Date.now(),
 
         category:
             "Новая категория",
@@ -1512,48 +1886,74 @@ function addMenuItem() {
 }
 
 
-function deleteMenuItem(index) {
+// =====================================================
+// DELETE MENU ITEM
+// =====================================================
 
-    if (!confirm(
-        "Удалить это блюдо?"
-    )) return;
+function deleteMenuItem(
+    index
+) {
 
-    menu.splice(index, 1);
+    if (
+        !confirm(
+            "Удалить это блюдо?"
+        )
+    ) {
+
+        return;
+
+    }
+
+    menu.splice(
+        index,
+        1
+    );
 
     renderMenu();
 
 }
 
 
+// =====================================================
+// SAVE MENU
+// =====================================================
+
 async function saveMenu() {
 
     try {
 
         const result =
-            await api("/api/menu", {
+            await api(
+                "/api/menu",
+                {
 
-                method: "PUT",
+                    method: "PUT",
 
-                body:
-                    JSON.stringify({
-                        branchId:
-                            currentMenuBranch,
+                    body:
+                        JSON.stringify({
 
-                        menu:
-                            menu
-                    })
+                            branchId:
+                                currentMenuBranch,
 
-            });
+                            menu:
+                                menu
 
-        menuByBranch[currentMenuBranch] =
-            result.menu || menu;
+                        })
+
+                }
+            );
 
         menu =
-            menuByBranch[currentMenuBranch];
+            result.menu || menu;
+
+        menuByBranch[
+            currentMenuBranch
+        ] =
+            menu;
 
         showMessage(
             "menuMessage",
-            "✅ Меню этого филиала сохранено.",
+            "✅ Меню этого филиала сохранено на сервере.",
             "success"
         );
 
@@ -1570,9 +1970,31 @@ async function saveMenu() {
 }
 
 
-/* =========================================
-   ЗОНЫ
-========================================= */
+// =====================================================
+// ZONES LOAD
+// =====================================================
+
+async function loadZones() {
+
+    const data =
+        await api(
+            "/api/zones",
+            {
+                method: "GET"
+            }
+        );
+
+    zones =
+        data.zones || [];
+
+    renderZones();
+
+}
+
+
+// =====================================================
+// RENDER ZONES
+// =====================================================
 
 function renderZones() {
 
@@ -1581,36 +2003,22 @@ function renderZones() {
             "zonesList"
         );
 
-
-    if (!zones.length) {
-
-        zones = [
-
-            {
-                id: "zone1",
-                name: "Зона 1",
-                minLat: 43.2380,
-                maxLat: 43.2750,
-                minLon: 76.9100,
-                maxLon: 76.9600
-            },
-
-            {
-                id: "zone2",
-                name: "Зона 2",
-                minLat: 43.2050,
-                maxLat: 43.2400,
-                minLon: 76.7500,
-                maxLon: 76.8500
-            }
-
-        ];
-
-    }
-
-
     container.innerHTML = "";
 
+    if (
+        !zones.length
+    ) {
+
+        container.innerHTML =
+            `
+            <div class="notice">
+                Зон пока нет.
+            </div>
+            `;
+
+        return;
+
+    }
 
     zones.forEach(
         (zone, index) => {
@@ -1624,48 +2032,88 @@ function renderZones() {
                     </h3>
 
                     <label>
-                        Минимальная широта
+                        Название зоны
                     </label>
 
                     <input
-                        type="number"
-                        step="0.0001"
-                        value="${zone.minLat}"
-                        onchange="zones[${index}].minLat=Number(this.value)"
+                        value="${escapeHtml(zone.name || "")}"
+                        onchange="zones[${index}].name=this.value"
                     >
 
-                    <label>
-                        Максимальная широта
-                    </label>
+                    <div class="row">
 
-                    <input
-                        type="number"
-                        step="0.0001"
-                        value="${zone.maxLat}"
-                        onchange="zones[${index}].maxLat=Number(this.value)"
+                        <div>
+
+                            <label>
+                                Минимальная широта
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.0001"
+                                value="${Number(zone.minLat)}"
+                                onchange="zones[${index}].minLat=Number(this.value)"
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <label>
+                                Максимальная широта
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.0001"
+                                value="${Number(zone.maxLat)}"
+                                onchange="zones[${index}].maxLat=Number(this.value)"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div>
+
+                            <label>
+                                Минимальная долгота
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.0001"
+                                value="${Number(zone.minLon)}"
+                                onchange="zones[${index}].minLon=Number(this.value)"
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <label>
+                                Максимальная долгота
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.0001"
+                                value="${Number(zone.maxLon)}"
+                                onchange="zones[${index}].maxLon=Number(this.value)"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="btn-red"
+                        onclick="deleteZone(${index})"
                     >
-
-                    <label>
-                        Минимальная долгота
-                    </label>
-
-                    <input
-                        type="number"
-                        step="0.0001"
-                        value="${zone.minLon}"
-                        onchange="zones[${index}].minLon=Number(this.value)"
-                    >
-
-                    <label>
-                        Максимальная долгота
-                    </label>
-
-                    <input
-                        type="number"
-                        step="0.0001"
-                        value="${zone.maxLon}"
-                        onchange="zones[${index}].maxLon=Number(this.value)"
-                    >
+                        🗑️ Удалить зону
+                    </button>
 
                 </div>
 
@@ -1677,25 +2125,119 @@ function renderZones() {
 }
 
 
-async function saveZones() {
+// =====================================================
+// ADD ZONE
+// =====================================================
 
-    localStorage.setItem(
-        "tomchi_zones",
-        JSON.stringify(zones)
-    );
+function addZone() {
 
-    showMessage(
-        "zonesMessage",
-        "✅ Зоны сохранены в текущем браузере. API сохранения добавим в server.js.",
-        "success"
-    );
+    zones.push({
+
+        id:
+            "zone" +
+            Date.now(),
+
+        name:
+            "Новая зона",
+
+        minLat:
+            0,
+
+        maxLat:
+            0,
+
+        minLon:
+            0,
+
+        maxLon:
+            0
+
+    });
+
+    renderZones();
 
 }
 
 
-/* =========================================
-   ЗАКАЗЫ
-========================================= */
+// =====================================================
+// DELETE ZONE
+// =====================================================
+
+function deleteZone(
+    index
+) {
+
+    if (
+        !confirm(
+            "Удалить эту зону?"
+        )
+    ) {
+
+        return;
+
+    }
+
+    zones.splice(
+        index,
+        1
+    );
+
+    renderZones();
+
+}
+
+
+// =====================================================
+// SAVE ZONES
+// =====================================================
+
+async function saveZones() {
+
+    try {
+
+        const result =
+            await api(
+                "/api/zones",
+                {
+
+                    method: "PUT",
+
+                    body:
+                        JSON.stringify({
+                            zones:
+                                zones
+                        })
+
+                }
+            );
+
+        zones =
+            result.zones;
+
+        renderZones();
+
+        showMessage(
+            "zonesMessage",
+            "✅ Зоны сохранены на сервере.",
+            "success"
+        );
+
+    } catch (error) {
+
+        showMessage(
+            "zonesMessage",
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// ORDERS LOAD
+// =====================================================
 
 async function loadOrders() {
 
@@ -1704,33 +2246,48 @@ async function loadOrders() {
             "ordersList"
         );
 
-    if (!token) return;
-
+    if (!token) {
+        return;
+    }
 
     container.innerHTML =
-        '<div class="loading">Загрузка заказов...</div>';
-
+        `
+        <div class="loading">
+            Загрузка заказов...
+        </div>
+        `;
 
     try {
 
         orders =
-            await api("/api/orders", {
-                method: "GET"
-            });
-
+            await api(
+                "/api/orders",
+                {
+                    method: "GET"
+                }
+            );
 
         renderOrders();
-
 
     } catch (error) {
 
         container.innerHTML =
-            `<div class="error">${escapeHtml(error.message)}</div>`;
+            `
+            <div class="error">
+                ${escapeHtml(
+                    error.message
+                )}
+            </div>
+            `;
 
     }
 
 }
 
+
+// =====================================================
+// RENDER ORDERS
+// =====================================================
 
 function renderOrders() {
 
@@ -1739,22 +2296,35 @@ function renderOrders() {
             "ordersList"
         );
 
-
-    if (!orders.length) {
+    if (
+        !orders.length
+    ) {
 
         container.innerHTML =
-            '<div class="success">📭 Заказов пока нет.</div>';
+            `
+            <div class="success">
+                📭 Заказов пока нет.
+            </div>
+            `;
 
         return;
 
     }
 
-
     container.innerHTML = "";
-
 
     orders.forEach(
         order => {
+
+            const deliveryText =
+                order.deliveryPrice === null
+                    ? "Курьер Яндекс Go / inDrive"
+                    : Number(
+                        order.deliveryPrice || 0
+                      ).toLocaleString(
+                        "ru-RU"
+                      ) +
+                      " ₸";
 
             container.innerHTML += `
 
@@ -1769,57 +2339,126 @@ function renderOrders() {
                             </h3>
 
                             <div class="small">
-                                ${formatDate(order.createdAt)}
+                                ${formatDate(
+                                    order.createdAt
+                                )}
                             </div>
 
                         </div>
 
                         <span class="order-status">
-                            ${escapeHtml(order.status || "Новый")}
+                            ${escapeHtml(
+                                order.status ||
+                                "Новый"
+                            )}
                         </span>
 
                     </div>
 
                     <p>
                         <b>👤 Клиент:</b>
-                        ${escapeHtml(order.name || "")}
+                        ${escapeHtml(
+                            order.name || ""
+                        )}
                     </p>
 
                     <p>
                         <b>📞 Телефон:</b>
-                        ${escapeHtml(order.phone || "")}
+                        ${escapeHtml(
+                            order.phone || ""
+                        )}
                     </p>
 
                     <p>
                         <b>🏪 Филиал:</b>
-                        ${escapeHtml(order.pickup || "")}
+                        ${escapeHtml(
+                            order.pickup || ""
+                        )}
                     </p>
 
                     <p>
                         <b>📍 Адрес:</b>
-                        ${escapeHtml(order.address || "")}
+                        ${escapeHtml(
+                            order.address || ""
+                        )}
                     </p>
+
+                    ${
+                        order.coordinates
+                        ?
+                        `
+                        <div class="coordinates">
+                            Координаты:
+                            ${Number(
+                                order.coordinates.lat
+                            ).toFixed(6)},
+                            ${Number(
+                                order.coordinates.lon
+                            ).toFixed(6)}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
 
                     <p>
                         <b>🛒 Заказ:</b>
-                        ${escapeHtml(order.item || "")}
+                        ${escapeHtml(
+                            order.item || ""
+                        )}
                     </p>
 
                     <p>
                         <b>💬 Комментарий:</b>
-                        ${escapeHtml(order.comment || "—")}
+                        ${escapeHtml(
+                            order.comment ||
+                            "—"
+                        )}
                     </p>
 
                     <p>
-                        <b>💰 Сумма:</b>
+                        <b>💰 Сумма заказа:</b>
+                        ${Number(
+                            order.amount || 0
+                        ).toLocaleString(
+                            "ru-RU"
+                        )} ₸
+                    </p>
+
+                    <p>
+                        <b>🚗 Доставка:</b>
+                        ${deliveryText}
+                    </p>
+
+                    <p>
+                        <b>💵 Итого:</b>
+
                         <span class="price">
-                            ${Number(order.total || order.amount || 0).toLocaleString("ru-RU")} ₸
+
+                            ${
+                                order.total === null ||
+                                order.total === undefined
+                                ?
+                                "Уточняется"
+                                :
+                                Number(
+                                    order.total
+                                ).toLocaleString(
+                                    "ru-RU"
+                                ) +
+                                " ₸"
+                            }
+
                         </span>
+
                     </p>
 
                     <p>
                         <b>💳 Оплата:</b>
-                        ${escapeHtml(order.paymentStatus || "Не оплачено")}
+                        ${escapeHtml(
+                            order.paymentStatus ||
+                            "Не оплачено"
+                        )}
                     </p>
 
                     ${
@@ -1827,60 +2466,87 @@ function renderOrders() {
                         ?
                         `
                         <p>
-                            <b>🧾 Чек:</b>
+
+                            <b>
+                                🧾 Чек:
+                            </b>
+
                             <br>
+
                             <a
-                                href="${escapeHtml(order.receipt)}"
+                                href="${escapeHtml(
+                                    order.receipt
+                                )}"
                                 target="_blank"
+                                rel="noopener"
                             >
                                 Открыть чек
                             </a>
+
                         </p>
                         `
                         :
                         ""
                     }
 
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <div class="order-actions">
 
                         <button
                             class="btn-green"
-                            onclick="changeOrderStatus(${order.id}, 'Принят')"
+                            onclick="changeOrderStatus(
+                                ${order.id},
+                                'Принят'
+                            )"
                         >
                             ✅ Принят
                         </button>
 
                         <button
                             class="btn"
-                            onclick="changeOrderStatus(${order.id}, 'Готовится')"
+                            onclick="changeOrderStatus(
+                                ${order.id},
+                                'Готовится'
+                            )"
                         >
                             👨‍🍳 Готовится
                         </button>
 
                         <button
                             class="btn"
-                            onclick="changeOrderStatus(${order.id}, 'Готов')"
+                            onclick="changeOrderStatus(
+                                ${order.id},
+                                'Готов'
+                            )"
                         >
                             🍽️ Готов
                         </button>
 
                         <button
                             class="btn"
-                            onclick="changeOrderStatus(${order.id}, 'Передан курьеру')"
+                            onclick="changeOrderStatus(
+                                ${order.id},
+                                'Передан курьеру'
+                            )"
                         >
                             🚗 Курьер
                         </button>
 
                         <button
                             class="btn"
-                            onclick="changeOrderStatus(${order.id}, 'Доставлен')"
+                            onclick="changeOrderStatus(
+                                ${order.id},
+                                'Доставлен'
+                            )"
                         >
                             📦 Доставлен
                         </button>
 
                         <button
                             class="btn-red"
-                            onclick="changeOrderStatus(${order.id}, 'Отменён')"
+                            onclick="changeOrderStatus(
+                                ${order.id},
+                                'Отменён'
+                            )"
                         >
                             ❌ Отменить
                         </button>
@@ -1897,7 +2563,14 @@ function renderOrders() {
 }
 
 
-async function changeOrderStatus(id, status) {
+// =====================================================
+// CHANGE ORDER STATUS
+// =====================================================
+
+async function changeOrderStatus(
+    id,
+    status
+) {
 
     try {
 
@@ -1909,15 +2582,14 @@ async function changeOrderStatus(id, status) {
 
                 body:
                     JSON.stringify({
-                        status: status
+                        status:
+                            status
                     })
 
             }
         );
 
-
         await loadOrders();
-
 
     } catch (error) {
 
@@ -1930,9 +2602,9 @@ async function changeOrderStatus(id, status) {
 }
 
 
-/* =========================================
-   HELPERS
-========================================= */
+// =====================================================
+// MESSAGE
+// =====================================================
 
 function showMessage(
     id,
@@ -1941,38 +2613,87 @@ function showMessage(
 ) {
 
     const element =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
 
-    if (!element) return;
+    if (!element) {
+        return;
+    }
 
     element.innerHTML =
-        `<div class="${type}">${escapeHtml(message)}</div>`;
+        `
+        <div class="${type}">
+            ${escapeHtml(
+                message
+            )}
+        </div>
+        `;
 
 }
 
 
-function escapeHtml(value) {
+// =====================================================
+// ESCAPE HTML
+// =====================================================
 
-    return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
 
-function formatDate(date) {
+// =====================================================
+// DATE
+// =====================================================
 
-    if (!date) return "";
+function formatDate(
+    date
+) {
+
+    if (!date) {
+        return "";
+    }
 
     try {
 
-        return new Date(date)
-            .toLocaleString("ru-RU");
+        return new Date(
+            date
+        ).toLocaleString(
+            "ru-RU"
+        );
 
-    } catch (e) {
+    } catch (error) {
 
         return date;
 
@@ -1981,11 +2702,31 @@ function formatDate(date) {
 }
 
 
-/* =========================================
-   АВТОЗАГРУЗКА
-========================================= */
+// =====================================================
+// ENTER TO LOGIN
+// =====================================================
+
+document
+    .getElementById(
+        "adminToken"
+    )
+    .addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                login();
+
+            }
+
+        }
+    );
 
 </script>
 
 </body>
+
 </html>
