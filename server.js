@@ -120,7 +120,7 @@ const DEFAULT = {
 
   ],
 
-  orders:[]
+  orders:[],
 
 menuByBranch: {
   "1": [],
