@@ -1248,37 +1248,29 @@ function updateSiteStatus() {
 // =====================================================
 // SET SITE STATUS
 // =====================================================
-
-async function setSiteStatus(
-    open
-) {
+async function setSiteStatus(open) {
 
     try {
 
-        const result =
-            await api(
-                "/api/site-status",
-                {
+        const result = await api("/api/site-status", {
+            method: "PATCH",
+            body: JSON.stringify({
+                siteOpen: open
+            })
+        });
 
-                    method: "PATCH",
+        settings.siteOpen = result.siteOpen;
 
-                    body:
-                        JSON.stringify({
-                            siteOpen:
-                                open
-                        })
-
-                }
-            );
-
-        settings.siteOpen =
-            result.siteOpen;
+        localStorage.setItem(
+            "tomchi_site_open",
+            String(result.siteOpen)
+        );
 
         updateSiteStatus();
 
         showMessage(
-            "siteMessage",
-            open
+            "settingsMessage",
+            result.siteOpen
                 ? "🟢 Сайт включён. Заказы снова принимаются."
                 : "🔴 Сайт выключен. Новые заказы не принимаются.",
             "success"
@@ -1287,14 +1279,16 @@ async function setSiteStatus(
     } catch (error) {
 
         showMessage(
-            "siteMessage",
-            error.message,
+            "settingsMessage",
+            error.message || "Не удалось изменить статус сайта.",
             "error"
         );
 
     }
 
 }
+
+
 
 
 // =====================================================
