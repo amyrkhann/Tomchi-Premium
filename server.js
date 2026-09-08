@@ -187,10 +187,30 @@ const read = () => {
 
   // Для уже существующего data.json
   // автоматически добавляем настройку
+  const read = () => {
+
+  const data = JSON.parse(
+    fs.readFileSync(DATA, "utf8")
+  );
+
   if (typeof data.siteOpen !== "boolean") {
     data.siteOpen = true;
-    save(data);
   }
+
+  if (!data.menuByBranch) {
+    data.menuByBranch = {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    };
+  }
+
+  save(data);
+
+  return data;
+};
 
   return data;
 };
