@@ -772,6 +772,86 @@ async function geocode(query) {
   };
 }
 // =====================================================
+// 2GIS GEOCODING
+// =====================================================
+
+const DGIS_API_KEY =
+  process.env["2GIS_API_KEY"] || "";
+
+async function geocode(query) {
+
+  const cleanQuery =
+    String(query || "").trim();
+
+  if (!cleanQuery) {
+    return null;
+  }
+
+  if (!DGIS_API_KEY) {
+    throw Error(
+      "2GIS API ключ не найден."
+    );
+  }
+
+  const url =
+    "https://catalog.api.2gis.com/3.0/items/geocode?" +
+    new URLSearchParams({
+      q:
+        cleanQuery +
+        ", Алматы, Казахстан",
+
+      fields:
+        "items.point,items.address",
+
+      page_size: "1",
+
+      key:
+        DGIS_API_KEY
+    });
+
+  const response =
+    await fetch(url);
+
+  if (!response.ok) {
+    throw Error(
+      "Ошибка 2GIS API: " +
+      response.status
+    );
+  }
+
+  const data =
+    await response.json();
+
+  const item =
+    data?.result?.items?.[0];
+
+  if (!item) {
+    return null;
+  }
+
+  const point =
+    item.point;
+
+  if (
+    !point ||
+    point.lat === undefined ||
+    point.lon === undefined
+  ) {
+    return null;
+  }
+
+  return {
+    lat: Number(point.lat),
+
+    lon: Number(point.lon),
+
+    address:
+      item.address_name ||
+      item.full_name ||
+      cleanQuery
+  };
+}
+// =====================================================
 // POINT IN POLYGON
 // =====================================================
 //
