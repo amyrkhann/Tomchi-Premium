@@ -682,8 +682,15 @@ function getMultipartFile(req) {
 }
 
 // =====================================================
-// OPENSTREETMAP GEOCODING
+// 2GIS API
 // =====================================================
+
+const DGIS_API_KEY =
+  process.env["2GIS_API_KEY"] || "";
+
+// -----------------------------------------------------
+// ПОИСК АДРЕСА — 2GIS
+// -----------------------------------------------------
 
 async function geocode(query) {
 
@@ -694,58 +701,76 @@ async function geocode(query) {
     return null;
   }
 
+  if (!DGIS_API_KEY) {
+    throw Error(
+      "Не указан 2GIS API ключ."
+    );
+  }
+
   const url =
-    "https://nominatim.openstreetmap.org/search?" +
+    "https://catalog.api.2gis.com/3.0/items/geocode?" +
     new URLSearchParams({
       q:
         cleanQuery +
         ", Алматы, Казахстан",
 
-      format: "json",
+      fields:
+        "items.point,items.geometry.centroid,items.address",
 
-      limit: "1",
+      page_size: "1",
 
-      countrycodes: "kz",
-
-      addressdetails: "1"
+      key:
+        DGIS_API_KEY
     });
 
   const response =
-    await fetch(
-      url,
-      {
-        headers: {
-          "User-Agent":
-            "Tomchi-Premium/1.0"
-        }
-      }
-    );
+    await fetch(url);
 
   if (!response.ok) {
     throw Error(
-      "Ошибка сервиса поиска адреса."
+      "Ошибка 2GIS API: " +
+      response.status
     );
   }
 
-  const results =
+  const data =
     await response.json();
 
   const item =
-    results?.[0];
+    data?.result?.items?.[0];
 
   if (!item) {
     return null;
   }
 
+  const point =
+    item.point ||
+    item.geometry?.centroid;
+
+  if (
+    !point ||
+    point.lat === undefined ||
+    point.lon === undefined
+  ) {
+    return null;
+  }
+
   return {
-    lat: Number(item.lat),
-    lon: Number(item.lon),
+    lat: Number(point.lat),
+
+    lon: Number(point.lon),
+
     address:
-      item.display_name ||
+      item.address_name ||
+      item.full_name ||
+      cleanQuery,
+
+    fullAddress:
+      item.full_name ||
+      item.address_name ||
       cleanQuery
   };
 }
-
 // =====================================================
 // POINT IN POLYGON
 // =====================================================
