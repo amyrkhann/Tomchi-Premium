@@ -1383,7 +1383,19 @@ function openTab(
     button.classList.add(
         "active"
     );
+if (id === "zones") {
 
+    setTimeout(() => {
+
+        initZoneMap();
+
+        zoneMap.invalidateSize();
+
+        renderZoneMap();
+
+    }, 100);
+
+}
     if (
         id === "orders"
     ) {
