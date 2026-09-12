@@ -2009,7 +2009,317 @@ async function saveMenu() {
 
 
 // =====================================================
-// ZONES LOAD
+// ZONES
+// =====================================================
+
+let zoneMap = null;
+let zoneLayers = [];
+let drawingPoints = [];
+let drawingMarkers = [];
+let drawingLine = null;
+let drawingPolygon = null;
+let drawingActive = false;
+
+
+// =====================================================
+// INIT ZONE MAP
+// =====================================================
+
+function initZoneMap() {
+
+    if (zoneMap) {
+        return;
+    }
+
+    zoneMap = L.map("zoneMap").setView(
+        [43.238949, 76.889709],
+        12
+    );
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    ).addTo(zoneMap);
+
+    zoneMap.on(
+        "click",
+        function(event) {
+
+            if (!drawingActive) {
+                return;
+            }
+
+            addDrawingPoint(
+                event.latlng.lat,
+                event.latlng.lng
+            );
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// START DRAWING
+// =====================================================
+
+function startDrawingZone() {
+
+    initZoneMap();
+
+    drawingActive = true;
+
+    drawingPoints = [];
+
+    clearDrawingVisuals();
+
+    showMessage(
+        "zoneDrawMessage",
+        "📍 Нажимай на карту по границе зоны. Каждое нажатие добавляет точку.",
+        "success"
+    );
+
+}
+
+
+// =====================================================
+// ADD POINT
+// =====================================================
+
+function addDrawingPoint(
+    lat,
+    lon
+) {
+
+    drawingPoints.push([
+        Number(lat),
+        Number(lon)
+    ]);
+
+    const marker =
+        L.marker([
+            lat,
+            lon
+        ]).addTo(zoneMap);
+
+    drawingMarkers.push(marker);
+
+    updateDrawingLine();
+
+}
+
+
+// =====================================================
+// UPDATE DRAWING LINE
+// =====================================================
+
+function updateDrawingLine() {
+
+    if (drawingLine) {
+        zoneMap.removeLayer(
+            drawingLine
+        );
+    }
+
+    if (
+        drawingPoints.length < 2
+    ) {
+        return;
+    }
+
+    drawingLine =
+        L.polyline(
+            drawingPoints,
+            {
+                weight: 4
+            }
+        ).addTo(zoneMap);
+
+}
+
+
+// =====================================================
+// FINISH DRAWING
+// =====================================================
+
+function finishDrawingZone() {
+
+    if (
+        drawingPoints.length < 3
+    ) {
+
+        showMessage(
+            "zoneDrawMessage",
+            "❌ Для зоны нужно минимум 3 точки.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    drawingActive = false;
+
+    if (drawingLine) {
+        zoneMap.removeLayer(
+            drawingLine
+        );
+
+        drawingLine = null;
+    }
+
+    drawingPolygon =
+        L.polygon(
+            drawingPoints,
+            {
+                weight: 3,
+                fillOpacity: 0.25
+            }
+        ).addTo(zoneMap);
+
+    showMessage(
+        "zoneDrawMessage",
+        "✅ Зона нарисована. Теперь нажми «Добавить нарисованную зону».",
+        "success"
+    );
+
+}
+
+
+// =====================================================
+// CLEAR DRAWING
+// =====================================================
+
+function clearDrawingZone() {
+
+    drawingActive = false;
+
+    drawingPoints = [];
+
+    clearDrawingVisuals();
+
+    showMessage(
+        "zoneDrawMessage",
+        "Карта очищена.",
+        "success"
+    );
+
+}
+
+
+// =====================================================
+// CLEAR DRAWING VISUALS
+// =====================================================
+
+function clearDrawingVisuals() {
+
+    drawingMarkers.forEach(
+        marker => {
+
+            if (zoneMap) {
+                zoneMap.removeLayer(
+                    marker
+                );
+            }
+
+        }
+    );
+
+    drawingMarkers = [];
+
+    if (drawingLine && zoneMap) {
+
+        zoneMap.removeLayer(
+            drawingLine
+        );
+
+    }
+
+    drawingLine = null;
+
+    if (drawingPolygon && zoneMap) {
+
+        zoneMap.removeLayer(
+            drawingPolygon
+        );
+
+    }
+
+    drawingPolygon = null;
+
+}
+
+
+// =====================================================
+// ADD ZONE FROM DRAWING
+// =====================================================
+
+function addZoneFromDrawing() {
+
+    if (
+        drawingPoints.length < 3
+    ) {
+
+        showMessage(
+            "zonesMessage",
+            "❌ Сначала нарисуй зону минимум из 3 точек.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const name =
+        prompt(
+            "Введите название зоны:",
+            "Зона " +
+            (zones.length + 1)
+        );
+
+    if (!name) {
+        return;
+    }
+
+    zones.push({
+
+        id:
+            "zone" +
+            Date.now(),
+
+        name:
+            name.trim(),
+
+        polygon:
+            drawingPoints.map(
+                point => [
+                    Number(point[0]),
+                    Number(point[1])
+                ]
+            )
+
+    });
+
+    clearDrawingZone();
+
+    renderZones();
+
+    showMessage(
+        "zonesMessage",
+        "✅ Зона добавлена. Нажми «Сохранить зоны».",
+        "success"
+    );
+
+}
+
+
+// =====================================================
+// LOAD ZONES
 // =====================================================
 
 async function loadZones() {
@@ -2027,11 +2337,22 @@ async function loadZones() {
 
     renderZones();
 
+    setTimeout(
+        () => {
+
+            initZoneMap();
+
+            renderZoneMap();
+
+        },
+        100
+    );
+
 }
 
 
 // =====================================================
-// RENDER ZONES
+// RENDER ZONES LIST
 // =====================================================
 
 function renderZones() {
@@ -2050,9 +2371,11 @@ function renderZones() {
         container.innerHTML =
             `
             <div class="notice">
-                Зон пока нет.
+                Зон пока нет. Нарисуй первую зону на карте.
             </div>
             `;
+
+        renderZoneMap();
 
         return;
 
@@ -2066,7 +2389,10 @@ function renderZones() {
                 <div class="zone-box">
 
                     <h3>
-                        📍 ${escapeHtml(zone.name)}
+                        📍 ${escapeHtml(
+                            zone.name ||
+                            "Зона " + (index + 1)
+                        )}
                     </h3>
 
                     <label>
@@ -2074,77 +2400,25 @@ function renderZones() {
                     </label>
 
                     <input
-                        value="${escapeHtml(zone.name || "")}"
-                        onchange="zones[${index}].name=this.value"
+                        value="${escapeHtml(
+                            zone.name || ""
+                        )}"
+                        onchange="
+                            zones[${index}].name=this.value;
+                            renderZoneMap();
+                        "
                     >
 
-                    <div class="row">
-
-                        <div>
-
-                            <label>
-                                Минимальная широта
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.0001"
-                                value="${Number(zone.minLat)}"
-                                onchange="zones[${index}].minLat=Number(this.value)"
-                            >
-
-                        </div>
-
-                        <div>
-
-                            <label>
-                                Максимальная широта
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.0001"
-                                value="${Number(zone.maxLat)}"
-                                onchange="zones[${index}].maxLat=Number(this.value)"
-                            >
-
-                        </div>
-
+                    <div class="small">
+                        Точек границы:
+                        ${
+                            Array.isArray(zone.polygon)
+                                ? zone.polygon.length
+                                : 0
+                        }
                     </div>
 
-                    <div class="row">
-
-                        <div>
-
-                            <label>
-                                Минимальная долгота
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.0001"
-                                value="${Number(zone.minLon)}"
-                                onchange="zones[${index}].minLon=Number(this.value)"
-                            >
-
-                        </div>
-
-                        <div>
-
-                            <label>
-                                Максимальная долгота
-                            </label>
-
-                            <input
-                                type="number"
-                                step="0.0001"
-                                value="${Number(zone.maxLon)}"
-                                onchange="zones[${index}].maxLon=Number(this.value)"
-                            >
-
-                        </div>
-
-                    </div>
+                    <br>
 
                     <button
                         class="btn-red"
@@ -2160,39 +2434,84 @@ function renderZones() {
         }
     );
 
+    renderZoneMap();
+
 }
 
 
 // =====================================================
-// ADD ZONE
+// RENDER ZONES ON MAP
 // =====================================================
 
-function addZone() {
+function renderZoneMap() {
 
-    zones.push({
+    if (!zoneMap) {
+        return;
+    }
 
-        id:
-            "zone" +
-            Date.now(),
+    zoneLayers.forEach(
+        layer => {
 
-        name:
-            "Новая зона",
+            zoneMap.removeLayer(
+                layer
+            );
 
-        minLat:
-            0,
+        }
+    );
 
-        maxLat:
-            0,
+    zoneLayers = [];
 
-        minLon:
-            0,
+    zones.forEach(
+        zone => {
 
-        maxLon:
-            0
+            if (
+                !Array.isArray(
+                    zone.polygon
+                ) ||
+                zone.polygon.length < 3
+            ) {
+                return;
+            }
 
-    });
+            const polygon =
+                L.polygon(
+                    zone.polygon,
+                    {
+                        weight: 3,
+                        fillOpacity: 0.25
+                    }
+                ).addTo(zoneMap);
 
-    renderZones();
+            polygon.bindPopup(
+                `<b>${escapeHtml(
+                    zone.name || "Зона"
+                )}</b>`
+            );
+
+            zoneLayers.push(
+                polygon
+            );
+
+        }
+    );
+
+    if (
+        zoneLayers.length
+    ) {
+
+        const group =
+            L.featureGroup(
+                zoneLayers
+            );
+
+        zoneMap.fitBounds(
+            group.getBounds(),
+            {
+                padding: [30, 30]
+            }
+        );
+
+    }
 
 }
 
@@ -2221,6 +2540,54 @@ function deleteZone(
     );
 
     renderZones();
+
+}
+
+
+// =====================================================
+// SAVE ZONES
+// =====================================================
+
+async function saveZones() {
+
+    try {
+
+        const result =
+            await api(
+                "/api/zones",
+                {
+
+                    method: "PUT",
+
+                    body:
+                        JSON.stringify({
+                            zones:
+                                zones
+                        })
+
+                }
+            );
+
+        zones =
+            result.zones || zones;
+
+        renderZones();
+
+        showMessage(
+            "zonesMessage",
+            "✅ Зоны сохранены на сервере.",
+            "success"
+        );
+
+    } catch (error) {
+
+        showMessage(
+            "zonesMessage",
+            error.message,
+            "error"
+        );
+
+    }
 
 }
 
