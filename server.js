@@ -2063,13 +2063,1244 @@ const DEFAULT_MENU = {
 ],
 
   "4": [
-    // Абая 47
-  ],
+  // Абая 47
+
+  // Плов
+  {
+    id: 401,
+    category: "Плов",
+    name: "Ташкентский",
+    price: 1990
+  },
+  {
+    id: 402,
+    category: "Плов",
+    name: "Шипа плов",
+    price: 2190
+  },
+  {
+    id: 403,
+    category: "Плов",
+    name: "Ханский",
+    price: 2490
+  },
+  {
+    id: 404,
+    category: "Плов",
+    name: "По-казахски",
+    price: 2590
+  },
+  {
+    id: 405,
+    category: "Плов",
+    name: "Мясо доп.",
+    price: 690
+  },
+
+  // Плов 1 кг
+  {
+    id: 406,
+    category: "Плов 1 кг",
+    name: "Ташкентский",
+    price: 4990
+  },
+  {
+    id: 407,
+    category: "Плов 1 кг",
+    name: "Ханский",
+    price: 6490
+  },
+
+  // Плов подзаказ
+  {
+    id: 408,
+    category: "Плов подзаказ",
+    name: "Чайхана плов (6-7 персон)",
+    price: 14990
+  },
+
+  // Самса
+  {
+    id: 409,
+    category: "Самса",
+    name: "Куриный",
+    price: 550
+  },
+  {
+    id: 410,
+    category: "Самса",
+    name: "Говядина",
+    price: 600
+  },
+  {
+    id: 411,
+    category: "Самса",
+    name: "Лепешка",
+    price: 300
+  },
+
+  // Супы
+  {
+    id: 412,
+    category: "Супы",
+    name: "Окрошка",
+    price: 1690
+  },
+  {
+    id: 413,
+    category: "Супы",
+    name: "Суп из говядины",
+    price: 1890
+  },
+  {
+    id: 414,
+    category: "Супы",
+    name: "Суп с тефтелями",
+    price: 1890
+  },
+
+  // Салаты
+  {
+    id: 415,
+    category: "Салаты",
+    name: "Капуста по-домашнему",
+    price: 790
+  },
+  {
+    id: 416,
+    category: "Салаты",
+    name: "Чим-чи",
+    price: 790
+  },
+  {
+    id: 417,
+    category: "Салаты",
+    name: "Ачучук",
+    price: 990
+  },
+  {
+    id: 418,
+    category: "Салаты",
+    name: "Свежий салат",
+    price: 1190
+  },
+  {
+    id: 419,
+    category: "Салаты",
+    name: "Крабовый",
+    price: 1290
+  },
+
+  // Шашлык
+  {
+    id: 420,
+    category: "Шашлык",
+    name: "Люля",
+    price: 1190
+  },
+  {
+    id: 421,
+    category: "Шашлык",
+    name: "Крылышки",
+    price: 1190
+  },
+  {
+    id: 422,
+    category: "Шашлык",
+    name: "Окорочка",
+    price: 1190
+  },
+  {
+    id: 423,
+    category: "Шашлык",
+    name: "Утка",
+    price: 1190
+  },
+  {
+    id: 424,
+    category: "Шашлык",
+    name: "Рулет",
+    price: 1290
+  },
+  {
+    id: 425,
+    category: "Шашлык",
+    name: "Баранина",
+    price: 1490
+  },
+  {
+    id: 426,
+    category: "Шашлык",
+    name: "Говядина",
+    price: 1490
+  },
+  {
+    id: 427,
+    category: "Шашлык",
+    name: "Семечки",
+    price: 1590
+  },
+  {
+    id: 428,
+    category: "Шашлык",
+    name: "Наполеон",
+    price: 1790
+  },
+  {
+    id: 429,
+    category: "Шашлык",
+    name: "Антрикот",
+    price: 2190
+  },
+
+  // Донер
+  {
+    id: 430,
+    category: "Донер",
+    name: "Куриный",
+    price: 1790
+  },
+  {
+    id: 431,
+    category: "Донер",
+    name: "Куриный 1,5",
+    price: 2290
+  },
+
+  // Соусы
+  {
+    id: 432,
+    category: "Соусы",
+    name: "Кетчуп",
+    price: 250
+  },
+  {
+    id: 433,
+    category: "Соусы",
+    name: "Майонез",
+    price: 250
+  },
+  {
+    id: 434,
+    category: "Соусы",
+    name: "Сырный соус",
+    price: 250
+  },
+  {
+    id: 435,
+    category: "Соусы",
+    name: "Красный соус",
+    price: 250
+  },
+  {
+    id: 436,
+    category: "Соусы",
+    name: "Тар-тар",
+    price: 350
+  },
+  {
+    id: 437,
+    category: "Соусы",
+    name: "Сметана",
+    price: 350
+  },
+
+  // Гарниры
+  {
+    id: 438,
+    category: "Гарниры",
+    name: "Фри",
+    price: 890
+  },
+  {
+    id: 439,
+    category: "Гарниры",
+    name: "Наггетсы",
+    price: 1190
+  },
+
+  // Комбо
+  {
+    id: 440,
+    category: "Комбо",
+    name: "Комбо 1",
+    price: 2590
+  },
+  {
+    id: 441,
+    category: "Комбо",
+    name: "Комбо 2",
+    price: 7990
+  },
+  {
+    id: 442,
+    category: "Комбо",
+    name: "Комбо 3",
+    price: 7990
+  },
+  {
+    id: 443,
+    category: "Комбо",
+    name: "Комбо Семейный",
+    price: 12590
+  },
+  {
+    id: 444,
+    category: "Комбо",
+    name: "Комбо Жұма",
+    price: 2990
+  },
+  {
+    id: 445,
+    category: "Комбо",
+    name: "Ассорти 1. шашлыков",
+    price: 7590
+  },
+  {
+    id: 446,
+    category: "Комбо",
+    name: "Ассорти 2. шашлыков",
+    price: 21990
+  },
+
+  // Лимонады
+  {
+    id: 447,
+    category: "Лимонады",
+    name: "Мохито",
+    price: 890
+  },
+  {
+    id: 448,
+    category: "Лимонады",
+    name: "Манго-маракуйя",
+    price: 890
+  },
+  {
+    id: 449,
+    category: "Лимонады",
+    name: "Ягодный",
+    price: 890
+  },
+  {
+    id: 450,
+    category: "Лимонады",
+    name: "Классический",
+    price: 890
+  },
+  {
+    id: 451,
+    category: "Лимонады",
+    name: "Тропический",
+    price: 890
+  },
+  {
+    id: 452,
+    category: "Лимонады",
+    name: "Киви-лайм",
+    price: 890
+  },
+  {
+    id: 453,
+    category: "Лимонады",
+    name: "Смородиновый",
+    price: 890
+  },
+  {
+    id: 454,
+    category: "Лимонады",
+    name: "Вишнёвый",
+    price: 890
+  },
+  {
+    id: 455,
+    category: "Лимонады",
+    name: "Мандариновый",
+    price: 890
+  },
+  {
+    id: 456,
+    category: "Лимонады",
+    name: "Малина-лайм",
+    price: 890
+  },
+
+  // Ice-tea
+  {
+    id: 457,
+    category: "Ice-tea",
+    name: "Чёрный",
+    price: 990
+  },
+  {
+    id: 458,
+    category: "Ice-tea",
+    name: "Зелёный",
+    price: 990
+  },
+  {
+    id: 459,
+    category: "Ice-tea",
+    name: "Манго",
+    price: 990
+  },
+  {
+    id: 460,
+    category: "Ice-tea",
+    name: "Вишнёвый",
+    price: 990
+  },
+  {
+    id: 461,
+    category: "Ice-tea",
+    name: "Ананас",
+    price: 990
+  },
+
+  // Напитки
+  {
+    id: 462,
+    category: "Напитки",
+    name: "Salam Cola (разливная) 0,5л",
+    price: 790
+  },
+  {
+    id: 463,
+    category: "Напитки",
+    name: "Salam Cola баночная 0,5л",
+    price: 790
+  },
+  {
+    id: 464,
+    category: "Напитки",
+    name: "Salam Cola 1л",
+    price: 1290
+  },
+  {
+    id: 465,
+    category: "Напитки",
+    name: "Ava разливной 0,5л",
+    price: 690
+  },
+  {
+    id: 466,
+    category: "Напитки",
+    name: "Da-Da сок 0,2л",
+    price: 590
+  },
+  {
+    id: 467,
+    category: "Напитки",
+    name: "Da-Da сок 1л",
+    price: 1290
+  },
+  {
+    id: 468,
+    category: "Напитки",
+    name: "Компот 0,5л",
+    price: 490
+  },
+  {
+    id: 469,
+    category: "Напитки",
+    name: "Компот 1л",
+    price: 990
+  },
+  {
+    id: 470,
+    category: "Напитки",
+    name: "ASU 0,5л",
+    price: 590
+  },
+  {
+    id: 471,
+    category: "Напитки",
+    name: "ASU 1л",
+    price: 790
+  },
+  {
+    id: 472,
+    category: "Напитки",
+    name: "Айран 0,3л",
+    price: 400
+  },
+  {
+    id: 473,
+    category: "Напитки",
+    name: "Кымыз 1л",
+    price: 2000
+  },
+
+  // Десерты
+  {
+    id: 474,
+    category: "Десерты",
+    name: "Пахлава в асс. (2шт.)",
+    price: 1200
+  },
+  {
+    id: 475,
+    category: "Десерты",
+    name: "Пахлава фисташки (2шт.)",
+    price: 1200
+  },
+  {
+    id: 476,
+    category: "Десерты",
+    name: "Пахлава молочный (2шт.)",
+    price: 1400
+  },
+  {
+    id: 477,
+    category: "Десерты",
+    name: "Десерты в асс.",
+    price: 1590
+  }
+],
 
   "5": [
-    // Яссауи 66
-  ]
-};
+  // Яссауи 66А
+
+  // Плов
+  {
+    id: 501,
+    category: "Плов",
+    name: "Ташкентский",
+    price: 1990
+  },
+  {
+    id: 502,
+    category: "Плов",
+    name: "Чайхана плов",
+    price: 2190
+  },
+  {
+    id: 503,
+    category: "Плов",
+    name: "Шипа плов",
+    price: 2190
+  },
+  {
+    id: 504,
+    category: "Плов",
+    name: "Самаркандский",
+    price: 2490
+  },
+  {
+    id: 505,
+    category: "Плов",
+    name: "Ханский",
+    price: 2490
+  },
+  {
+    id: 506,
+    category: "Плов",
+    name: "По-казахски",
+    price: 2590
+  },
+  {
+    id: 507,
+    category: "Плов",
+    name: "Мясо доп.",
+    price: 690
+  },
+
+  // Плов 1 кг
+  {
+    id: 508,
+    category: "Плов 1 кг",
+    name: "Ташкентский",
+    price: 4990
+  },
+  {
+    id: 509,
+    category: "Плов 1 кг",
+    name: "Ханский",
+    price: 6490
+  },
+
+  // Плов предзаказ
+  {
+    id: 510,
+    category: "Плов предзаказ",
+    name: "Самаркандский (1 кг)",
+    price: 6290
+  },
+  {
+    id: 511,
+    category: "Плов предзаказ",
+    name: "Чайхана плов (6-7 персон)",
+    price: 14990
+  },
+
+  // Самса
+  {
+    id: 512,
+    category: "Самса",
+    name: "Куриный",
+    price: 550
+  },
+  {
+    id: 513,
+    category: "Самса",
+    name: "Говядина",
+    price: 600
+  },
+
+  // Супы
+  {
+    id: 514,
+    category: "Супы",
+    name: "Пельмени",
+    price: 1790
+  },
+  {
+    id: 515,
+    category: "Супы",
+    name: "Суп из говядины",
+    price: 1890
+  },
+  {
+    id: 516,
+    category: "Супы",
+    name: "Суп с тефтелями",
+    price: 1890
+  },
+  {
+    id: 517,
+    category: "Супы",
+    name: "Нарын",
+    price: 2290
+  },
+
+  // Традиционные блюда
+  {
+    id: 518,
+    category: "Традиционные блюда",
+    name: "Манты (5 шт.)",
+    price: 2290
+  },
+  {
+    id: 519,
+    category: "Традиционные блюда",
+    name: "Бешбармак",
+    price: 3490
+  },
+
+  // Салаты
+  {
+    id: 520,
+    category: "Салаты",
+    name: "Морковча",
+    price: 790
+  },
+  {
+    id: 521,
+    category: "Салаты",
+    name: "Чим-чи",
+    price: 790
+  },
+  {
+    id: 522,
+    category: "Салаты",
+    name: "Ачучук",
+    price: 1090
+  },
+  {
+    id: 523,
+    category: "Салаты",
+    name: "Бахор",
+    price: 1190
+  },
+  {
+    id: 524,
+    category: "Салаты",
+    name: "Свежий салат",
+    price: 1290
+  },
+  {
+    id: 525,
+    category: "Салаты",
+    name: "Оливье",
+    price: 1790
+  },
+  {
+    id: 526,
+    category: "Салаты",
+    name: "Малибу",
+    price: 1890
+  },
+  {
+    id: 527,
+    category: "Салаты",
+    name: "Цезарь с курицей",
+    price: 2090
+  },
+  {
+    id: 528,
+    category: "Салаты",
+    name: "Хрустящий баклажан",
+    price: 2090
+  },
+
+  // Шашлык
+  {
+    id: 529,
+    category: "Шашлык",
+    name: "Люля",
+    price: 1190
+  },
+  {
+    id: 530,
+    category: "Шашлык",
+    name: "Крылышки",
+    price: 1190
+  },
+  {
+    id: 531,
+    category: "Шашлык",
+    name: "Окорочка",
+    price: 1190
+  },
+  {
+    id: 532,
+    category: "Шашлык",
+    name: "Утка",
+    price: 1190
+  },
+  {
+    id: 533,
+    category: "Шашлык",
+    name: "Рулет",
+    price: 1290
+  },
+  {
+    id: 534,
+    category: "Шашлык",
+    name: "Баранина",
+    price: 1490
+  },
+  {
+    id: 535,
+    category: "Шашлык",
+    name: "Говядина",
+    price: 1490
+  },
+  {
+    id: 536,
+    category: "Шашлык",
+    name: "Семечки",
+    price: 1590
+  },
+  {
+    id: 537,
+    category: "Шашлык",
+    name: "Наполеон",
+    price: 1790
+  },
+  {
+    id: 538,
+    category: "Шашлык",
+    name: "Антрикот",
+    price: 2190
+  },
+
+  // Пицца
+  {
+    id: 539,
+    category: "Пицца",
+    name: "Маргарита",
+    price: 2290
+  },
+  {
+    id: 540,
+    category: "Пицца",
+    name: "Куриный",
+    price: 2690
+  },
+  {
+    id: 541,
+    category: "Пицца",
+    name: "Пепперони",
+    price: 2790
+  },
+  {
+    id: 542,
+    category: "Пицца",
+    name: "4 сезона",
+    price: 2890
+  },
+
+  // Лагман
+  {
+    id: 543,
+    category: "Лагман",
+    name: "Домашний",
+    price: 2290
+  },
+  {
+    id: 544,
+    category: "Лагман",
+    name: "Суйру лагман",
+    price: 2290
+  },
+  {
+    id: 545,
+    category: "Лагман",
+    name: "Гуйру лагман",
+    price: 2290
+  },
+  {
+    id: 546,
+    category: "Лагман",
+    name: "Гуйру цомян",
+    price: 2390
+  },
+  {
+    id: 547,
+    category: "Лагман",
+    name: "Дин-дин цомян",
+    price: 2390
+  },
+  {
+    id: 548,
+    category: "Лагман",
+    name: "Мошуру лагман",
+    price: 2390
+  },
+  {
+    id: 549,
+    category: "Лагман",
+    name: "Мясо по-тайски",
+    price: 2690
+  },
+  {
+    id: 550,
+    category: "Лагман",
+    name: "Фри с мясом",
+    price: 2690
+  },
+  {
+    id: 551,
+    category: "Лагман",
+    name: "Фри с мясом",
+    price: 2690
+  },
+  {
+    id: 552,
+    category: "Лагман",
+    name: "Казан-кебаб с рисом",
+    price: 3290
+  },
+
+  // Донер
+  {
+    id: 553,
+    category: "Донер",
+    name: "Куриный",
+    price: 1790
+  },
+  {
+    id: 554,
+    category: "Донер",
+    name: "Куриный 1,5",
+    price: 2290
+  },
+  {
+    id: 555,
+    category: "Донер",
+    name: "Пицца-донер",
+    price: 2590
+  },
+
+  // Соусы
+  {
+    id: 556,
+    category: "Соусы",
+    name: "Кетчуп",
+    price: 250
+  },
+  {
+    id: 557,
+    category: "Соусы",
+    name: "Майонез",
+    price: 250
+  },
+  {
+    id: 558,
+    category: "Соусы",
+    name: "Сырный соус",
+    price: 250
+  },
+  {
+    id: 559,
+    category: "Соусы",
+    name: "Красный соус",
+    price: 250
+  },
+  {
+    id: 560,
+    category: "Соусы",
+    name: "Тар-тар",
+    price: 350
+  },
+  {
+    id: 561,
+    category: "Соусы",
+    name: "Сметана",
+    price: 350
+  },
+
+  // Крылышки
+  {
+    id: 562,
+    category: "Крылышки",
+    name: "Баскет 1",
+    price: 3590
+  },
+  {
+    id: 563,
+    category: "Крылышки",
+    name: "Баскет 2",
+    price: 5190
+  },
+
+  // Выпечка
+  {
+    id: 564,
+    category: "Выпечка",
+    name: "Лепешка",
+    price: 300
+  },
+  {
+    id: 565,
+    category: "Выпечка",
+    name: "Баурсак",
+    price: 1190
+  },
+
+  // Гарниры
+  {
+    id: 566,
+    category: "Гарниры",
+    name: "Рис",
+    price: 690
+  },
+  {
+    id: 567,
+    category: "Гарниры",
+    name: "Фри",
+    price: 890
+  },
+  {
+    id: 568,
+    category: "Гарниры",
+    name: "Наггетсы",
+    price: 1190
+  },
+  {
+    id: 569,
+    category: "Гарниры",
+    name: "Сырные палочки (5 шт.)",
+    price: 1190
+  },
+
+  // Комбо
+  {
+    id: 570,
+    category: "Комбо",
+    name: "Комбо 1",
+    price: 2590
+  },
+  {
+    id: 571,
+    category: "Комбо",
+    name: "Комбо 2",
+    price: 7990
+  },
+  {
+    id: 572,
+    category: "Комбо",
+    name: "Комбо 3",
+    price: 7990
+  },
+  {
+    id: 573,
+    category: "Комбо",
+    name: "Комбо Семейный",
+    price: 12590
+  },
+  {
+    id: 574,
+    category: "Комбо",
+    name: "Комбо Жұма",
+    price: 2990
+  },
+  {
+    id: 575,
+    category: "Комбо",
+    name: "Ассорти 1. шашлыков",
+    price: 7590
+  },
+  {
+    id: 576,
+    category: "Комбо",
+    name: "Ассорти 2. шашлыков",
+    price: 21990
+  },
+
+  // Кофе
+  {
+    id: 577,
+    category: "Кофе",
+    name: "Эспрессо",
+    price: 1090
+  },
+  {
+    id: 578,
+    category: "Кофе",
+    name: "Американо",
+    price: 1190
+  },
+  {
+    id: 579,
+    category: "Кофе",
+    name: "Латте",
+    price: 1690
+  },
+  {
+    id: 580,
+    category: "Кофе",
+    name: "Капучино",
+    price: 1590
+  },
+  {
+    id: 581,
+    category: "Кофе",
+    name: "Раф",
+    price: 1590
+  },
+  {
+    id: 582,
+    category: "Кофе",
+    name: "Flat White",
+    price: 1490
+  },
+  {
+    id: 583,
+    category: "Кофе",
+    name: "Сироп в ассортименте 20мл",
+    price: 250
+  },
+
+  // Шоколад
+  {
+    id: 584,
+    category: "Шоколад",
+    name: "Горячий шоколад",
+    price: 1290
+  },
+  {
+    id: 585,
+    category: "Шоколад",
+    name: "Какао",
+    price: 1290
+  },
+
+  // Лимонады
+  {
+    id: 586,
+    category: "Лимонады",
+    name: "Мохито",
+    price: 890
+  },
+  {
+    id: 587,
+    category: "Лимонады",
+    name: "Манго-маракуйя",
+    price: 890
+  },
+  {
+    id: 588,
+    category: "Лимонады",
+    name: "Ягодный",
+    price: 890
+  },
+  {
+    id: 589,
+    category: "Лимонады",
+    name: "Классический",
+    price: 890
+  },
+  {
+    id: 590,
+    category: "Лимонады",
+    name: "Тропический",
+    price: 890
+  },
+  {
+    id: 591,
+    category: "Лимонады",
+    name: "Киви-лайм",
+    price: 890
+  },
+  {
+    id: 592,
+    category: "Лимонады",
+    name: "Смородиновый",
+    price: 890
+  },
+  {
+    id: 593,
+    category: "Лимонады",
+    name: "Вишнёвый",
+    price: 890
+  },
+  {
+    id: 594,
+    category: "Лимонады",
+    name: "Мандариновый",
+    price: 890
+  },
+  {
+    id: 595,
+    category: "Лимонады",
+    name: "Малина-лайм",
+    price: 890
+  },
+
+  // Смузи
+  {
+    id: 596,
+    category: "Смузи",
+    name: "Банановый",
+    price: 2090
+  },
+  {
+    id: 597,
+    category: "Смузи",
+    name: "Смородина-банан",
+    price: 2090
+  },
+  {
+    id: 598,
+    category: "Смузи",
+    name: "Киви-банан",
+    price: 2090
+  },
+  {
+    id: 599,
+    category: "Смузи",
+    name: "Тропический",
+    price: 2090
+  },
+
+  // Напитки
+  {
+    id: 600,
+    category: "Напитки",
+    name: "Salam Cola (разливная) 0,5л",
+    price: 790
+  },
+  {
+    id: 601,
+    category: "Напитки",
+    name: "Salam Cola баночная 0,5л",
+    price: 790
+  },
+  {
+    id: 602,
+    category: "Напитки",
+    name: "Salam Cola 1л",
+    price: 1290
+  },
+  {
+    id: 603,
+    category: "Напитки",
+    name: "Ava разливной 0,5л",
+    price: 690
+  },
+  {
+    id: 604,
+    category: "Напитки",
+    name: "Da-Da сок 0,2л",
+    price: 590
+  },
+  {
+    id: 605,
+    category: "Напитки",
+    name: "Da-Da сок 1л",
+    price: 1290
+  },
+  {
+    id: 606,
+    category: "Напитки",
+    name: "Компот 0,5л",
+    price: 490
+  },
+  {
+    id: 607,
+    category: "Напитки",
+    name: "Компот 1л",
+    price: 1290
+  },
+  {
+    id: 608,
+    category: "Напитки",
+    name: "ASU 0,5л",
+    price: 590
+  },
+  {
+    id: 609,
+    category: "Напитки",
+    name: "ASU 1л",
+    price: 790
+  },
+  {
+    id: 610,
+    category: "Напитки",
+    name: "Айран",
+    price: 400
+  },
+  {
+    id: 611,
+    category: "Напитки",
+    name: "Кымыз",
+    price: 2000
+  },
+
+  // Десерты
+  {
+    id: 612,
+    category: "Десерты",
+    name: "Чак-чак",
+    price: 290
+  },
+  {
+    id: 613,
+    category: "Десерты",
+    name: "Пахлава в асс. (2шт.)",
+    price: 1200
+  },
+  {
+    id: 614,
+    category: "Десерты",
+    name: "Пахлава фисташки (2шт.)",
+    price: 1200
+  },
+  {
+    id: 615,
+    category: "Десерты",
+    name: "Пахлава молочный (2шт.)",
+    price: 1400
+  },
+  {
+    id: 616,
+    category: "Десерты",
+    name: "Десерты в асс.",
+    price: 1590
+  }
+],
 
 // =====================================================
 // ЗОНА ДОСТАВКИ
