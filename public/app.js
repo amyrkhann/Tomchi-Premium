@@ -1,1488 +1,333 @@
+
+const WHATSAPP_NUMBER = "77479370909";
+const DELIVERY_IMAGE = "/images/delivery-zone.jpg";
+
+const menu = [
+  { category: "Бургеры", name: "Чизбургер куриный", price: 1800 },
+  { category: "Бургеры", name: "Чизбургер говяжий", price: 2000 },
+  { category: "Бургеры", name: "Чизбургер ассорти", price: 2200 },
+  { category: "Пицца", name: "Пицца 4 сезона", price: 3500 },
+  { category: "Пицца", name: "Пицца куриная", price: 3000 },
+  { category: "Пицца", name: "Маргарита", price: 2500 },
+  { category: "Пицца", name: "Пепперони", price: 3000 },
+  { category: "Пицца", name: "Пицца донер", price: 3500 },
+  { category: "Основные блюда", name: "Плов", price: 1800 },
+  { category: "Основные блюда", name: "Манты", price: 1800 },
+  { category: "Основные блюда", name: "Лагман", price: 1800 }
+];
+
 let language = "ru";
-let selectedBranch = "";
-let cart = [];
+let screen = "language";
+let selectedCategory = "Все";
+let cart = {};
+let orderInfo = { name: "", phone: "", address: "", comment: "" };
 
-// ---------------- ЯЗЫК ----------------
+const words = {
+  ru: {
+    choose: "Выберите язык",
+    zone: "Зона доставки",
+    zoneText: "Посмотрите нашу зону доставки перед заказом.",
+    menu: "Наше меню",
+    cart: "Корзина",
+    empty: "Корзина пока пустая",
+    total: "Итого",
+    checkout: "Оформить заказ",
+    back: "Назад",
+    name: "Ваше имя",
+    phone: "Номер телефона",
+    address: "Адрес доставки",
+    comment: "Комментарий к заказу (необязательно)",
+    send: "Заказать через WhatsApp",
+    continue: "Перейти к меню",
+    hours: "Доставка ежедневно с 11:00 до 23:00",
+    required: "Заполните имя, телефон и адрес доставки.",
+    all: "Все",
+    imageError: "Загрузите фото в public/images/delivery-zone.jpg",
+    order: "НОВЫЙ ЗАКАЗ — TOMCHI PREMIUM",
+    quantity: "Количество",
+    deliveryAddress: "Адрес",
+    customer: "Клиент",
+    customerPhone: "Телефон",
+    note: "Комментарий"
+  },
+  kz: {
+    choose: "Тілді таңдаңыз",
+    zone: "Жеткізу аймағы",
+    zoneText: "Тапсырыс бермес бұрын жеткізу аймағын қарап шығыңыз.",
+    menu: "Біздің мәзір",
+    cart: "Себет",
+    empty: "Себет әзірге бос",
+    total: "Барлығы",
+    checkout: "Тапсырыс беру",
+    back: "Артқа",
+    name: "Атыңыз",
+    phone: "Телефон нөмірі",
+    address: "Жеткізу мекенжайы",
+    comment: "Тапсырысқа түсініктеме (міндетті емес)",
+    send: "WhatsApp арқылы тапсырыс беру",
+    continue: "Мәзірге өту",
+    hours: "Жеткізу күн сайын 11:00–23:00",
+    required: "Атыңызды, телефон нөмірін және мекенжайды толтырыңыз.",
+    all: "Барлығы",
+    imageError: "Суретті public/images/delivery-zone.jpg жолына жүктеңіз",
+    order: "ЖАҢА ТАПСЫРЫС — TOMCHI PREMIUM",
+    quantity: "Саны",
+    deliveryAddress: "Мекенжай",
+    customer: "Клиент",
+    customerPhone: "Телефон",
+    note: "Түсініктеме"
+  }
+};
 
-function setLanguage(lang){
-
-    language = lang;
-
-    document.getElementById("language-screen").classList.remove("active");
-    document.getElementById("address-screen").classList.add("active");
-
-    if(lang==="kz"){
-        document.querySelector("#address-screen h2").innerText="Жеткізу мекенжайын енгізіңіз";
-        document.getElementById("address").placeholder="Мысалы: Абай 47";
-    }else{
-        document.querySelector("#address-screen h2").innerText="Введите адрес доставки";
-        document.getElementById("address").placeholder="Например: Абая 47";
-    }
-
+function t(key) {
+  return words[language][key] || key;
 }
 
-// ---------------- ПРОВЕРКА АДРЕСА ----------------
-
-async function checkAddress(){
-
-    const address=document.getElementById("address").value.trim();
-
-    if(!address){
-        alert(language==="kz" ? "Мекенжайды енгізіңіз" : "Введите адрес");
-        return;
-    }
-
-    try{
-
-        const res=await fetch("/api/check-zone",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                address:address,
-                amount:5000
-            })
-        });
-
-const data = await res.json();
-if (data.inZone) {
-
-    document.getElementById("modalTitle").innerText =
-        "✅ Адрес входит в зону доставки";
-
-    document.getElementById("modalText").innerText =
-`Ваш адрес входит в нашу зону доставки.
-
-• Заказ от 5 000 ₸ — доставка БЕСПЛАТНО.
-
-• Заказ до 5 000 ₸ — стоимость доставки 500 ₸.
-
-Продолжить оформление заказа?`;
-
-} else {
-
-    document.getElementById("modalTitle").innerText =
-        "⚠️ Адрес вне зоны бесплатной доставки";
-
-    document.getElementById("modalText").innerText =
-`Ваш адрес не входит в бесплатную зону доставки.
-
-После оформления заказа потребуется вызвать курьера через Яндекс Go или inDrive.
-
-
-Продолжить оформление заказа?`;
-
+function money(amount) {
+  return Number(amount).toLocaleString("ru-RU") + " ₸";
 }
 
-document.getElementById("deliveryModal").classList.add("show");
-
-    }catch(e){
-
-        alert("Ошибка подключения");
-
-    }
-
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[character]);
 }
 
-// ---------------- ФИЛИАЛЫ ----------------
-
-function showBranches(){
-document.getElementById("cart").style.display = "none";
-
-    document.getElementById("address-screen").classList.remove("active");
-    document.getElementById("branch-screen").classList.add("active");
-
-    const branches=[
-        "Абылай Хана 24",
-        "Абылай Хана 34",
-        "Жібек Жолы 106",
-        "Абая 47",
-        "Яссауи 66"
-    ];
-
-    const container=document.getElementById("branches");
-
-    container.innerHTML="";
-
-    branches.forEach(branch=>{
-
-        const div=document.createElement("div");
-
-        div.className="branch-card";
-
-        div.innerHTML=branch;
-
-        div.onclick=function(){
-
-            openMenu(branch);
-
-        };
-
-        container.appendChild(div);
-
-    });
-
+function cartCount() {
+  return Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
 }
 
-// ---------------- МЕНЮ ----------------
-function openMenu(branch){
+function cartTotal() {
+  return Object.entries(cart).reduce((sum, [index, quantity]) => {
+    return sum + menu[Number(index)].price * quantity;
+  }, 0);
+}
 
-    selectedBranch = branch;
-document.getElementById("cart").style.display = "block";
+function render() {
+  const app = document.getElementById("app");
+  if (!app) return;
 
-    document.getElementById("branch-screen").classList.remove("active");
-    document.getElementById("menu-screen").classList.add("active");
-
-    document.getElementById("branch-title").innerText = branch;
-
-    const menu = document.getElementById("menu-list");
-
-    // Пока настоящее меню делаем для Абылай Хана 24
-    if(branch === "Абылай Хана 24"){
-
-        const foods = [
-
-            // ===== ПЛОВ =====
-            ["Плов", "Ташкентский", 1990],
-            ["Плов", "Шифа", 2190],
-            ["Плов", "Ханский", 2490],
-            ["Плов", "По-казахски", 2590],
-            ["Плов", "Мясо доп.", 690],
-
-            ["Плов 1 кг", "Ташкентский", 4990],
-            ["Плов 1 кг", "Ханский", 6490],
-
-            ["Плов предзаказ", "Чайхана плов (1 кг)", 5090],
-            ["Плов предзаказ", "Самаркандский (1 кг)", 6290],
-
-            // ===== САМСА =====
-            ["Самса", "Куриный", 550],
-            ["Самса", "Говядина", 600],
-            ["Самса", "Лепешка", 300],
-
-            // ===== СУПЫ =====
-            ["Супы", "Пельмени", 1790],
-            ["Супы", "Тефтели", 1890],
-            ["Супы", "Шорпа", 1890],
-
-            // ===== САЛАТЫ =====
-            ["Салаты", "Солёные огурцы", 790],
-            ["Салаты", "Морковка", 790],
-            ["Салаты", "Чим-чи", 790],
-            ["Салаты", "Ачичук", 1090],
-            ["Салаты", "Свежий салат", 1290],
-
-            // ===== ГАРНИРЫ =====
-            ["Гарниры", "Фри", 890],
-            ["Гарниры", "Наггетсы", 1190],
-
-            // ===== ШАШЛЫК =====
-            ["Шашлык", "Люля", 1190],
-            ["Шашлык", "Крылышки", 1190],
-            ["Шашлык", "Окорочка", 1190],
-            ["Шашлык", "Утка", 1190],
-            ["Шашлык", "Рулет", 1290],
-            ["Шашлык", "Баранина", 1490],
-            ["Шашлык", "Говядина", 1490],
-            ["Шашлык", "Семечки", 1590],
-            ["Шашлык", "Напалеон", 1790],
-            ["Шашлык", "Антрикот", 2190],
-
-            // ===== СОУСЫ =====
-            ["Соусы", "Кетчуп", 250],
-            ["Соусы", "Майонез", 250],
-            ["Соусы", "Сырный соус", 250],
-            ["Соусы", "Красный соус", 250],
-            ["Соусы", "Сметана", 350],
-
-            // ===== КОМБО =====
-            ["Комбо", "Комбо 1", 2590],
-            ["Комбо", "Комбо 2", 7990],
-            ["Комбо", "Комбо 3", 7990],
-            ["Комбо", "Комбо Семейный", 12590],
-            ["Комбо", "Комбо Жума", 2990],
-            ["Комбо", "Ассорти 1. шашлыков", 7590],
-            ["Комбо", "Ассорти 2. шашлыков", 21990],
-
-            // ===== ДОПОЛНИТЕЛЬНО =====
-            ["Дополнительно", "Казы", 500],
-            ["Дополнительно", "Перепел. яйцо", 260],
-            ["Дополнительно", "Перец чили", 200],
-
-            // ===== АВТОРСКИЕ ЧАИ =====
-            ["Авторские чаи", "Чай с молоком", 690],
-            ["Авторские чаи", "Карак чай", 690],
-            ["Авторские чаи", "Ташкентский", 790],
-            ["Авторские чаи", "Марокканский", 790],
-            ["Авторские чаи", "Имбирный", 790],
-            ["Авторские чаи", "Ягодный", 790],
-            ["Авторские чаи", "Тары", 790],
-            ["Авторские чаи", "Клубника-какадзе", 790],
-            ["Авторские чаи", "Мята-апельсин", 790],
-            ["Авторские чаи", "Малиновый", 790],
-
-            // ===== ЛИСТОВЫЕ ЧАИ =====
-            ["Листовые чаи", "Чёрный", 590],
-            ["Листовые чаи", "Зелёный", 590],
-            ["Листовые чаи", "Бергамот", 590],
-            ["Листовые чаи", "Жасмин", 590],
-            ["Листовые чаи", "Молочный улун", 590],
-
-            // ===== ЛИМОНАДЫ =====
-            ["Лимонады", "Мохито", 890],
-            ["Лимонады", "Манго-маракуйя", 890],
-            ["Лимонады", "Ягодный", 890],
-            ["Лимонады", "Классический", 890],
-            ["Лимонады", "Тропический", 890],
-            ["Лимонады", "Киви-лайм", 890],
-            ["Лимонады", "Смородиновый", 890],
-            ["Лимонады", "Вишнёвый", 890],
-            ["Лимонады", "Мандариновый", 890],
-            ["Лимонады", "Малина-лайм", 890],
-
-            // ===== ICE-TEA =====
-            ["Ice-tea", "Чёрный", 990],
-            ["Ice-tea", "Зелёный", 990],
-            ["Ice-tea", "Манго", 990],
-            ["Ice-tea", "Вишнёвый", 990],
-            ["Ice-tea", "Ананас", 990],
-
-            // ===== ДЕСЕРТЫ =====
-            ["Десерты", "Пахлава в асс. (2шт.)", 1200],
-            ["Десерты", "Пахлава фисташки (2шт.)", 1200],
-            ["Десерты", "Пахлава молочный (2шт.)", 1400],
-            ["Десерты", "Десерты в асс.", 1590],
-
-            // ===== НАПИТКИ =====
-            ["Напитки", "Salam Cola (разливная) 0,5л", 790],
-            ["Напитки", "Salam Cola баночная 0,5л", 790],
-            ["Напитки", "Salam Cola", 1290],
-            ["Напитки", "Ava разливной 0,5л", 690],
-            ["Напитки", "Da-Da сок 0,2л", 590],
-            ["Напитки", "Da-Da сок 1л", 1290],
-            ["Напитки", "Компот 0,5л", 490],
-            ["Напитки", "ASU 0,5л", 590],
-            ["Напитки", "ASU 1л", 790],
-            ["Напитки", "Айран 0,3л", 400],
-            ["Напитки", "Кымыз 1л", 2000],
-
-            // ===== ДОПОЛНИТЕЛЬНО — БАР =====
-            ["Дополнительно", "Мята", 300],
-            ["Дополнительно", "Лимон", 250],
-            ["Дополнительно", "Апельсин", 250],
-            ["Дополнительно", "Имбирь", 250],
-            ["Дополнительно", "Молоко 3,2%", 250],
-            ["Дополнительно", "Мёд", 350]
-        ];
-
-        let html = "<h2>МЕНЮ</h2>";
-
-        let currentCategory = "";
-
-        foods.forEach(item => {
-
-            const category = item[0];
-            const name = item[1];
-            const price = item[2];
-
-            if(category !== currentCategory){
-
-                currentCategory = category;
-
-                html += `
-                    <h2 class="menu-category">${category}</h2>
-                `;
-            }
-
-const quantity = getCartQuantity(name);
-
-html += `
-    <div class="food-card">
-        <h3>${name}</h3>
-        <p>${price} ₸</p>
-
-        <div class="menu-quantity">
-
-            <button
-                type="button"
-                onclick="changeMenuQuantity('${name}', ${price}, -1)">
-                −
-            </button>
-
-            <span id="qty-${name.replace(/\s+/g, '-')}">
-                ${quantity}
-            </span>
-
-            <button
-                type="button"
-                onclick="changeMenuQuantity('${name}', ${price}, 1)">
-                +
-            </button>
-
+  if (screen === "language") {
+    app.innerHTML = `
+      <div class="simple-wrap">
+        <div class="simple-card">
+          <div class="simple-logo">TOMCHI PREMIUM</div>
+          <h2>${t("choose")}</h2>
+          <button class="simple-btn" onclick="chooseLanguage('ru')">🇷🇺 Русский</button>
+          <button class="simple-btn" onclick="chooseLanguage('kz')">🇰🇿 Қазақша</button>
         </div>
-    </div>
-`;
-        });
-
-        menu.innerHTML = html;
-
-    } else {
-
-        menu.innerHTML = `
-            <h2>МЕНЮ</h2>
-
-            <div class="food-card">
-                <h3>Плов</h3>
-                <p>2500 ₸</p>
-                <button onclick="addToCart('Плов',2500)">
-                    Добавить
-                </button>
-            </div>
-
-            <div class="food-card">
-                <h3>Манты</h3>
-                <p>2200 ₸</p>
-                <button onclick="addToCart('Манты',2200)">
-                    Добавить
-                </button>
-            </div>
-
-            <div class="food-card">
-                <h3>Лагман</h3>
-                <p>2400 ₸</p>
-                <button onclick="addToCart('Лагман',2400)">
-                    Добавить
-                </button>
-            </div>
-        `;
-    }
-
-}
-
-// ---------------- КОРЗИНА ----------------
-function getCartQuantity(name){
-
-    const item = cart.find(item => item.name === name);
-
-    return item ? item.quantity : 0;
-
-}
-
-
-function changeMenuQuantity(name, price, change){
-
-    const existingItem = cart.find(item => item.name === name);
-
-    if(existingItem){
-
-        existingItem.quantity += change;
-
-        if(existingItem.quantity <= 0){
-
-            const index = cart.indexOf(existingItem);
-
-            cart.splice(index, 1);
-
-        }
-
-    }else if(change > 0){
-
-        cart.push({
-            name: name,
-            price: price,
-            quantity: 1
-        });
-
-    }
-
-    updateMenuQuantity(name);
-
-    updateCartButton();
-
-}
-
-
-function updateMenuQuantity(name){
-
-    const id = "qty-" + name.replace(/\s+/g, '-');
-
-    const element = document.getElementById(id);
-
-    if(element){
-
-        element.innerText = getCartQuantity(name);
-
-    }
-
-}
-
-
-function updateCartButton(){
-
-    const button = document.querySelector("#cart button");
-
-    if(!button) return;
-
-    let totalQuantity = 0;
-
-    cart.forEach(item => {
-
-        totalQuantity += item.quantity;
-
-    });
-
-    if(totalQuantity > 0){
-
-        button.innerText =
-            "🛒 Проверить заказ (" + totalQuantity + ")";
-
-    }else{
-
-        button.innerText =
-            "🛒 Проверить заказ";
-
-    }
-
-}
-// ---------------- ПРОВЕРКА ЗАКАЗА ----------------
-function openOrderCheck(){
-
-if(cart.length === 0){
-
-    document.getElementById("order-screen").classList.remove("active");
-    document.getElementById("menu-screen").classList.add("active");
-
-    document.getElementById("cart").style.display = "block";
-
+      </div>`;
     return;
-}
+  }
 
-    document.getElementById("menu-screen").classList.remove("active");
-    document.getElementById("order-screen").classList.add("active");
+  if (screen === "zone") {
+    app.innerHTML = `
+      <div class="simple-wrap">
+        <div class="simple-card">
+          <div class="simple-logo">TOMCHI PREMIUM</div>
+          <h2>${t("zone")}</h2>
+          <p>${t("zoneText")}</p>
+          <img
+            class="zone-image"
+            src="${DELIVERY_IMAGE}"
+            alt="${t("zone")}"
+            onerror="this.style.display='none';document.getElementById('image-error').style.display='block'"
+          >
+          <p id="image-error" style="display:none;color:#a33">${t("imageError")}</p>
+          <p>${t("hours")}</p>
+          <button class="simple-btn" onclick="showMenu()">${t("continue")}</button>
+        </div>
+      </div>`;
+    return;
+  }
 
-    document.getElementById("cart").style.display = "none";
+  if (screen === "menu") {
+    const categories = [t("all"), ...new Set(menu.map(item => item.category))];
 
-    renderOrder();
-}
+    const categoryButtons = categories.map(category => `
+      <button
+        onclick="setCategory('${safe(category)}')"
+        style="${selectedCategory === category ? "background:#916718;color:white" : ""}">
+        ${safe(category)}
+      </button>
+    `).join("");
 
+    const filtered = selectedCategory === t("all")
+      ? menu
+      : menu.filter(item => item.category === selectedCategory);
 
-    function renderOrder(){
+    const cards = filtered.map(item => {
+      const index = menu.indexOf(item);
+      const quantity = cart[index] || 0;
 
-    const orderList = document.getElementById("order-list");
-    const totalPrice = document.getElementById("order-total-price");
+      return `
+        <div class="food-card">
+          <h3>${safe(item.name)}</h3>
+          <div class="food-price">${money(item.price)}</div>
+          <div class="quantity-row" style="margin-top:12px">
+            <button onclick="changeQuantity(${index},-1)">−</button>
+            <strong>${quantity}</strong>
+            <button onclick="changeQuantity(${index},1)">+</button>
+          </div>
+        </div>`;
+    }).join("");
 
-    orderList.innerHTML = "";
+    app.innerHTML = `
+      <div class="simple-wrap">
+        <div class="simple-logo">TOMCHI PREMIUM</div>
+        <h2>${t("menu")}</h2>
+        <p>${t("hours")}</p>
+        <div class="category-bar">${categoryButtons}</div>
+        <div class="food-grid">${cards}</div>
+      </div>
+      ${cartCount() > 0 ? `
+        <button class="cart-fixed" onclick="openCart()">
+          🛒 ${t("cart")} · ${cartCount()} · ${money(cartTotal())}
+        </button>` : ""}
+    `;
+    return;
+  }
 
-    let total = 0;
+  if (screen === "cart") {
+    const items = Object.entries(cart).map(([index, quantity]) => {
+      const item = menu[Number(index)];
 
-    cart.forEach((item, index) => {
-
-        total += item.price * item.quantity;
-
-        orderList.innerHTML += `
-            <div class="food-card order-item">
-
-                <div class="order-info">
-                    <h3>${item.name}</h3>
-                    <p>${item.price} ₸</p>
-                </div>
-
-                <div class="quantity">
-
-                    <button type="button" onclick="decreaseItem(${index})">
-                        −
-                    </button>
-
-                    <span>${item.quantity}</span>
-
-                    <button type="button" onclick="increaseItem(${index})">
-                        +
-                    </button>
-
-                </div>
-
+      return `
+        <div class="cart-line">
+          <div>
+            <strong>${safe(item.name)}</strong>
+            <div>${quantity} × ${money(item.price)}</div>
+          </div>
+          <div>
+            <strong>${money(item.price * quantity)}</strong>
+            <div class="quantity-row" style="margin-top:8px">
+              <button onclick="changeQuantity(${index},-1)">−</button>
+              <span>${quantity}</span>
+              <button onclick="changeQuantity(${index},1)">+</button>
             </div>
-        `;
+          </div>
+        </div>`;
+    }).join("");
 
-    });
+    app.innerHTML = `
+      <div class="simple-wrap">
+        <div class="simple-logo">TOMCHI PREMIUM</div>
+        <h2>${t("cart")}</h2>
+        ${items || `<p>${t("empty")}</p>`}
+        <div class="total-line">
+          <span>${t("total")}</span>
+          <span>${money(cartTotal())}</span>
+        </div>
+        <button class="simple-btn" onclick="openCheckout()" ${cartCount() === 0 ? "disabled" : ""}>
+          ${t("checkout")}
+        </button>
+        <button class="simple-btn" style="background:#777" onclick="showMenu()">${t("back")}</button>
+      </div>`;
+    return;
+  }
 
-    totalPrice.innerText = total;
+  if (screen === "checkout") {
+    app.innerHTML = `
+      <div class="simple-wrap">
+        <div class="simple-card">
+          <div class="simple-logo">TOMCHI PREMIUM</div>
+          <h2>${t("checkout")}</h2>
+          <input class="simple-input" id="customer-name" placeholder="${t("name")}" value="${safe(orderInfo.name)}">
+          <input class="simple-input" id="customer-phone" type="tel" placeholder="${t("phone")}" value="${safe(orderInfo.phone)}">
+          <input class="simple-input" id="customer-address" placeholder="${t("address")}" value="${safe(orderInfo.address)}">
+          <textarea class="simple-input" id="customer-comment" rows="3" placeholder="${t("comment")}">${safe(orderInfo.comment)}</textarea>
+          <div class="total-line">
+            <span>${t("total")}</span>
+            <span>${money(cartTotal())}</span>
+          </div>
+          <button class="simple-btn" onclick="sendWhatsAppOrder()">${t("send")}</button>
+          <button class="simple-btn" style="background:#777" onclick="openCart()">${t("back")}</button>
+        </div>
+      </div>`;
+  }
 }
 
-
-function increaseItem(index){
-
-    cart[index].quantity += 1;
-
-    renderOrder();
-
+function chooseLanguage(value) {
+  language = value;
+  selectedCategory = t("all");
+  screen = "zone";
+  render();
 }
 
-
-function decreaseItem(index){
-
-    if(cart[index].quantity > 1){
-
-        cart[index].quantity -= 1;
-
-    }else{
-
-        cart.splice(index, 1);
-
-    }
-
-    if(cart.length === 0){
-
-        document.getElementById("order-screen").classList.remove("active");
-        document.getElementById("menu-screen").classList.add("active");
-
-        return;
-    }
-
-    renderOrder();
-
+function showMenu() {
+  screen = "menu";
+  selectedCategory = t("all");
+  render();
 }
 
-
-function backToMenu(){
-
-    document.getElementById("order-screen").classList.remove("active");
-    document.getElementById("menu-screen").classList.add("active");
-
-    document.getElementById("cart").style.display = "block";
-
-}
-// ---------------- WHATSAPP ----------------
-
-function openCart(){
-
-    if(cart.length===0){
-        alert("Корзина пуста");
-        return;
-    }
-
-    let text="Здравствуйте!%0A";
-    text+="Филиал: "+selectedBranch+"%0A%0A";
-
-    cart.forEach(item=>{
-        text+=item.name+" - "+item.price+" ₸%0A";
-    });
-
-    window.open(
-        "https://wa.me/77479370909?text="+text,
-        "_blank"
-    );
-
-}
-// ---------------- ОФОРМЛЕНИЕ ЗАКАЗА ----------------
-async function sendOrder(){
-
-    if(cart.length === 0){
-        alert("Корзина пуста");
-        return;
-    }
-
-    const name =
-        document.getElementById("customer-name").value.trim();
-
-    const phone =
-        document.getElementById("customer-phone").value.trim();
-
-    const comment =
-        document.getElementById("customer-comment").value.trim();
-
-    if(!name){
-        alert("Введите ваше имя");
-        return;
-    }
-
-    if(!phone){
-        alert("Введите номер телефона");
-        return;
-    }
-
-    // =============================
-    // СУММА ЗАКАЗА
-    // =============================
-
-    const amount = getOrderTotal();
-
-    // =============================
-    // ЧЕК
-    // =============================
-
-    const receiptInput =
-        document.getElementById("kaspiReceipt");
-
-    if(!receiptInput || !receiptInput.files.length){
-
-        alert("Пожалуйста, выберите чек Kaspi.");
-        return;
-
-    }
-
-    const file = receiptInput.files[0];
-
-    // =============================
-    // ЗАГРУЖАЕМ ЧЕК НА СЕРВЕР
-    // =============================
-
-    let receiptUrl = "";
-
-    try {
-
-        const formData = new FormData();
-
-        formData.append("receipt", file);
-
-        const uploadResponse =
-            await fetch("/api/upload-receipt", {
-                method: "POST",
-                body: formData
-            });
-
-        const uploadData =
-            await uploadResponse.json();
-
-        if(!uploadResponse.ok || !uploadData.success){
-
-            alert(
-                uploadData.error ||
-                "Не удалось загрузить чек."
-            );
-
-            return;
-        }
-
-        receiptUrl =
-            uploadData.url;
-
-    } catch(error){
-
-        console.error(error);
-
-        alert("Ошибка загрузки чека.");
-
-        return;
-    }
-
-    // =============================
-    // СОЗДАЁМ ЗАКАЗ
-    // =============================
-
-    const address =
-        document.getElementById("address").value.trim();
-
-    const orderData = {
-
-        name: name,
-
-        phone: phone,
-
-        pickup: selectedBranch,
-
-        address: address,
-
-        amount: amount,
-
-        item: cart.map(item =>
-            `${item.name} × ${item.quantity}`
-        ).join(", "),
-
-        comment: comment,
-
-        receipt: receiptUrl
-
-    };
-
-    try {
-
-        const orderResponse =
-            await fetch("/api/orders", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(orderData)
-
-            });
-
-        const order =
-            await orderResponse.json();
-
-        if(!orderResponse.ok){
-
-            alert(
-                order.error ||
-                "Не удалось создать заказ."
-            );
-
-            return;
-        }
-
-        // =============================
-        // WHATSAPP
-        // =============================
-
-        let text =
-            "Здравствуйте! Хочу оформить заказ.%0A%0A";
-
-        text +=
-            "🆔 Заказ №" +
-            order.id +
-            "%0A";
-
-        text +=
-            "🏪 Филиал: " +
-            encodeURIComponent(selectedBranch) +
-            "%0A";
-
-        text +=
-            "👤 Имя: " +
-            encodeURIComponent(name) +
-            "%0A";
-
-        text +=
-            "📞 Телефон: " +
-            encodeURIComponent(phone) +
-            "%0A";
-
-        text +=
-            "📍 Адрес: " +
-            encodeURIComponent(address) +
-            "%0A%0A";
-
-        text +=
-            "🛒 ЗАКАЗ:%0A";
-
-        cart.forEach(item => {
-
-            const itemTotal =
-                item.price * item.quantity;
-
-            text +=
-                encodeURIComponent(item.name) +
-                " × " +
-                item.quantity +
-                " — " +
-                itemTotal +
-                " ₸%0A";
-
-        });
-
-        text +=
-            "%0A💰 Итого: " +
-            amount +
-            " ₸";
-
-        text +=
-            "%0A%0A💳 Оплата: Kaspi перевод";
-
-        if(receiptUrl){
-
-            text +=
-                "%0A🧾 Чек: " +
-                encodeURIComponent(
-                    window.location.origin +
-                    receiptUrl
-                );
-
-        }
-
-        if(comment){
-
-            text +=
-                "%0A📝 Комментарий: " +
-                encodeURIComponent(comment);
-
-        }
-
-        window.open(
-            "https://wa.me/77479370909?text=" + text,
-            "_blank"
-        );
-
-        alert(
-            "✅ Заказ №" +
-            order.id +
-            " создан!\n\n" +
-            "Чек сохранён и отправлен вместе с заказом."
-        );
-
-    } catch(error){
-
-        console.error(error);
-
-        alert("Ошибка оформления заказа.");
-
-    }
-
+function setCategory(category) {
+  selectedCategory = category;
+  render();
 }
 
-// ---------------- НАЗАД ----------------
+function changeQuantity(index, amount) {
+  const next = (cart[index] || 0) + amount;
 
-function backToBranches(){
+  if (next <= 0) {
+    delete cart[index];
+  } else {
+    cart[index] = next;
+  }
 
-    document.getElementById("menu-screen").classList.remove("active");
-    document.getElementById("branch-screen").classList.add("active");
-
+  render();
 }
 
-// ---------------- МОДАЛЬНОЕ ОКНО ----------------
-
-function continueOrder(){
-
-    document.getElementById("deliveryModal").classList.remove("show");
-
-    showBranches();
-
+function openCart() {
+  screen = "cart";
+  render();
 }
 
-function closeModal(){
-
-    document.getElementById("deliveryModal").classList.remove("show");
-
-}
-// ---------------- ОФОРМЛЕНИЕ ЗАКАЗА ----------------
-// ---------------- ОПЛАТА KASPI ----------------
-
-const kaspiData = {
-    "Абылай Хана 24": {
-        phone: "+77473063980",
-        name: "Ситора Б."
-    },
-
-    "Абылай Хана 34": {
-        phone: "+77479483871",
-        name: "Javohir A."
-    },
-
-    "Жібек Жолы 106": {
-        phone: "+77479252500",
-        name: "Айжан Ж."
-    },
-
-    "Абая 47": {
-        phone: "+77474923856",
-        name: "Maral O."
-    },
-
-    "Яссауи 66": {
-        phone: "+77475779463",
-        name: "Балзия А."
-    }
-};
-
-
-// ---------------- ПОКАЗ KASPI ----------------
-
-function showKaspiPayment(){
-
-    if(cart.length === 0){
-        alert("Корзина пуста");
-        return;
-    }
-
-    let total = 0;
-
-    cart.forEach(item => {
-        total += item.price * item.quantity;
-    });
-
-    const kaspi = kaspiData[selectedBranch];
-
-    if(!kaspi){
-        alert("Kaspi номер для этого филиала не найден");
-        return;
-    }
-
-    document.getElementById("kaspi-name").innerText =
-        kaspi.name;
-
-    document.getElementById("kaspi-phone").innerText =
-        kaspi.phone;
-
-    document.getElementById("kaspi-amount").innerText =
-        total.toLocaleString("ru-RU");
-
-    document.getElementById("kaspi-payment").style.display =
-        "block";
-
-    document.getElementById("kaspi-payment").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-
+function openCheckout() {
+  if (cartCount() === 0) return;
+  screen = "checkout";
+  render();
 }
 
+function sendWhatsAppOrder() {
+  orderInfo.name = document.getElementById("customer-name")?.value.trim() || "";
+  orderInfo.phone = document.getElementById("customer-phone")?.value.trim() || "";
+  orderInfo.address = document.getElementById("customer-address")?.value.trim() || "";
+  orderInfo.comment = document.getElementById("customer-comment")?.value.trim() || "";
 
-// ---------------- КОПИРОВАТЬ KASPI НОМЕР ----------------
+  if (!orderInfo.name || !orderInfo.phone || !orderInfo.address) {
+    alert(t("required"));
+    return;
+  }
 
-function copyKaspiNumber(){
+  if (cartCount() === 0) {
+    alert(t("empty"));
+    return;
+  }
 
-    const kaspi = kaspiData[selectedBranch];
+  const lines = Object.entries(cart).map(([index, quantity]) => {
+    const item = menu[Number(index)];
+    return `• ${item.name} — ${quantity} × ${money(item.price)} = ${money(item.price * quantity)}`;
+  });
 
-    if(!kaspi){
-        alert("Kaspi номер не найден");
-        return;
-    }
+  const message = [
+    t("order"),
+    "",
+    ...lines,
+    "",
+    `${t("total")}: ${money(cartTotal())}`,
+    "",
+    `${t("customer")}: ${orderInfo.name}`,
+    `${t("customerPhone")}: ${orderInfo.phone}`,
+    `${t("deliveryAddress")}: ${orderInfo.address}`,
+    ...(orderInfo.comment ? [`${t("note")}: ${orderInfo.comment}`] : [])
+  ].join("\n");
 
-    navigator.clipboard.writeText(kaspi.phone)
-        .then(() => {
-            alert("Kaspi номер скопирован");
-        })
-        .catch(() => {
-            alert("Не удалось скопировать номер");
-        });
-
+  const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
+  window.location.href = url;
 }
 
-
-// ---------------- Я ОПЛАТИЛ ----------------
-
-async function showCustomerForm(){
-
-    if(!receiptFile){
-
-        alert("📷 Сначала выберите чек Kaspi");
-
-        return;
-    }
-
-    try{
-
-        const formData = new FormData();
-
-        formData.append(
-            "receipt",
-            receiptFile
-        );
-
-        const response =
-            await fetch("/api/upload-receipt", {
-                method: "POST",
-                body: formData
-            });
-
-        const data =
-            await response.json();
-
-        if(!response.ok || !data.success){
-
-            alert(
-                data.error ||
-                "Не удалось загрузить чек"
-            );
-
-            return;
-        }
-
-        receiptUrl =
-            data.receipt;
-
-        document.getElementById(
-            "kaspi-payment"
-        ).style.display = "none";
-
-        const form =
-            document.getElementById(
-                "customer-form"
-            );
-
-        form.style.display = "block";
-
-        form.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }catch(error){
-
-        console.error(error);
-
-        alert(
-            "Ошибка загрузки чека. Попробуйте ещё раз."
-        );
-
-    }
-
-}
-
-
-// ---------------- ОТПРАВКА ЗАКАЗА ----------------
-
-function sendOrder(){
-
-    if(cart.length === 0){
-        alert("Корзина пуста");
-        return;
-    }
-
-    const name =
-        document.getElementById("customer-name").value.trim();
-
-    const phone =
-        document.getElementById("customer-phone").value.trim();
-
-    const comment =
-        document.getElementById("customer-comment").value.trim();
-
-    if(!name){
-        alert("Введите ваше имя");
-        return;
-    }
-
-    if(!phone){
-        alert("Введите номер телефона");
-        return;
-    }
-
-    const kaspi = kaspiData[selectedBranch];
-
-    let total = 0;
-
-    let text =
-        "Здравствуйте! Хочу оформить заказ.%0A%0A";
-
-    text +=
-        "🏪 Филиал: " +
-        encodeURIComponent(selectedBranch) +
-        "%0A";
-
-    text +=
-        "👤 Имя: " +
-        encodeURIComponent(name) +
-        "%0A";
-
-    text +=
-        "📞 Телефон: " +
-        encodeURIComponent(phone) +
-        "%0A";
-
-    text +=
-        "📍 Адрес: " +
-        encodeURIComponent(
-            document.getElementById("address").value
-        ) +
-        "%0A%0A";
-
-    text += "🛒 ЗАКАЗ:%0A";
-
-    cart.forEach(item => {
-
-        const itemTotal =
-            item.price * item.quantity;
-
-        total += itemTotal;
-
-        text +=
-            encodeURIComponent(item.name) +
-            " × " +
-            item.quantity +
-            " — " +
-            itemTotal +
-            " ₸%0A";
-
-    });
-
-    text +=
-        "%0A💰 Итого: " +
-        total +
-        " ₸";
-
-    text +=
-        "%0A%0A💳 Оплата: Kaspi перевод";
-
-    if(kaspi){
-
-        text +=
-            "%0A📱 Kaspi: " +
-            encodeURIComponent(kaspi.phone);
-
-        text +=
-            "%0A👤 Получатель: " +
-            encodeURIComponent(kaspi.name);
-
-    }
-
-    if(comment){
-
-        text +=
-            "%0A📝 Комментарий: " +
-            encodeURIComponent(comment);
-
-    }
-
-    window.open(
-        "https://wa.me/77479370909?text=" + text,
-        "_blank"
-    );
-
-}
-// ---------------- KASPI ОПЛАТА ----------------
-
-const kaspiNumbers = {
-
-    "Абылай Хана 24": {
-        number: "+77473063980",
-        name: "Ситора Б."
-    },
-
-    "Абылай Хана 34": {
-        number: "+77479483871",
-        name: "Javohir A."
-    },
-
-    "Жібек Жолы 106": {
-        number: "+77479252500",
-        name: "Айжан Ж."
-    },
-
-    "Абая 47": {
-        number: "+77474923856",
-        name: "Maral O."
-    },
-
-    "Яссауи 66": {
-        number: "+77475779463",
-        name: "Балзия А."
-    }
-
-};
-
-
-function getOrderTotal(){
-
-    let total = 0;
-
-    cart.forEach(item => {
-
-        total += item.price * item.quantity;
-
-    });
-
-    return total;
-
-}
-
-
-function payWithKaspi(){
-
-    if(cart.length === 0){
-
-        alert("Корзина пуста");
-        return;
-
-    }
-
-    const kaspi = kaspiNumbers[selectedBranch];
-
-    if(!kaspi){
-
-        alert("Номер Kaspi для этого филиала не найден");
-        return;
-
-    }
-
-    const total = getOrderTotal();
-
-    document.getElementById("kaspiPaymentInfo").innerHTML =
-
-        "🏪 <b>Филиал:</b> " + selectedBranch +
-
-        "<br><br>" +
-
-        "👤 <b>Получатель:</b> " + kaspi.name +
-
-        "<br>" +
-
-        "📱 <b>Номер Kaspi:</b> " + kaspi.number +
-
-        "<br><br>" +
-
-        "💰 <b>Сумма к оплате:</b> " + total + " ₸" +
-
-        "<br><br>" +
-
-        "После перевода нажмите «Я оплатил» и отправьте чек вместе с заказом.";
-
-    document.getElementById("kaspiModal").classList.add("show");
-
-}
-
-
-function closeKaspiModal(){
-
-    document.getElementById("kaspiModal").classList.remove("show");
-
-}
-
-
-function openKaspiApp(){
-
-    const kaspi = kaspiNumbers[selectedBranch];
-
-    if(!kaspi) return;
-
-    navigator.clipboard.writeText(kaspi.number)
-        .then(() => {
-
-            alert(
-                "📋 Номер Kaspi скопирован!\n\n" +
-                kaspi.number +
-                "\n\n" +
-                "Теперь откройте приложение Kaspi и выполните перевод.\n\n" +
-                "Получатель: " + kaspi.name
-            );
-
-        })
-        .catch(() => {
-
-            alert(
-                "📱 Номер Kaspi:\n\n" +
-                kaspi.number +
-                "\n\n" +
-                "Откройте Kaspi и выполните перевод.\n\n" +
-                "Получатель: " + kaspi.name
-            );
-
-        });
-
-}
-
-
-// ---------------- ЧЕК KASPI ----------------
-
-function selectReceipt(){
-
-    document.getElementById("kaspiReceipt").click();
-
-}
-
-
-function receiptSelected(){
-
-    const file =
-        document.getElementById("kaspiReceipt").files[0];
-
-    const status =
-        document.getElementById("receiptStatus");
-
-    if(!file){
-        status.innerText = "";
-        return;
-    }
-
-    if(file.size > 8 * 1024 * 1024){
-
-        alert("Чек слишком большой. Максимум 8 МБ.");
-
-        document.getElementById("kaspiReceipt").value = "";
-
-        return;
-    }
-
-    status.innerText =
-        "✅ Чек выбран: " + file.name;
-
-}
-
-
-// ---------------- Я ОПЛАТИЛ ----------------
-
-async function kaspiPaid(){
-
-    const file =
-        document.getElementById("kaspiReceipt").files[0];
-
-    if(!file){
-
-        alert(
-            "Сначала выберите фото или скриншот чека Kaspi."
-        );
-
-        return;
-    }
-
-    const status =
-        document.getElementById("receiptStatus");
-
-    status.innerText =
-        "⏳ Загружаем чек...";
-
-    const formData = new FormData();
-
-    formData.append("receipt", file);
-
-    try{
-
-        const response =
-            await fetch("/api/upload-receipt", {
-                method: "POST",
-                body: formData
-            });
-
-        const data =
-            await response.json();
-
-        if(!response.ok){
-
-            throw new Error(
-                data.error || "Ошибка загрузки чека"
-            );
-
-        }
-
-        // Сохраняем ссылку на чек
-        window.kaspiReceiptUrl = data.url;
-
-        status.innerText =
-            "✅ Чек загружен";
-
-        document.getElementById("kaspiModal")
-            .classList.remove("show");
-
-        sendOrder();
-
-    }catch(error){
-
-        console.error(error);
-
-        status.innerText = "";
-
-        alert(
-            "Не удалось загрузить чек: " +
-            error.message
-        );
-
-    }
-
-}
-// ---------------- ЧЕК KASPI ----------------
-
-let receiptFile = null;
-let receiptUrl = "";
-
-function receiptSelected(){
-
-    const input =
-        document.getElementById("kaspiReceipt");
-
-    if(!input || !input.files.length){
-        return;
-    }
-
-    receiptFile = input.files[0];
-
-    const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp"
-    ];
-
-    if(!allowedTypes.includes(receiptFile.type)){
-
-        alert("Можно загрузить только JPG, PNG или WEBP.");
-
-        input.value = "";
-        receiptFile = null;
-
-        return;
-    }
-
-    if(receiptFile.size > 8 * 1024 * 1024){
-
-        alert("Файл слишком большой. Максимум 8 МБ.");
-
-        input.value = "";
-        receiptFile = null;
-
-        return;
-    }
-
-    const status =
-        document.getElementById("receiptStatus");
-
-    if(status){
-
-        status.innerText =
-            "✅ Чек выбран: " + receiptFile.name;
-
-    }
-
-}
-// =====================================================
-// ВРЕМЯ РАБОТЫ САЙТА: 11:00 — 23:00
-// =====================================================
-
-function checkWorkingHours(){
-
-    const now = new Date();
-
-    const time = new Intl.DateTimeFormat("ru-RU", {
-        timeZone: "Asia/Almaty",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false
-    }).format(now);
-
-    const [hour, minute] = time.split(":").map(Number);
-
-    const currentMinutes = hour * 60 + minute;
-
-    const startMinutes = 11 * 60; // 11:00
-    const endMinutes = 23 * 60;   // 23:00
-
-    const isOpen =
-        currentMinutes >= startMinutes &&
-        currentMinutes < endMinutes;
-
-    if(!isOpen){
-
-        document.getElementById("app").innerHTML = `
-            <div style="
-                min-height:100vh;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                text-align:center;
-                padding:25px;
-                box-sizing:border-box;
-            ">
-
-                <div>
-
-                    <h1>TOMCHI PREMIUM</h1>
-
-                    <h2>Сейчас мы не принимаем заказы</h2>
-
-                    <p style="font-size:18px;">
-                        Онлайн-заказы принимаются ежедневно
-                        с <b>11:00 до 23:00</b>.
-                    </p>
-
-                    <p style="font-size:17px;">
-                        Пожалуйста, приходите снова в рабочее время.
-                    </p>
-
-                </div>
-
-            </div>
-        `;
-
-        return false;
-    }
-
-    return true;
-}
-
-
-// Проверяем время сразу при открытии сайта
-checkWorkingHours();
-
-// Проверяем время каждую минуту
-setInterval(checkWorkingHours, 60000);
+render();
